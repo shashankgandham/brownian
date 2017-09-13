@@ -1,4 +1,5 @@
 // This function looks like it can be seriously optimized by reducing the number of loops;
+#include "parameters.hpp"
 
 void create_box() {
 	int alx, aly, alz, temp, box, k, j, i;
@@ -7,7 +8,7 @@ void create_box() {
 			for(int mn = 1; mn <= lx; mn++) {
 				box = (l - 1)*lx*ly + (m-1)*lx + mn;
 				nbox = 0;
-				for(kk = l; kk <= l + 6; kk++) {
+				for(int kk = l; kk <= l + 6; kk++) {
 					k = kk - 3;
 					if(kk <= 0) 
 						k += lz; 
@@ -28,10 +29,10 @@ void create_box() {
 							else
 								i -= lx;
 							//Serious considerations for mod;
-							temp = (k - 1)*lx*ly + (j-1)*lx + i
+							temp = (k - 1)*lx*ly + (j-1)*lx + i;
 							if(temp /= box) {
 								nbox++;
-								box[nbox][box] = (k - 1)*lx*ly + (j - 1)*lx + 1;
+								box_neigh[nbox][box] = (k - 1)*lx*ly + (j - 1)*lx + 1;
 							}
 						}
 					}
