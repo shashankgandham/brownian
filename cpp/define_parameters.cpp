@@ -1,6 +1,7 @@
 //Simulation Specifications
 #include <cmath>
 #include <cstdlib>
+#include <cstdio>
 #include "parameters.hpp"
 
 int n = 10, niter = 21000;
@@ -18,32 +19,15 @@ double llxby2 = llx/2, llyby2 = lly/2, llzby2 = llz/2;
 double inv_llx = 1/llx, inv_lly = 1/lly, inv_llz = 1/llz;
 double ang_ke_colloid, ang_ke_colloid1;
 int zzz = -4280145, zzzz = 77777, nn, qq;
-
 int nbin = 300; //For Maxwell velocity
 double dv = 0.1; //Distribution
-int *mb_vel = (int *)malloc(nbin + 2);
 //Fluid Specifications
-
 double mass_fl = 1.0, vscale_fluid = sqrt(12.0*kbt/mass_fl);
 int no_of_fluid = lx*ly*lz*10, maxpart = 100; 
 
-double *pos_fl = (double *)malloc(3 * no_of_fluid + 2), ke_fluid, scale_fac_mpcd;
-double *vel_fl = (double *)malloc(3 * no_of_fluid + 2);
-double *f_x = (double *)malloc(no_of_colloid);
-double *f_y = (double *)malloc(no_of_colloid);
-double *f_z = (double *)malloc(no_of_colloid);
-int *n_neighbour = (int *)malloc(no_of_colloid);
-double *f = (double *)malloc(3 * no_of_colloid);
-double *old_force = (double *)malloc(3 * no_of_colloid);
-double *pos_colloid = (double *)malloc(3 * no_of_colloid);
-double *vel_colloid = (double *)malloc(3 * no_of_colloid);
-double *ang_vel_colloid = (double *)malloc(3 * no_of_colloid);
-int *no_neigh = (int *)malloc(no_of_colloid);
-double *ra = (double *)malloc(3 * no_of_colloid);
-double *old_ra = (double *)malloc(3 * no_of_colloid);
-double *rra = (double *)malloc(3 * no_of_colloid);
-int *size_cluster = (int *)malloc(no_of_colloid);
-int *identify = (int *)malloc(no_of_colloid);
+int *mb_vel, *n_neighbour, *no_neigh, *size_cluster, *identify;
+double *pos_fl, ke_fluid, scale_fac_mpcd, *vel_fl, *f_x, *f_y, *f_z, *f, *old_force, *pos_colloid;
+double *vel_colloid, *ang_vel_colloid, *ra, *old_ra, *rra;
 
 //Colloid Specifications
 int no_of_colloid=1;
@@ -82,15 +66,34 @@ double **dist;
 int file_colloid=0; //set 1 if initial data to be read from file
 
 void initialize() {
-	for(int i = 0; i < 10000; i++) 
-		neigh_fl[i] = (int *)malloc(sizeof(int)*no_of_colloid);
+	mb_vel = (int *)malloc((nbin + 2)*sizeof(int));
+	size_cluster = (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	identify = (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	n_neighbour = (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	pos_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
+	vel_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
+	f_x = (double *)malloc((no_of_colloid + 2)*sizeof(double));
+	f_y = (double *)malloc((no_of_colloid + 2)*sizeof(double));
+	f_z = (double *)malloc((no_of_colloid + 2)*sizeof(double));
+	f = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	old_force = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	pos_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	vel_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	ang_vel_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	ra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	old_ra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	rra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	std::srand(zzzz);
 	
+	for(int i = 0; i < 10000; i++) 
+		neigh_fl[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+
 	for(int i = 0; i < 500; i++)
-		box_neigh[i] = (int *)malloc(sizeof(int)*lx*ly*lz);
+		box_neigh[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
 	for(int i = 0; i < 200; i++) 
-		neighbour[i] = (int *)malloc(sizeof(int)*no_of_colloid);
-	dist = (double **)malloc(sizeof(double *)*no_of_colloid);
-	for(int i = 0; i < no_of_colloid; i++) {
-		dist[i] = (double *)malloc(sizeof(double)*no_of_colloid);
-	}
+		neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+	dist = (double **)malloc(sizeof(double *)*(no_of_colloid + 2));
+	for(int i = 0; i < no_of_colloid; i++) 
+		dist[i] = (double *)malloc(sizeof(double)*(no_of_colloid + 2));
 }

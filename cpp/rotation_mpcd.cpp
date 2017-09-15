@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
-#include <cstdint>
 #include <algorithm>
 
 void rotation_mpcd() { 
@@ -13,7 +12,6 @@ void rotation_mpcd() {
 	double rot11,rot12,rot13,rot21,rot22,rot23,rot31,rot32,rot33, del_vx, del_vy, del_vz, mx1,my1,mz1;
 	double tmp_pos[3*no_of_fluid + 2], rr1,rr2,rr3,var,del_vx1[no_of_fluid],del_vy1[no_of_fluid],del_vz1[no_of_fluid];
 	
-	std::srand(zzzz);
 	memset(fluid_no, 0, sizeof fluid_no);
 	rr1 = rand() - 0.5;
 	rr2 = rand() - 0.5;

@@ -5,7 +5,6 @@
 
 void stochastic_reflection() {
 	double nx,ny,nz,unx,uny,unz,xx,m_beta,random_e,ux,uy,uz, uuu,utx,uty,txx,tyy,tzz,ttt,utz,ran1,val,v1,v2, den;
-	std::srand(zzzz);
 	m_beta=mass_fl/kbt;
 	den = sqrt(rsx*rsx + rsy*rsy + rsz*rsz);
 	nx = (rsx)/den;

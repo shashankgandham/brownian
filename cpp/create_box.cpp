@@ -1,4 +1,3 @@
-// This function looks like it can be seriously optimized by reducing the number of loops;
 #include "parameters.hpp"
 
 void create_box() {

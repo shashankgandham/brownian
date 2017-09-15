@@ -6,12 +6,11 @@
 void tumble(){
   int i;
   double b1,b2,b3,aaa;
-  std::srand(zzzz);
   
   for (i = 1; i <= no_of_colloid; i++){
-    b1=rand()*llx;
-    b2=rand()*lly;
-    b3=rand()*llz;
+    b1=((double)rand()/RAND_MAX) *llx;
+    b2=((double)rand()/RAND_MAX)*lly;
+    b3=((double)rand()/RAND_MAX)*llz;
   
     ra[3*i-2]= pos_colloid[3*i-2]-b1;
     ra[3*i-1]= pos_colloid[3*i-1]-b2;

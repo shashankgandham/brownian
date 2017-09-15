@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
+
 int main() {
 	//import all parameters
 	double zz1, ran1, random, random_expo, energy_colloid, ke_colloid2;
@@ -42,8 +43,6 @@ int main() {
 		run();
 		for(int l = 1; l <= n; l++) {
 			qq = (nn  - 1)*10 + l;
-			if(nn > 90 && nn > 100000) 
-			; //write something & condition check
 			std::copy(f, f + sizeof f, old_force);
 			update_pos_md();
 			neighbour_list_md();

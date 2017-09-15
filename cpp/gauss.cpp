@@ -3,10 +3,9 @@
 
 void gauss(double v1, double v2) {
 	double x1,x2,z = 2, sd;
-	std::srand(zzzz);
 	while(z > 1) {
-		x1 = 2.0 * rand() - 1;
-		x2 = 2.0 * rand() - 1;
+		x1 = 2.0 * ((double)rand()/RAND_MAX) - 1;
+		x2 = 2.0 * ((double)rand()/RAND_MAX) - 1;
 		z=x1*x1+x2*x2;
 	}
 	z= sqrt((-2.0*log(z))/z);

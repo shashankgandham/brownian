@@ -1,4 +1,5 @@
 #include "parameters.hpp"
+#include <cstdio>
 #include <cstdlib>
 void initialize_colloid() {
 	int counter,check, mm, nofp = 0, ran1,x12,y12,z12,r,mmm;
@@ -19,11 +20,10 @@ void initialize_colloid() {
 	avr_vel_colloid_x = 0;
 	avr_vel_colloid_y = 0;
 	avr_vel_colloid_z = 0;
-	std::srand(zzzz);
 	while(counter < no_of_colloid) {
-		tx = rand()*llx;
-		ty = rand()*lly;
-		tz = rand()*llz;
+		tx = ((double)rand()/RAND_MAX)*llx;
+		ty = ((double)rand()/RAND_MAX)*lly;
+		tz = ((double)rand()/RAND_MAX)*llz;
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
 			x12 = tx - pos_colloid[3*j-2];
@@ -38,7 +38,7 @@ void initialize_colloid() {
 			//MOD maybe?
 			r = sqrt(pow(x12, 2) + pow(y12, 2) + pow(z12, 2));
 			if(r < space_limit)  
-				check =0;
+				check = 0;
 
 		}
 		if(check==1) {
@@ -50,15 +50,14 @@ void initialize_colloid() {
 	}
 	mmm = sqrt(kbt1/mass_colloid);
 	for(int j = 1; j <= no_of_colloid; j++) {
-		vel_colloid[3*j-2] = (rand()-0.5)*vscale_colloid;
-		vel_colloid[3*j-1] = (rand()-0.5)*vscale_colloid;
-		vel_colloid[3*j] = (rand()-0.5)*vscale_colloid;
+		vel_colloid[3*j-2] = (((double)rand()/RAND_MAX)-0.5)*vscale_colloid;
+		vel_colloid[3*j-1] = (((double)rand()/RAND_MAX)-0.5)*vscale_colloid;
+		vel_colloid[3*j] =   (((double)rand()/RAND_MAX)-0.5)*vscale_colloid;
 		avr_vel_colloid_x = avr_vel_colloid_x + vel_colloid[3*j-2];
 		avr_vel_colloid_y = avr_vel_colloid_y + vel_colloid[3*j-1];
 		avr_vel_colloid_z = avr_vel_colloid_z + vel_colloid[3*j];
 
 	}
-
 	avr_vel_colloid_x = avr_vel_colloid_x/(float)no_of_colloid;
 	avr_vel_colloid_y = avr_vel_colloid_y/(float)no_of_colloid;
 	avr_vel_colloid_z = avr_vel_colloid_z/(float)no_of_colloid;
@@ -76,9 +75,9 @@ void initialize_colloid() {
 		ke_colloid1 = ke_colloid1 + pow(vel_colloid[3*j-2], 2) + pow(vel_colloid[3*j-1], 2) + pow(vel_colloid[3*j], 2);
 	}
 	for(int j = 1; j <= no_of_colloid; j++) {
-		ang_vel_colloid[3*j-2] = (rand()-0.5)*ang_vscale_colloid;
-		ang_vel_colloid[3*j-1] = (rand()-0.5)*ang_vscale_colloid;
-		ang_vel_colloid[3*j]   = (rand()-0.5)*ang_vscale_colloid;
+		ang_vel_colloid[3*j-2] = (((double)rand()/RAND_MAX)-0.5)*ang_vscale_colloid;
+		ang_vel_colloid[3*j-1] = (((double)rand()/RAND_MAX)-0.5)*ang_vscale_colloid;
+		ang_vel_colloid[3*j]   = (((double)rand()/RAND_MAX)-0.5)*ang_vscale_colloid;
 	}
 	ang_ke_colloid1=0.0;
 	for(int j = 1; j <= no_of_colloid; j++) 

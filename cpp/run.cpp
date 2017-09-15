@@ -37,6 +37,7 @@ void run() {
 			dot=vector_x*vel_colloid[3*i-2]+vector_y*vel_colloid[3*i-1]+vector_z*vel_colloid[3*i];
 
 			if(vector <= pow(sigma*0.5+0.5, 2) && dot <= 0) {;
+			; //write something & condition check
 				cnt[i]=cnt[i]+1;
 				nbr[cnt[i]][i]=jj; 
 			}

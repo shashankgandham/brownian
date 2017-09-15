@@ -3,7 +3,6 @@
 
 void initialize_activity() {
 	double aaa; //seriously better names
-	std::srand(zzzz);
 	for(int i = 1; i <= no_of_colloid; i++) {
 		ra[3*i - 2] = pos_colloid[3*i - 2] - rand()*llx; 
 //And ran1--- variable or function?
