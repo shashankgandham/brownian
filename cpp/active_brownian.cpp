@@ -43,7 +43,7 @@ int main() {
 		run();
 		for(int l = 1; l <= n; l++) {
 			qq = (nn  - 1)*10 + l;
-			std::copy(f, f + sizeof f, old_force);
+			std::copy(f, f + 3*no_of_colloid + 2, old_force);
 			update_pos_md();
 			neighbour_list_md();
 			update_pos_mpcd();
@@ -63,8 +63,8 @@ int main() {
 				ang_ke_colloid += ang_vel_colloid[3*i - j]*ang_vel_colloid[3*i - j];
 			}
 		}
-		ke_colloid = (double)0.5*mass_colloid*ke_colloid;
-		ang_ke_colloid = (double)0.5*I_colloid*ang_ke_colloid;
+		ke_colloid = 0.5*mass_colloid*ke_colloid;
+		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		//write to file again :/
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 
@@ -73,8 +73,8 @@ int main() {
 				ke_fluid += vel_fl[3*i - j]*vel_fl[3*i - j];
 		}
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-		mom1_x = mom1_y = mom1_z = (double)0;	
-		mom2_x = mom2_y = mom2_z = (double)0;	
+		mom1_x = mom1_y = mom1_z = 0;	
+		mom2_x = mom2_y = mom2_z = 0;	
 		for(int i = 1; i <= no_of_fluid; i++) {
 			mom1_x += mass_fl*vel_fl[3*i - 2];
 			mom1_y += mass_fl*vel_fl[3*i - 1];

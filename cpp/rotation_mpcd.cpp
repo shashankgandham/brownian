@@ -10,19 +10,20 @@ void rotation_mpcd() {
 	int i,j,k,l1,l2,m, fluid_no[lx*ly*lz], **cell_part, cell_no;
 	double cell_velx[lx*ly*lz], cell_vely[lx*ly*lz], cell_velz[lx*ly*lz],r1, r2, r3, theta, phi, rho, prob;
 	double rot11,rot12,rot13,rot21,rot22,rot23,rot31,rot32,rot33, del_vx, del_vy, del_vz, mx1,my1,mz1;
-	double tmp_pos[3*no_of_fluid + 2], rr1,rr2,rr3,var,del_vx1[no_of_fluid],del_vy1[no_of_fluid],del_vz1[no_of_fluid];
-	cell_part = (int **)malloc(sizeof(int *)*maxpart);
-	for(int i = 0; i < maxpart; i++) {
-		cell_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz));
-	}
+	double *tmp_pos, rr1,rr2,rr3,var,del_vx1[no_of_fluid],del_vy1[no_of_fluid],del_vz1[no_of_fluid];
+	
+	tmp_pos = (double *)malloc(sizeof(double)*(3*no_of_fluid + 2));
+	cell_part = (int **)malloc(sizeof(int *)*(maxpart + 2));
+	for(int i = 0; i <= maxpart; i++) 
+		cell_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
 
-	memset(fluid_no, 0, sizeof fluid_no);
-	rr1 = rand() - 0.5;
-	rr2 = rand() - 0.5;
-	rr3 = rand() - 0.5;
+	memset(fluid_no, 0, (lx*ly*lz + 2)*sizeof(int));
+	rr1 = ((double)rand()/RAND_MAX) - 0.5;
+	rr2 = ((double)rand()/RAND_MAX) - 0.5;
+	rr3 = ((double)rand()/RAND_MAX) - 0.5;
 
-	std::copy(pos_fl, pos_fl + sizeof pos_fl, tmp_pos);
-
+	std::copy(pos_fl, pos_fl + 3*no_of_fluid + 2, tmp_pos);
+	
 	for(int i=1; i <= no_of_fluid; i++) {
 		tmp_pos[3*i-2] = tmp_pos[3*i-2] + rr1;
 		tmp_pos[3*i-1] =tmp_pos[3*i-1] + rr2;
@@ -36,7 +37,6 @@ void rotation_mpcd() {
 		fluid_no[cell_no] = fluid_no[cell_no] + 1;
 		j = fluid_no[cell_no];
 		cell_part[j][cell_no] = i;
-
 	}
 	memset(cell_velx, 0, sizeof cell_velx);
 	memset(cell_vely, 0, sizeof cell_vely);
@@ -49,8 +49,8 @@ void rotation_mpcd() {
 				cell_vely[i] = cell_vely[i] + vel_fl[3*k-1]/float(fluid_no[i]);
 				cell_velz[i] = cell_velz[i] + vel_fl[3*k]/float(fluid_no[i]);
 			}
-			rho = 2.0*rand()-1.0;
-			phi = 4.0*asin(1.0)*rand();
+			rho = 2.0*((double)rand()/RAND_MAX)-1.0;
+			phi = 4.0*asin(1.0)*((double)rand()/RAND_MAX);
 			r1 = cos(phi)*sqrt(1-rho*rho);
 			r2 = sin(phi)*sqrt(1-rho*rho);
 			r3 = rho;
@@ -97,4 +97,8 @@ void rotation_mpcd() {
 			}
 		}
 	}
+	for(int i = 1; i <= maxpart; i++) 
+		free(cell_part[i]);
+
+	free(cell_part);
 }

@@ -10,16 +10,16 @@ void stochastic_reflection() {
 	nx = (rsx)/den;
 	ny = (rsy)/den;
 	nz = (rsz)/den;
-	xx=rand();
+	xx=((double)rand()/RAND_MAX);
 	random_e=(1-xx)*(1-xx);
 	val = sqrt(-log(random_e)/m_beta);
 	unx=val*nx;
 	uny=val*ny;
 	unz=val*nz;
 
-	txx=rand()*llx;
-	tyy=rand()*lly;
-	tzz=rand()*llz;
+	txx=((double)rand()/RAND_MAX)*llx;
+	tyy=((double)rand()/RAND_MAX)*lly;
+	tzz=((double)rand()/RAND_MAX)*llz;
 
 	txx=txx-rfx;
 	tyy=tyy-rfy;

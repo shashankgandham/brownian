@@ -1,5 +1,6 @@
 #include "parameters.hpp"
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 void run() {    
 	int i,ii,j,jj,mm,cnt[no_of_colloid],**nbr, up_cnt[no_of_colloid],**up_nbr;
@@ -9,13 +10,13 @@ void run() {
 	double up_velx2,up_vely2,up_velz2,aaa,delx,dely,delz, dumx,dumy,dumz;
 	delx=0.0;dely=0.0;delz=0.0;
 	
-	nbr = (int **)malloc(sizeof(int) * 7000);
-	for(int i = 0; i < 7000; i++) 
-		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid));
+	nbr = (int **)malloc(sizeof(int *) * 7005);
+	for(int i = 0; i <= 7000; i++) 
+		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 	
-	up_nbr = (int **)malloc(sizeof(int) * 7000);
-	for(int i = 0; i < 7000; i++) 
-		up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid));
+	up_nbr = (int **)malloc(sizeof(int *) * 7005);
+	for(int i = 0; i <= 7000; i++) 
+		up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 	
 	for(int i = 1; i <= no_of_colloid; i++){
 		dumx=vel_colloid[3*i-2];
@@ -61,11 +62,10 @@ void run() {
 		}
 	}
 
-	for(int i = 0; i < 7000; i++) 
+	for(int i = 0; i <= 7000; i++) 
 		free(nbr[i]);
 	free(nbr);
-	
-	for(int i = 0; i < 7000; i++) 
+	for(int i = 0; i <= 7000; i++) 
 		free(up_nbr[i]);
 	free(up_nbr);
 		

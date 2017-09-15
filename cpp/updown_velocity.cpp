@@ -1,6 +1,7 @@
 //done
 #include <cmath>
 #include <cstdlib>
+#include <cstdio>
 #include "parameters.hpp"
 void updown_velocity(){
 	double up_velx2,up_vely2,up_velz2;
@@ -87,13 +88,15 @@ void updown_velocity(){
 			//write(173,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2
 		} 
 	}
-	for(int i = 0; i <= 7000; i++) {
+	for(int i = 1; i <= 7000; i++) {
 		free(nbr[i]);
 	}
-	for(int i = 0; i <= 7000; i++) {
+	for(int i = 1; i <= 7000; i++) {
 		free(up_nbr[i]); 
 	}
 	free(nbr);
+	printf("up 1\n");
 	free(up_nbr);
+	printf("up 2\n");
 }
 

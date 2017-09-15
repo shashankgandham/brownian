@@ -7,10 +7,11 @@ void neighbour_list_mpcd() {
 	int p,l,lxly,mm, bx1,bx2,by1,by2,bz1,bz2;
 	double x1,x2,y1,y2,z1,z2,sigmaby2;
 	int di,idx,idy,idz,int_sigma, x1c,y1c,z1c,cbox;
+
 	box_part = (int **)malloc(sizeof(int *)*maxpart);
-	for(int i = 0; i < maxpart; i++) {
+	for(int i = 0; i < maxpart; i++) 
 		box_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz));
-	}
+
 	sigmaby2 = sigma*0.50;
 	memset(fluid_no, 0, sizeof fluid_no);
 	memset(box_part, 0, sizeof box_part); 
@@ -37,7 +38,8 @@ void neighbour_list_mpcd() {
 			} 
 		} 
 	}
-	for(int i = 0; i < maxpart; i++)
-	free(box_part[i]);
+	
+	for(int i = 1; i < maxpart; i++)
+		free(box_part[i]);
 	free(box_part); 
 }
