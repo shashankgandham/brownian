@@ -7,11 +7,15 @@
 #include <algorithm>
 
 void rotation_mpcd() { 
-	int i,j,k,l1,l2,m, fluid_no[lx*ly*lz], cell_part[maxpart][lx*ly*lz], cell_no;
+	int i,j,k,l1,l2,m, fluid_no[lx*ly*lz], **cell_part, cell_no;
 	double cell_velx[lx*ly*lz], cell_vely[lx*ly*lz], cell_velz[lx*ly*lz],r1, r2, r3, theta, phi, rho, prob;
 	double rot11,rot12,rot13,rot21,rot22,rot23,rot31,rot32,rot33, del_vx, del_vy, del_vz, mx1,my1,mz1;
 	double tmp_pos[3*no_of_fluid + 2], rr1,rr2,rr3,var,del_vx1[no_of_fluid],del_vy1[no_of_fluid],del_vz1[no_of_fluid];
-	
+	cell_part = (int **)malloc(sizeof(int *)*maxpart);
+	for(int i = 0; i < maxpart; i++) {
+		cell_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz));
+	}
+
 	memset(fluid_no, 0, sizeof fluid_no);
 	rr1 = rand() - 0.5;
 	rr2 = rand() - 0.5;
