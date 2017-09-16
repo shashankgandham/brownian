@@ -11,13 +11,13 @@ void updown_velocity(){
 	int up_cnt[no_of_colloid],**up_nbr;
 
 	nbr = (int **)malloc(sizeof(int *)*7001);
-	for(int i = 0; i <= 7000; i++) {
+	for(int i = 0; i <= 7000; i++) 
 		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
-	}
+
 	up_nbr = (int **)malloc(sizeof(int *)*7001);
-	for(int i = 0; i <= 7000; i++) {
-		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
-	}
+	for(int i = 0; i <= 7000; i++) 
+		up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
+
 	for (i = 1; i <= no_of_colloid; i++){
 		cnt[i]=0;
 		up_cnt[i]=0;
@@ -88,15 +88,11 @@ void updown_velocity(){
 			//write(173,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2
 		} 
 	}
-	for(int i = 1; i <= 7000; i++) {
+	for(int i = 1; i <= 7000; i++) 
 		free(nbr[i]);
-	}
-	for(int i = 1; i <= 7000; i++) {
+	for(int i = 1; i <= 7000; i++) 
 		free(up_nbr[i]); 
-	}
 	free(nbr);
-	printf("up 1\n");
 	free(up_nbr);
-	printf("up 2\n");
 }
 

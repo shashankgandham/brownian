@@ -14,20 +14,19 @@ int main() {
 	initialize();	
 	strcpy(charac_b, "snapshot_fluid");
 	strcpy(charac_d, "snapshot");
-	cl  = fopen("cluster.dat", "w");
-	fcp = fopen("final_colloid_position.dat", "w");
-	fcv = fopen("final_colloid_velocity.dat", "w");
-	ffp = fopen("final_fluid_position.dat", "w");
-	ffv = fopen("final_fluid_velocity.dat", "w");
-	kef = fopen("ke_fluid.dat", "w");
-	kec = fopen("ke_colloid.dat", "w");
-	for(int i = 1; i <= no_of_colloid && file_colloid; i++) {
-		fscanf(fcp, "%lf%lf%lf", &pos_colloid[3*i-2], &pos_colloid[3*i-1], &pos_colloid[3*i]);
-		fscanf(fcv, "%lf%lf%lf", &vel_colloid[3*i-2], &vel_colloid[3*i-1], &vel_colloid[3*i]);
-		fscanf(ffp, "%lf%lf%lf", &pos_fl[3*i-2], &pos_fl[3*i-1], &pos_fl[3*i]);
-		fscanf(ffv, "%lf%lf%lf", &vel_fl[3*i-2], &vel_fl[3*i-1], &vel_fl[3*i]);
-
-	}
+//	cl  = fopen("cluster.dat", "w");
+//	fcp = fopen("final_colloid_position.dat", "w");
+//	fcv = fopen("final_colloid_velocity.dat", "w");
+//	ffp = fopen("final_fluid_position.dat", "w");
+//	ffv = fopen("final_fluid_velocity.dat", "w");
+//	kef = fopen("ke_fluid.dat", "w");
+//	kec = fopen("ke_colloid.dat", "w");
+//	for(int i = 1; i <= no_of_colloid && file_colloid; i++) {
+//		fscanf(fcp, "%lf%lf%lf", &pos_colloid[3*i-2], &pos_colloid[3*i-1], &pos_colloid[3*i]);
+//		fscanf(fcv, "%lf%lf%lf", &vel_colloid[3*i-2], &vel_colloid[3*i-1], &vel_colloid[3*i]);
+//		fscanf(ffp, "%lf%lf%lf", &pos_fl[3*i-2], &pos_fl[3*i-1], &pos_fl[3*i]);
+//		fscanf(ffv, "%lf%lf%lf", &vel_fl[3*i-2], &vel_fl[3*i-1], &vel_fl[3*i]);
+//	}
 	if(!file_colloid) {
 		initialize_colloid();
 		initialize_fluid();
@@ -52,7 +51,7 @@ int main() {
 				updown_velocity();
 			fluid_colloid_collision();
 			update_activity_direction();
-			compute_force_md;
+			compute_force_md();
 			update_velocity_colloid();
 		}
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;

@@ -97,8 +97,8 @@ void rotation_mpcd() {
 			}
 		}
 	}
-	for(int i = 1; i <= maxpart; i++) 
+	for(int i = 0; i <= maxpart; i++) 
 		free(cell_part[i]);
-
+	free(tmp_pos);
 	free(cell_part);
 }

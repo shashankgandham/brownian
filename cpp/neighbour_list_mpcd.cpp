@@ -3,18 +3,17 @@
 #include <cstdio>
 #include <cstdlib>
 void neighbour_list_mpcd() {
-	int i,j,k,ii,box_no,fluid_no[lx*ly*lz], **box_part;
+	int i,j,k,ii,box_no, *fluid_no, **box_part;
 	int p,l,lxly,mm, bx1,bx2,by1,by2,bz1,bz2;
 	double x1,x2,y1,y2,z1,z2,sigmaby2;
 	int di,idx,idy,idz,int_sigma, x1c,y1c,z1c,cbox;
 
-	box_part = (int **)malloc(sizeof(int *)*maxpart);
+	fluid_no = (int *)calloc(lx*ly*lz + 1, sizeof(int));
+	box_part = (int **)calloc(maxpart + 1, sizeof(int *));
 	for(int i = 0; i < maxpart; i++) 
-		box_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz));
+		box_part[i] = (int *)calloc(lx*ly*lz + 1, sizeof(int));
 
 	sigmaby2 = sigma*0.50;
-	memset(fluid_no, 0, sizeof fluid_no);
-	memset(box_part, 0, sizeof box_part); 
 	lxly= lx*ly;
 	i=1,no_of_fluid; //what does this mean??
 	box_no = 1 + int(pos_fl[3*i-2])+lx*int(pos_fl[3*i-1])+lxly*int(pos_fl[3*i]);
@@ -39,7 +38,8 @@ void neighbour_list_mpcd() {
 		} 
 	}
 	
-	for(int i = 1; i < maxpart; i++)
+	for(int i = 0; i < maxpart; i++)
 		free(box_part[i]);
 	free(box_part); 
+	free(fluid_no); 
 }
