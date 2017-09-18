@@ -6,7 +6,7 @@
 void updown_velocity(){
 	double up_velx2,up_vely2,up_velz2;
 	double vector_x,vector_y,vector_z,vector,dot;
-	double velx2,vely2,velz2,velx12,vely12,velz12;
+	double velx2,vely2,velz2;
 	int i,ii,j,jj,mm,cnt[no_of_colloid],**nbr;
 	int up_cnt[no_of_colloid],**up_nbr;
 
@@ -75,8 +75,6 @@ void updown_velocity(){
 			vely2=vely2/double(cnt[i]);
 			velz2=velz2/double(cnt[i]);
 
-			//write(172,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2; 
-
 			up_velx2=up_velx2-vel_colloid[3*i-2]; 
 			up_vely2=up_vely2-vel_colloid[3*i-1]; 
 			up_velz2=up_velz2-vel_colloid[3*i];
@@ -85,7 +83,6 @@ void updown_velocity(){
 			vely2=vely2-vel_colloid[3*i-1];
 			velz2=velz2-vel_colloid[3*i];
 
-			//write(173,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2
 		} 
 	}
 	for(int i = 1; i <= 7000; i++) 

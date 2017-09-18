@@ -3,11 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 void run() {    
-	int i,ii,j,jj,mm,cnt[no_of_colloid],**nbr, up_cnt[no_of_colloid],**up_nbr;
-	double cos_b1,cos_b2,cos_b3,sin_b1,sin_b2,sin_b3, b1,b2,b3,bb1,bb2,bb3,ran1,v01,v02,v03;
-	double m11,m12,m13,m21,m22,m23,m31,m32,m33, vector_x,vector_y,vector_z,vector,dot;
-	double velx1,vely1,velz1,velx2,vely2,velz2,velx12,vely12,velz12, vv, theta,change,ke_before,ke_after,xx,vv1,vv2;
-	double up_velx2,up_vely2,up_velz2,aaa,delx,dely,delz, dumx,dumy,dumz;
+	int jj,mm,cnt[no_of_colloid],**nbr, up_cnt[no_of_colloid],**up_nbr;
+	double vector_x,vector_y,vector_z,vector,dot, xx, delx,dely,delz, dumx,dumy,dumz;
 	delx=0.0;dely=0.0;delz=0.0;
 	
 	nbr = (int **)malloc(sizeof(int *) * 7005);
@@ -48,7 +45,6 @@ void run() {
 			dot=vector_x*vel_colloid[3*i-2]+vector_y*vel_colloid[3*i-1]+vector_z*vel_colloid[3*i];
 
 			if(vector <= pow(sigma*0.5+0.5, 2) && dot <= 0) {;
-			; //write something & condition check
 				cnt[i]=cnt[i]+1;
 				nbr[cnt[i]][i]=jj; 
 			}

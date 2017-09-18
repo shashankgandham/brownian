@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 void initialize_colloid() {
-	int counter,check, mm, nofp = 0, ran1,x12,y12,z12,r,mmm;
+	int counter,check, nofp = 0,x12,y12,z12,r, mmm;
 	double avr_vel_colloid_x,avr_vel_colloid_y,avr_vel_colloid_z,tx,ty,tz, average_vel_colloid_x,average_vel_colloid_y,average_vel_colloid_z;
 	for(int k = 40; k <= (lx-1)*10; k += 50) {
 		for(int j = 40; j <= (ly-1)*10; j+= 50) {

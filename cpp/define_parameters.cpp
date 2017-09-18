@@ -69,7 +69,7 @@ void initialize() {
 	mb_vel = (int *)malloc((nbin + 2)*sizeof(int));
 	size_cluster = (int *)malloc((no_of_colloid + 2)*sizeof(int));
 	identify = (int *)malloc((no_of_colloid + 2)*sizeof(int));
-	n_neighbour = (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	n_neighbour = (int *)calloc(sizeof(int), (no_of_colloid + 2));
 	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
 	pos_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
 	vel_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));

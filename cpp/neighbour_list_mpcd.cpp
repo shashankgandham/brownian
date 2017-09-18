@@ -3,10 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 void neighbour_list_mpcd() {
-	int i,j,k,ii,box_no, *fluid_no, **box_part;
-	int p,l,lxly,mm, bx1,bx2,by1,by2,bz1,bz2;
-	double x1,x2,y1,y2,z1,z2,sigmaby2;
-	int di,idx,idy,idz,int_sigma, x1c,y1c,z1c,cbox;
+	int i,j,ii,box_no, *fluid_no, **box_part, lxly,mm, cbox;
+	double x1,y1,z1, sigmaby2;
 
 	fluid_no = (int *)calloc(lx*ly*lz + 1, sizeof(int));
 	box_part = (int **)calloc(maxpart + 1, sizeof(int *));

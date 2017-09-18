@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
 void create_box() {
-	int alx, aly, alz, temp, box, k, j, i;
+	int temp, box, k, j, i;
 	for(int l = 1; l <= lz; l++) {
 		for(int m = 1; m <= ly; m++) {
 			for(int mn = 1; mn <= lx; mn++) {
@@ -18,15 +18,17 @@ void create_box() {
 						j = pp-3;
 						if(j <= 0)
 							j += ly;
-						else if( j > ly)
+						else if(j > ly)
 							j -= ly;
 						//Mod?
+						
 						for(int ii = mn; ii <= mn + 6; ii++) {
 							i = ii - 3;
-							if( i <= 0) 
+							if(i <= 0) 
 								i += lx;
 							else
 								i -= lx;
+
 							//Serious considerations for mod;
 							temp = (k - 1)*lx*ly + (j-1)*lx + i;
 							if(temp /= box) {
@@ -35,7 +37,6 @@ void create_box() {
 							}
 						}
 					}
-					
 				}
 			}
 		}

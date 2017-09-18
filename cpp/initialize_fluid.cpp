@@ -3,9 +3,8 @@
 #include <cstdio>
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 void initialize_fluid() {
-	int temp = 0;
-	int i,j,k,counter_fl,check_fl;
-	double ran1,x12,y12,z12,r,ke1_fluid,zz1;
+	int counter_fl,check_fl;
+	double x12,y12,z12,r,ke1_fluid;
 	double avr_vel_fl_x,avr_vel_fl_y,avr_vel_fl_z,tx,ty,tz;
 	double average_vel_fl_x,average_vel_fl_y,average_vel_fl_z;
 	counter_fl = 0, avr_vel_fl_x = 0.0, avr_vel_fl_y = 0.0, avr_vel_fl_z = 0;

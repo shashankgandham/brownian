@@ -7,12 +7,13 @@
 #include <algorithm>
 
 void rotation_mpcd() { 
-	int i,j,k,l1,l2,m, fluid_no[lx*ly*lz], **cell_part, cell_no;
-	double cell_velx[lx*ly*lz], cell_vely[lx*ly*lz], cell_velz[lx*ly*lz],r1, r2, r3, theta, phi, rho, prob;
-	double rot11,rot12,rot13,rot21,rot22,rot23,rot31,rot32,rot33, del_vx, del_vy, del_vz, mx1,my1,mz1;
+	int j, k, **cell_part, cell_no, *fluid_no;
+	double cell_velx[lx*ly*lz], cell_vely[lx*ly*lz], cell_velz[lx*ly*lz],r1, r2, r3, theta, phi, rho;
+	double rot11,rot12,rot13,rot21,rot22,rot23,rot31,rot32,rot33, del_vx, del_vy, del_vz;
 	double *tmp_pos, rr1,rr2,rr3,var,del_vx1[no_of_fluid],del_vy1[no_of_fluid],del_vz1[no_of_fluid];
 	
 	tmp_pos = (double *)malloc(sizeof(double)*(3*no_of_fluid + 2));
+	fluid_no = (int *)malloc(sizeof(int)*(lx*ly*lz + 1));
 	cell_part = (int **)malloc(sizeof(int *)*(maxpart + 2));
 	for(int i = 0; i <= maxpart; i++) 
 		cell_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
@@ -101,4 +102,5 @@ void rotation_mpcd() {
 		free(cell_part[i]);
 	free(tmp_pos);
 	free(cell_part);
+	free(fluid_no);
 }

@@ -2,8 +2,8 @@
 #include <cstring>
 #include <cmath>
 void neighbour_list_md() {
-	double x1,x2,y1,y2,z1,z2,r,x12,y12,z12,r2;
-	memset(n_neighbour, 0, sizeof n_neighbour);
+	double x1,x2,y1,y2,z1,z2,x12,y12,z12,r2;
+	memset(n_neighbour, 0, sizeof(int)*(no_of_colloid+2));
 	
 	for(int i = 1; i < no_of_colloid; i++) {
 		for(int j = i + 1; j <= no_of_colloid; j++) {

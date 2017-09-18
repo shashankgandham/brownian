@@ -9,9 +9,8 @@ void fluid_colloid_collision() {
 
   /*find  how many fluid particles collide with colloid particles  */
 
-  for (i = 3; i <= 3*no_of_fluid; i++){
+  for (i = 3; i <= 3*no_of_fluid; i++)
     dump_vel_fl[i] = vel_fl[i];
-  }
 
   for (j = 1; j <= no_of_colloid; j++){
     vc1=0.0;

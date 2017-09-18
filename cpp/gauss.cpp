@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 void gauss(double v1, double v2) {
-	double x1,x2,z = 2, sd;
+	double x1,x2,z = 2;
 	while(z > 1) {
 		x1 = 2.0 * ((double)rand()/RAND_MAX) - 1;
 		x2 = 2.0 * ((double)rand()/RAND_MAX) - 1;

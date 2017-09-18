@@ -4,7 +4,7 @@
 #include <cstring>
 
 void compute_force_md() {
-	double x1, x2, y1, y2, z1, z2, x12, y12, z12, r, r1, ffxi;
+	double x1, x2, y1, y2, z1, z2, x12, y12, z12, r, r1;
 	double ffx,ffy, ffz, mag_f, r2, pot1;
 	int m;
 	potential_colloid = 0;

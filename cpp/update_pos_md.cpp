@@ -1,6 +1,5 @@
 #include "parameters.hpp"
 void update_pos_md() {
-	int i;
 	double ddt;
 	ddt = 0.05*dt2/mass_colloid;
 	for(int i = 1; i <= no_of_colloid; i++) {
