@@ -18,7 +18,7 @@ void neighbour_list_md() {
 	}
 }
 
-void neighbour_list_mpcd() {
+void neighbour_list_mpcd(int nbox, int *box_neigh[512]) {
 	int box_no, *fluid_no, **box_part, mm, cbox;
 	double x, y, z;
 

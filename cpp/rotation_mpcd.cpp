@@ -5,6 +5,7 @@ void rotation_mpcd() {
 	int j, k, **cell_part, cell_no, *fluid_no;
 	double cell_velx[lx*ly*lz], cell_vely[lx*ly*lz], cell_velz[lx*ly*lz], r[4], theta, phi, rho, rot[4][4], rr[4];
 	double del_vx, del_vy, del_vz,*tmp_pos, var, del_vx1[no_of_fluid], del_vy1[no_of_fluid], del_vz1[no_of_fluid];
+	double scale_fac_mpcd;
 
 	tmp_pos = (double *)malloc(sizeof(double)*(3*no_of_fluid + 2));
 	fluid_no = (int *)malloc(sizeof(int)*(lx*ly*lz + 1));
@@ -66,24 +67,22 @@ void rotation_mpcd() {
 			}
 		}
 	}
-	if (nn % 1 == 0){
-		for(int i = 1; i <= lx*ly*lz; i++) {
-			var = 0.0;
-			if(fluid_no[i] > 1) {
-				for(int j =1; j <= fluid_no[i]; j++) {
-					k = cell_part[j][i];
-					del_vx1[k] = vel_fl[3*k - 2] - cell_velx[i];
-					del_vy1[k] = vel_fl[3*k - 1] - cell_vely[i];
-					del_vz1[k] = vel_fl[3*k]   - cell_velz[i];
-					var = var + del_vx1[k]*del_vx1[k] + del_vy1[k]*del_vy1[k] + del_vz1[k]*del_vz1[k];
-				}
-				scale_fac_mpcd = sqrt(3.0 * (fluid_no[i] - 1) * kbt/(mass_fl * var));
-				for(int j = 1; j <= fluid_no[i]; j++) {
-					k = cell_part[j][i];
-					vel_fl[3*k-2] = cell_velx[i] + del_vx1[k]*scale_fac_mpcd;
-					vel_fl[3*k-1] = cell_vely[i] + del_vy1[k]*scale_fac_mpcd;
-					vel_fl[3*k]   = cell_velz[i] + del_vz1[k]*scale_fac_mpcd;
-				}
+	for(int i = 1; i <= lx*ly*lz; i++) {
+		var = 0.0;
+		if(fluid_no[i] > 1) {
+			for(int j =1; j <= fluid_no[i]; j++) {
+				k = cell_part[j][i];
+				del_vx1[k] = vel_fl[3*k - 2] - cell_velx[i];
+				del_vy1[k] = vel_fl[3*k - 1] - cell_vely[i];
+				del_vz1[k] = vel_fl[3*k]   - cell_velz[i];
+				var = var + del_vx1[k]*del_vx1[k] + del_vy1[k]*del_vy1[k] + del_vz1[k]*del_vz1[k];
+			}
+			scale_fac_mpcd = sqrt(3.0 * (fluid_no[i] - 1) * kbt/(mass_fl * var));
+			for(int j = 1; j <= fluid_no[i]; j++) {
+				k = cell_part[j][i];
+				vel_fl[3*k-2] = cell_velx[i] + del_vx1[k]*scale_fac_mpcd;
+				vel_fl[3*k-1] = cell_vely[i] + del_vy1[k]*scale_fac_mpcd;
+				vel_fl[3*k]   = cell_velz[i] + del_vz1[k]*scale_fac_mpcd;
 			}
 		}
 	}

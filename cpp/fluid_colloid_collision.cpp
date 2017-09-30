@@ -40,7 +40,7 @@ void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double
 	u[3] = unz + utz;
 }
 
-void fluid_colloid_collision() {
+void fluid_colloid_collision( ) {
 	double dump_vel_fl[3*no_of_fluid], vc[4], omega[3], v[4], rr, rrx, rry, rrz, u[4];
 	double rfx, rfy, rfz, rsx, rsy, rsz, rcx, rcy, rcz;
 

@@ -1,7 +1,4 @@
 #include "parameters.hpp"
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
 
 void run() {
 	int jj, mm, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;

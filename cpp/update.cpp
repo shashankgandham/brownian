@@ -45,7 +45,7 @@ void update_pos_mpcd(){
 	}
 }
 
-void update_velocity_colloid(){
+void update_velocity_colloid() {
 	for (int i = 1; i <= no_of_colloid; i++){
 		vel_colloid[3*i-2] += (old_force[3*i-2]+f[3*i-2])*dt/(mass_colloid*2.0);
 		vel_colloid[3*i-1] += (old_force[3*i-1]+f[3*i-1])*dt/(mass_colloid*2.0);
