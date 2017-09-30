@@ -4,10 +4,10 @@
 #include <algorithm>
 
 int main() {
-	initialize();	
+	initialize();
 	int energy_colloid;
 	double mom1_x, mom1_y, mom1_z, mom2_x, mom2_y, mom2_z;
-	
+
 	if(!file_colloid) {
 		initialize_colloid();
 		initialize_fluid();
@@ -16,8 +16,8 @@ int main() {
 	neighbour_list_mpcd();
 	compute_force_md();
 	tumble();
-	printf("After Tumble\n");	
-	for(int nn = 1; nn <= niter; nn++) {
+	printf("After Tumble\n");
+	for(nn = 1; nn <= niter; nn++) {
 		printf("%d\n", nn);
 		rotation_mpcd();
 		run();
@@ -48,12 +48,12 @@ int main() {
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 
 		for(int i = 1; i <= no_of_fluid; i++) {
-			for(int j = 0; j <= 2; j++) 
+			for(int j = 0; j <= 2; j++)
 				ke_fluid += vel_fl[3*i - j]*vel_fl[3*i - j];
 		}
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-		mom1_x = mom1_y = mom1_z = 0;	
-		mom2_x = mom2_y = mom2_z = 0;	
+		mom1_x = mom1_y = mom1_z = 0;
+		mom2_x = mom2_y = mom2_z = 0;
 		for(int i = 1; i <= no_of_fluid; i++) {
 			mom1_x += mass_fl*vel_fl[3*i - 2];
 			mom1_y += mass_fl*vel_fl[3*i - 1];

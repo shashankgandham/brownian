@@ -35,3 +35,4 @@ void update_pos_mpcd();
 void update_activity_direction();
 void stochastic_reflection();
 void initialize();
+double mod(double, double);

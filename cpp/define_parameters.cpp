@@ -5,10 +5,10 @@
 #include "parameters.hpp"
 
 int n = 10, niter = 21000;
-double kbt = 1, kbt1 = 1, ndt = 0.1, dt = ndt/(double)n; 
+double kbt = 1, kbt1 = 1, ndt = 0.1, dt = ndt/(double)n;
 // Check Initialization of dt works??????
 double pi = 3.14159265;
-/* 
+/*
    kbt is system temperature after equilibrium and kbt1 is to initiate
    process at different temperature
  */
@@ -23,7 +23,7 @@ int nbin = 300; //For Maxwell velocity
 double dv = 0.1; //Distribution
 //Fluid Specifications
 double mass_fl = 1.0, vscale_fluid = sqrt(12.0*kbt/mass_fl);
-int no_of_fluid = lx*ly*lz*10, maxpart = 100; 
+int no_of_fluid = lx*ly*lz*10, maxpart = 100;
 
 int *mb_vel, *n_neighbour, *no_neigh, *size_cluster, *identify;
 double *pos_fl, ke_fluid, scale_fac_mpcd, *vel_fl, *f_x, *f_y, *f_z, *f, *old_force, *pos_colloid;
@@ -46,8 +46,8 @@ double sigma=0.80*sig_colloid, sigma_square = pow(sigma,2); //actual diameter of
 double rsx, rsy, rsz, x_pos, y_pos, z_pos;
 double dx, dy, dz, ke_colloid1;
 /*
-   sig_colloid is minimum distance between two colloids, r_cutoff is 
-   range of L-J Force,space llimit is initial sepration between any two 
+   sig_colloid is minimum distance between two colloids, r_cutoff is
+   range of L-J Force,space llimit is initial sepration between any two
    colloids, space_limit must be less than r_cutoff eps is epsilon in L-J
  */
 double I_colloid = 0.4*mass_colloid*sigma*sigma*0.25; //MOMENT OF INERTIA
@@ -85,15 +85,19 @@ void initialize() {
 	old_ra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
 	rra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
 	std::srand(zzzz);
-	
-	for(int i = 0; i < 10000; i++) 
+
+	for(int i = 0; i < 10000; i++)
 		neigh_fl[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 
 	for(int i = 0; i < 500; i++)
 		box_neigh[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
-	for(int i = 0; i < 200; i++) 
+	for(int i = 0; i < 200; i++)
 		neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 	dist = (double **)malloc(sizeof(double *)*(no_of_colloid + 2));
-	for(int i = 0; i < no_of_colloid; i++) 
+	for(int i = 0; i < no_of_colloid; i++)
 		dist[i] = (double *)malloc(sizeof(double)*(no_of_colloid + 2));
+}
+
+double mod(double a, double b) {
+	return (fmod(fmod(a, b) + b, b));
 }
