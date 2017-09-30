@@ -2,12 +2,11 @@
 
 void update_activity_direction(){
 	double b[4], raa[4], m[4][4];
-	for (int i = 1; i <= no_of_colloid; i++){
+	for (int i = 1; i <= no_of_colloid; i++) {
 		b[1] = ang_vel_colloid[3*i-2]*dt;
 		b[2] = ang_vel_colloid[3*i-1]*dt;
 		b[3] = ang_vel_colloid[3*i]*dt;
 
-		/*!FIRST MAKE A 3D ROTATION MATRIX      */
 		m[1][1] =  cos(b[2])*cos(b[3]);
 		m[1][2] = -cos(b[2])*sin(b[3]);
 		m[1][3] =  sin(b[2]);
@@ -18,8 +17,7 @@ void update_activity_direction(){
 		m[3][2] =  cos(b[1])*sin(b[2])*sin(b[3]) + sin(b[1])*cos(b[3]);
 		m[3][3] =  cos(b[1])*cos(b[2]);
 
-		/*!UPDATE THE DIRECTION OF ACTIVITY*/
-		raa[0]=ra[3*i-2], raa[1]=ra[3*i-1], raa[2]=ra[3*i];
+		raa[0] = ra[3*i-2], raa[1] = ra[3*i-1], raa[2] = ra[3*i];
 		ra[3*i-2] = m[1][1]*raa[0] + m[1][2]*raa[1] + m[1][3]*raa[2];
 		ra[3*i-1] = m[2][1]*raa[0] + m[2][2]*raa[1] + m[2][3]*raa[2];
 		ra[3*i] = m[3][1]*raa[0] + m[3][2]*raa[1] + m[3][3]*raa[2];

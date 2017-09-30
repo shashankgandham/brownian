@@ -1,16 +1,14 @@
 #include "parameters.hpp"
 
 void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double rsx, double rsy, double rsz) {
-	double nx, ny, nz, unx, uny, unz, m_beta, random_e, ut, utx, uty, utz, txx, tyy, tzz, val, v[2], den, x[4], z = 2;
+	double unx, uny, unz, m_beta, random_e, ut, utx, uty, utz, txx, tyy, tzz, val, v[2], den, x[4], z = 2;
 
 	m_beta = mass_fl/kbt;
 	den = sqrt(rsx*rsx + rsy*rsy + rsz*rsz);
 	random_e = pow(1 - ran(), 2);
 	val = sqrt(-log(random_e)/m_beta);
 
-	unx = val*rsx/den;
-	uny = val*rsy/den;
-	unz = val*rsz/den;
+	unx = val*rsx/den, uny = val*rsy/den, unz = val*rsz/den;
 
 	txx = mod(ran()*lx - rfx, lx);
 	tyy = mod(ran()*ly - rfy, ly);
@@ -19,7 +17,6 @@ void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double
 	utx = uny*tzz - tyy*unz;
 	uty = unz*txx - unx*tzz;
 	utz = unx*tyy - txx*uny;
-
 	ut = sqrt(utx*utx + uty*uty + utz*utz);
 	utx /= ut, uty /= ut, utz /= ut;
 
@@ -31,13 +28,8 @@ void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double
 	v[1] = x[1]*z*sqrt(kbt/mass_fl);
 	v[2] = x[2]*z*sqrt(kbt/mass_fl);
 
-	utx = v[1]*utx;
-	uty = v[1]*uty;
-	utz = v[1]*utz;
-
-	u[1] = unx + utx;
-	u[2] = uny + uty;
-	u[3] = unz + utz;
+	utx *= v[1], uty *= v[1], utz *= v[1];
+	u[1] = unx + utx, u[2] = uny + uty, u[3] = unz + utz;
 }
 
 void fluid_colloid_collision(double I_colloid) {
@@ -51,7 +43,7 @@ void fluid_colloid_collision(double I_colloid) {
 		vc[1] = vc[2] = vc[3] = 0;
 		omega[1] = omega[2] = omega[3] = 0;
 
-		for (int i = 1; i <= no_neigh[j]; i++){
+		for (int i = 1; i <= no_neigh[j]; i++) {
 			int lll = neigh_fl[i][j];
 			rrx = mod(pos_colloid[3*j-2] - pos_fl[3*lll-2], lz);
 			rry = mod(pos_colloid[3*j-1] - pos_fl[3*lll-1], ly);

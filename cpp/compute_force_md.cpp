@@ -4,9 +4,8 @@ double compute_force_md() {
 	double x[4], y[4], z[4], r, r1, ffx,ffy, ffz, mag_f, r2, potential_colloid = 0;
 	double r_cutoff = pow(2, 1.0/6.0)*sig_colloid;
 	double fc = 4.0*eps*(12.0*(pow(sig_colloid,12)/pow(r_cutoff,13)) - 6.0*(pow(sig_colloid, 6)/pow(r_cutoff, 7)));
-	double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6))+fc*r_cutoff;
+	double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 	int m;
-	memset(f, 0, sizeof f);
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = i; j <= n_neighbour[i]; j++) {
 			m = neighbour[j][i];

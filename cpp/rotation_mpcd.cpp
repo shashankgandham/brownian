@@ -1,10 +1,9 @@
-//done
 #include "parameters.hpp"
 
 void rotation_mpcd() {
 	int j, k, **cell_part, cell_no, *fluid_no;
 	double cell_velx[lx*ly*lz], cell_vely[lx*ly*lz], cell_velz[lx*ly*lz], r[4], theta, phi, rho, rot[4][4], rr[4];
-	double del_vx, del_vy, del_vz,*tmp_pos, var, del_vx1[no_of_fluid], del_vy1[no_of_fluid], del_vz1[no_of_fluid];
+	double del_vx, del_vy, del_vz, *tmp_pos, var, del_vx1[no_of_fluid], del_vy1[no_of_fluid], del_vz1[no_of_fluid];
 	double scale_fac_mpcd;
 
 	tmp_pos = (double *)malloc(sizeof(double)*(3*no_of_fluid + 2));
@@ -15,10 +14,9 @@ void rotation_mpcd() {
 
 	memset(fluid_no, 0, (lx*ly*lz + 2)*sizeof(int));
 	for(int i = 1; i <= 3; i++)
-		rr[i] = ran()- 0.5;
+		rr[i] = ran() - 0.5;
 
 	std::copy(pos_fl, pos_fl + 3*no_of_fluid + 2, tmp_pos);
-
 	for(int i=1; i <= no_of_fluid; i++) {
 		tmp_pos[3*i-2] = mod(tmp_pos[3*i - 2] + rr[1], lx);
 		tmp_pos[3*i-1] = mod(tmp_pos[3*i-1] + rr[2], ly);
@@ -37,9 +35,9 @@ void rotation_mpcd() {
 		if (fluid_no[i] > 1) {
 			for(int j = 1; j <= fluid_no[i]; j++) {
 				k = cell_part[j][i];
-				cell_velx[i] = cell_velx[i] + vel_fl[3*k-2]/float(fluid_no[i]);
-				cell_vely[i] = cell_vely[i] + vel_fl[3*k-1]/float(fluid_no[i]);
-				cell_velz[i] = cell_velz[i] + vel_fl[3*k]/float(fluid_no[i]);
+				cell_velx[i] += vel_fl[3*k-2]/fluid_no[i];
+				cell_vely[i] += vel_fl[3*k-1]/fluid_no[i];
+				cell_velz[i] += vel_fl[3*k]/fluid_no[i];
 			}
 			rho = 2*ran() - 1, phi = 4.0*asin(1.0)*ran();
 			r[1] = cos(phi)*sqrt(1-rho*rho);
@@ -75,7 +73,7 @@ void rotation_mpcd() {
 				del_vx1[k] = vel_fl[3*k - 2] - cell_velx[i];
 				del_vy1[k] = vel_fl[3*k - 1] - cell_vely[i];
 				del_vz1[k] = vel_fl[3*k]   - cell_velz[i];
-				var = var + del_vx1[k]*del_vx1[k] + del_vy1[k]*del_vy1[k] + del_vz1[k]*del_vz1[k];
+				var += del_vx1[k]*del_vx1[k] + del_vy1[k]*del_vy1[k] + del_vz1[k]*del_vz1[k];
 			}
 			scale_fac_mpcd = sqrt(3.0 * (fluid_no[i] - 1) * kbt/(mass_fl * var));
 			for(int j = 1; j <= fluid_no[i]; j++) {

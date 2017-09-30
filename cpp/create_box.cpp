@@ -2,7 +2,6 @@
 
 int create_box(int *box_neigh[512]) {
 	int temp, box, k, j, i, nbox;
-
 	for(int l = 1; l <= lz; l++) {
 		for(int m = 1; m <= ly; m++) {
 			for(int mn = 1; mn <= lx; mn++) {
