@@ -9,14 +9,15 @@ void rotation_mpcd() {
 	tmp_pos = (double *)malloc(sizeof(double)*(3*no_of_fluid + 2));
 	fluid_no = (int *)malloc(sizeof(int)*(lx*ly*lz + 1));
 	cell_part = (int **)malloc(sizeof(int *)*(maxpart + 2));
+	memset(fluid_no, 0, (lx*ly*lz + 2)*sizeof(int));
+	std::copy(pos_fl, pos_fl + 3*no_of_fluid + 2, tmp_pos);
+
 	for(int i = 0; i <= maxpart; i++)
 		cell_part[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
 
-	memset(fluid_no, 0, (lx*ly*lz + 2)*sizeof(int));
 	for(int i = 1; i <= 3; i++)
 		rr[i] = ran() - 0.5;
 
-	std::copy(pos_fl, pos_fl + 3*no_of_fluid + 2, tmp_pos);
 	for(int i=1; i <= no_of_fluid; i++) {
 		tmp_pos[3*i-2] = mod(tmp_pos[3*i - 2] + rr[1], lx);
 		tmp_pos[3*i-1] = mod(tmp_pos[3*i-1] + rr[2], ly);

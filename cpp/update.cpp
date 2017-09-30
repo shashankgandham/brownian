@@ -1,21 +1,20 @@
 #include "parameters.hpp"
 
 void update_activity_direction(){
-	double b[4], raa[4], m[4][4];
+	double sb[4], cb[4], b[4], raa[4], m[4][4];
 	for (int i = 1; i <= no_of_colloid; i++) {
 		b[1] = ang_vel_colloid[3*i-2]*dt;
 		b[2] = ang_vel_colloid[3*i-1]*dt;
 		b[3] = ang_vel_colloid[3*i]*dt;
+		for(int i = 1; i <= 3; i++)
+			sb[i] = sin(b[i]), cb[i] = cos(b[i]);
 
-		m[1][1] =  cos(b[2])*cos(b[3]);
-		m[1][2] = -cos(b[2])*sin(b[3]);
-		m[1][3] =  sin(b[2]);
-		m[2][1] =  sin(b[1])*sin(b[2])*cos(b[3]) + cos(b[1])*sin(b[3]);
-		m[2][2] = -sin(b[1])*sin(b[2])*sin(b[3]) + cos(b[1])*cos(b[3]);
-		m[2][3] = -sin(b[1])*cos(b[2]);
-		m[3][1] = -cos(b[1])*sin(b[2])*cos(b[3]) + sin(b[1])*sin(b[3]);
-		m[3][2] =  cos(b[1])*sin(b[2])*sin(b[3]) + sin(b[1])*cos(b[3]);
-		m[3][3] =  cos(b[1])*cos(b[2]);
+		m[1][1] =  cb[2]*cb[3], m[1][2] = -cb[2]*sb[3], m[1][3] =  sb[2];
+		m[2][1] =  sb[1]*sb[2]*cb[3] + cb[1]*sb[3];
+		m[2][2] = -sb[1]*sb[2]*sb[3] + cb[1]*cb[3];
+		m[3][1] = -cb[1]*sb[2]*cb[3] + sb[1]*sb[3];
+		m[3][2] =  cb[1]*sb[2]*sb[3] + sb[1]*cb[3];
+		m[2][3] = -sb[1]*cb[2], m[3][3] =  cb[1]*cb[2];
 
 		raa[0] = ra[3*i-2], raa[1] = ra[3*i-1], raa[2] = ra[3*i];
 		ra[3*i-2] = m[1][1]*raa[0] + m[1][2]*raa[1] + m[1][3]*raa[2];

@@ -6,6 +6,7 @@ double compute_force_md() {
 	double fc = 4.0*eps*(12.0*(pow(sig_colloid,12)/pow(r_cutoff,13)) - 6.0*(pow(sig_colloid, 6)/pow(r_cutoff, 7)));
 	double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 	int m;
+	memset(f, 0, 3*no_of_colloid + 2);
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = i; j <= n_neighbour[i]; j++) {
 			m = neighbour[j][i];

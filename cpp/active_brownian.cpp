@@ -1,21 +1,15 @@
 #include "parameters.hpp"
 
 int main() {
-	initialize();
-	int energy_colloid, qq, nbox, *box_neigh[512];
+	int energy_colloid, qq, nbox;
 	double mom_x, mom_y, mom_z, potential_colloid, ke_colloid, ke_fluid, ang_ke_colloid;
 	double I_colloid = 0.4*mass_colloid*sigma*sigma*0.25;
+	initialize();
+	initialize_colloid(I_colloid);
+	initialize_fluid();
 
-	if(!file) {
-		initialize_colloid(I_colloid);
-		initialize_fluid();
-	}
-
-	for(int i = 0; i <= 500; i++)
-		box_neigh[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
-
-	nbox = create_box(box_neigh);
-	neighbour_list_mpcd(nbox, box_neigh);
+	nbox = create_box();
+	neighbour_list_mpcd(nbox);
 	compute_force_md();
 	tumble();
 	printf("After Tumble\n");
@@ -29,7 +23,7 @@ int main() {
 			update_pos_md();
 			neighbour_list_md();
 			update_pos_mpcd();
-			neighbour_list_mpcd(nbox, box_neigh);
+			neighbour_list_mpcd(nbox);
 			if(!(qq%10) && nn > 10000)
 				updown_velocity();
 			fluid_colloid_collision(I_colloid);
@@ -47,7 +41,6 @@ int main() {
 		ke_colloid = 0.5*mass_colloid*ke_colloid;
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
-
 		for(int i = 1; i <= no_of_fluid; i++) {
 			for(int j = 0; j <= 2; j++)
 				ke_fluid += vel_fl[3*i - j]*vel_fl[3*i - j];
