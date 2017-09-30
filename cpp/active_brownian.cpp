@@ -4,9 +4,10 @@ int main() {
 	initialize();
 	int energy_colloid, qq, nbox, *box_neigh[512];
 	double mom_x, mom_y, mom_z, potential_colloid, ke_colloid, ke_fluid, ang_ke_colloid;
+	double I_colloid = 0.4*mass_colloid*sigma*sigma*0.25;
 
 	if(!file) {
-		initialize_colloid();
+		initialize_colloid(I_colloid);
 		initialize_fluid();
 	}
 
@@ -31,7 +32,7 @@ int main() {
 			neighbour_list_mpcd(nbox, box_neigh);
 			if(!(qq%10) && nn > 10000)
 				updown_velocity();
-			fluid_colloid_collision();
+			fluid_colloid_collision(I_colloid);
 			update_activity_direction();
 			potential_colloid = compute_force_md();
 			update_velocity_colloid();

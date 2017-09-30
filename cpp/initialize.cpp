@@ -1,9 +1,10 @@
 #include "parameters.hpp"
 
-void initialize_colloid() {
+void initialize_colloid(double I_colloid) {
 	int counter, check, nofp = 0, x, y, z, r;
 	double avr_vel_colloid_x, avr_vel_colloid_y, avr_vel_colloid_z, tx, ty, tz;
 	double ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
+	double space_limit = 1.3*sig_colloid;
 
 	for(int k = 40; k <= (lx-1)*10; k += 50) {
 		for(int j = 40; j <= (ly-1)*10; j+= 50) {

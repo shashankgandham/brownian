@@ -4,14 +4,12 @@ void updown_velocity(){
 	double up_velx, up_vely, up_velz, vector_x, vector_y, vector_z, vector, dot, velx , vely, velz;
 	int ii, jj, mm, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
 
-	nbr = (int **)malloc(sizeof(int *)*7001);
-	for(int i = 0; i <= 7000; i++)
+	nbr = (int **)malloc(sizeof(int *)*7005);
+	up_nbr = (int **)malloc(sizeof(int *)*7005);
+	for(int i = 0; i <= 7000; i++) {
 		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
-
-	up_nbr = (int **)malloc(sizeof(int *)*7001);
-	for(int i = 0; i <= 7000; i++)
 		up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
-
+	}
 	for (int i = 1; i <= no_of_colloid; i++){
 		cnt[i] = 0, up_cnt[i]=0;
 		for (int j = 1; j <= no_neigh[i]; j++) {
@@ -66,9 +64,6 @@ void updown_velocity(){
 		}
 	}
 	for(int i = 1; i <= 7000; i++)
-		free(nbr[i]);
-	for(int i = 1; i <= 7000; i++)
-		free(up_nbr[i]);
-	free(nbr);
-	free(up_nbr);
+		free(nbr[i]), free(up_nbr[i]);
+	free(nbr), free(up_nbr);
 }
