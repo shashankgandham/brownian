@@ -1,7 +1,4 @@
 #include "parameters.hpp"
-#include <cstring>
-#include <cstdlib>
-#include <cmath>
 
 void neighbour_list_md() {
 	double x[4],y[4],z[4], r2;

@@ -1,5 +1,9 @@
 //Simulation Specifications
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
 #define ran() (((double)rand()/RAND_MAX))
 
 extern int n, niter, *size_cluster, n_cluster, *identify, file;

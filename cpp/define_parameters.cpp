@@ -1,7 +1,4 @@
 //Simulation Specifications
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
 #include "parameters.hpp"
 
 

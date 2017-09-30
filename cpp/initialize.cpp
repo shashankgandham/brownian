@@ -1,6 +1,4 @@
 #include "parameters.hpp"
-#include <cstdio>
-#include <cstdlib>
 
 void initialize_colloid() {
 	int counter, check, nofp = 0, x, y, z, r, mmm;

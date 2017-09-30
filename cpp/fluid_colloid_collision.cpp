@@ -1,6 +1,3 @@
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
 #include "parameters.hpp"
 
 void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double rsx, double rsy, double rsz) {

@@ -1,10 +1,5 @@
 //done
 #include "parameters.hpp"
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include <algorithm>
 
 void rotation_mpcd() {
 	int j, k, **cell_part, cell_no, *fluid_no;

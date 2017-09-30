@@ -1,7 +1,4 @@
 #include "parameters.hpp"
-#include <cstdio>
-#include <cstring>
-#include <algorithm>
 
 int main() {
 	initialize();

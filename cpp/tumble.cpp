@@ -1,6 +1,3 @@
-//done
-#include <cstdlib>
-#include <cmath>
 #include "parameters.hpp"
 
 void tumble(){

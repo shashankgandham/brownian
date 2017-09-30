@@ -1,7 +1,4 @@
-#include <cstdio>
-#include <cmath>
 #include "parameters.hpp"
-#include <cstring>
 
 void compute_force_md() {
 	double x[4], y[4], z[4], r, r1, ffx,ffy, ffz, mag_f, r2;

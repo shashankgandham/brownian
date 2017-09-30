@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+
 void run() {
 	int jj, mm, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
 	double vector_x, vector_y, vector_z, vector, dot, xx, delx, dely, delz;

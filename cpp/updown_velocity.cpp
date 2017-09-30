@@ -1,8 +1,5 @@
-//done
-#include <cmath>
-#include <cstdlib>
-#include <cstdio>
 #include "parameters.hpp"
+
 void updown_velocity(){
 	double up_velx, up_vely, up_velz, vector_x, vector_y, vector_z, vector, dot, velx , vely, velz;
 	int ii, jj, mm, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;

@@ -1,6 +1,3 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
 #include "parameters.hpp"
 
 void update_activity_direction(){
@@ -34,9 +31,9 @@ void update_pos_md() {
 		pos_colloid[3*i - 2] += vel_colloid[3*i - 2]*dt + f[3*i -2]*0.05*dt*dt/mass_colloid;
 		pos_colloid[3*i - 1] += vel_colloid[3*i - 1]*dt + f[3*i - 1]*0.05*dt*dt/mass_colloid;
 		pos_colloid[3*i] += vel_colloid[3*i]*dt + f[3*i]*0.05*dt*dt/mass_colloid;
-		mod(pos_colloid[3*i - 2], lx);
-		mod(pos_colloid[3*i - 1], ly);
-		mod(pos_colloid[3*i], lz);
+		pos_colloid[3*i - 2] = mod(pos_colloid[3*i - 2], lx);
+		pos_colloid[3*i - 1] = 	mod(pos_colloid[3*i - 1], ly);
+		pos_colloid[3*i] = 	mod(pos_colloid[3*i], lz);
 	}
 }
 
