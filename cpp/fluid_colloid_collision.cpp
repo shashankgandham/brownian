@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstdlib>
+#include <cstdio>
 #include "parameters.hpp"
 
 void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double rsx, double rsy, double rsz) {
@@ -61,13 +62,9 @@ void fluid_colloid_collision() {
 			rr = rrx*rrx + rry*rry + rrz*rrz;
 
 			if(rr <= pow(sigma, 2)*0.25) {
-				pos_fl[3*lll-2] -= vel_fl[3*lll-2]*dt*0.5;
-				pos_fl[3*lll-1] -= vel_fl[3*lll-1]*dt*0.5;
-				pos_fl[3*lll] -= vel_fl[3*lll]*dt*0.5;
-				pos_fl[3*lll-2] = pos_fl[3*lll-2] - ((double)lx)*round((pos_fl[3*lll - 2] - lx/2.0)/(double)lx);
-				pos_fl[3*lll-1] = pos_fl[3*lll-1] - ((double)ly)*round((pos_fl[3*lll - 1] - ly/2.0)/(double)ly);
-				pos_fl[3*lll] = pos_fl[3*lll] - ((double)lz)*round((pos_fl[3*lll] - lz/2.0)/(double)lz);
-
+				pos_fl[3*lll - 2] = mod(pos_fl[3*lll - 2] - vel_fl[3*lll - 2]*dt*0.5, lx);
+				pos_fl[3*lll - 1] = mod(pos_fl[3*lll - 1] - vel_fl[3*lll - 1]*dt*0.5, ly);
+				pos_fl[3*lll] = mod(pos_fl[3*lll] - vel_fl[3*lll]*dt*0.5, lz);
 
 				rcx = pos_colloid[3*j-2], rcy = pos_colloid[3*j-1], rcz = pos_colloid[3*j];
 				rfx = pos_fl[3*lll-2], rfy = pos_fl[3*lll-1], rfz = pos_fl[3*lll];
@@ -91,13 +88,9 @@ void fluid_colloid_collision() {
 				omega[3] +=  rsx*v[2] - v[1]*rsy;
 
 				/*updating position for next dt/2 time */
-				pos_fl[3*lll-2] = pos_fl[3*lll-2] + vel_fl[3*lll-2]*dt*0.5;
-				pos_fl[3*lll-1] = pos_fl[3*lll-1] + vel_fl[3*lll-1]*dt*0.5;
-				pos_fl[3*lll] = pos_fl[3*lll] + vel_fl[3*lll]*dt*0.5;
-
-				pos_fl[3*lll-2] = pos_fl[3*lll-2] - ((double)lx)*round((pos_fl[3*lll - 2] - lx/2.0)/(double)lx);
-				pos_fl[3*lll-1] = pos_fl[3*lll-1] - ((double)ly)*round((pos_fl[3*lll - 1] - ly/2.0)/(double)ly);
-				pos_fl[3*lll] = pos_fl[3*lll] - ((double)lz)*round((pos_fl[3*lll] - lz/2.0)/(double)lz);
+				pos_fl[3*lll - 2] = mod(pos_fl[3*lll - 2] + vel_fl[3*lll - 2]*dt*0.5, lx);
+				pos_fl[3*lll - 1] = mod(pos_fl[3*lll - 1] + vel_fl[3*lll - 1]*dt*0.5, ly);
+				pos_fl[3*lll] = mod(pos_fl[3*lll] + vel_fl[3*lll]*dt*0.5, lz);
 			}
 		}
 		vel_colloid[3*j-2] += vel_colloid[3*j-2] + vc[1]*mass_fl/mass_colloid;

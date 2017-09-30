@@ -24,12 +24,9 @@ void rotation_mpcd() {
 	std::copy(pos_fl, pos_fl + 3*no_of_fluid + 2, tmp_pos);
 
 	for(int i=1; i <= no_of_fluid; i++) {
-		tmp_pos[3*i-2] = tmp_pos[3*i-2] + rr[1];
-		tmp_pos[3*i-1] = tmp_pos[3*i-1] + rr[2];
-		tmp_pos[3*i] = tmp_pos[3*i] + rr[3];
-		tmp_pos[3*i-2] = tmp_pos[3*i-2] - ((double)lx)*round((tmp_pos[3*i-2] - lx/2.0)/(double)lx);
-		tmp_pos[3*i-1] = tmp_pos[3*i-1] - ((double)ly)*round((tmp_pos[3*i-1] - ly/2.0)/(double)ly);
-		tmp_pos[3*i] = tmp_pos[3*i] - ((double)lz)*round((tmp_pos[3*i] - lz/2.0)/(double)lz);
+		tmp_pos[3*i-2] = mod(tmp_pos[3*i - 2] + rr[1], lx);
+		tmp_pos[3*i-1] = mod(tmp_pos[3*i-1] + rr[2], ly);
+		tmp_pos[3*i] = mod(tmp_pos[3*i] + rr[3], lz);
 	}
 	for(int i=1; i <= no_of_fluid; i++) {
 		cell_no = 1 + int(tmp_pos[3*i-2]) + lx*int(tmp_pos[3*i-1]) + lx*ly*int(tmp_pos[3*i]);
