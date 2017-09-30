@@ -8,7 +8,7 @@ int main() {
 	int energy_colloid;
 	double mom1_x, mom1_y, mom1_z, mom2_x, mom2_y, mom2_z;
 
-	if(!file_colloid) {
+	if(!file) {
 		initialize_colloid();
 		initialize_fluid();
 	}

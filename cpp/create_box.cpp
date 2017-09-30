@@ -8,28 +8,11 @@ void create_box() {
 				box = (l - 1)*lx*ly + (m-1)*lx + mn;
 				nbox = 0;
 				for(int kk = l; kk <= l + 6; kk++) {
-					k = kk - 3;
-					if(kk <= 0) 
-						k += lz; 
-					if(k > lz)
-						k = k - lz;		
-					//Use Mod maybe?
+					k = mod(kk - 3, lz);
 					for(int pp = m; pp <= m + 6; pp++) {
-						j = pp-3;
-						if(j <= 0)
-							j += ly;
-						else if(j > ly)
-							j -= ly;
-						//Mod?
-						
+						j = mod(pp - 3, ly);
 						for(int ii = mn; ii <= mn + 6; ii++) {
-							i = ii - 3;
-							if(i <= 0) 
-								i += lx;
-							else
-								i -= lx;
-
-							//Serious considerations for mod;
+							i = mod(ii - 3, lx);
 							temp = (k - 1)*lx*ly + (j-1)*lx + i;
 							if(temp /= box) {
 								nbox++;

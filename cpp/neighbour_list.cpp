@@ -13,7 +13,7 @@ void neighbour_list_md() {
 			x[2] = pos_colloid[3*j-2]; y[2] = pos_colloid[3*j-1]; z[2] = pos_colloid[3*j];
 			x[0] = mod(x[1] - x[2], lx), y[0] = mod(y[1] - y[2], ly), z[0] = mod(z[1] - z[2], lz);
 			r2 = x[0]*x[0] + y[0]*y[0] + z[0]*z[0];
-			if(r2 < neigh_cutoff2){
+			if(r2 < pow(neigh_cutoff,2)){
 				n_neighbour[i] = n_neighbour[i] + 1;
 				neighbour[n_neighbour[i]][i] = j;
 			}

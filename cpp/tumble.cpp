@@ -4,28 +4,16 @@
 #include "parameters.hpp"
 
 void tumble(){
-  int i;
-  double b1,b2,b3,aaa;
-  
-  for (i = 1; i <= no_of_colloid; i++){
-    b1=((double)rand()/RAND_MAX) *llx;
-    b2=((double)rand()/RAND_MAX)*lly;
-    b3=((double)rand()/RAND_MAX)*llz;
-  
-    ra[3*i-2]= pos_colloid[3*i-2]-b1;
-    ra[3*i-1]= pos_colloid[3*i-1]-b2;
-    ra[3*i]= pos_colloid[3*i]-b3;
+  double b[4],aaa;
+  for (int i = 1; i <= no_of_colloid; i++){
+    b[1] = ran()*lx, b[2] = ran()*ly, b[3] = ran()*lz;
 
-    /* minimum image convention*/
-    ra[3*i-2] = ra[3*i-2] - llx*round(ra[3*i-2]*inv_llx);
-    ra[3*i-1] = ra[3*i-1] - llx*round(ra[3*i-1]*inv_llx);
-    ra[3*i] = ra[3*i] - llx*round(ra[3*i]*inv_llx);
+    ra[3*i-2] = mod(pos_colloid[3*i-2] - b[1], lx);
+    ra[3*i-1] = mod(pos_colloid[3*i-1]- b[2], ly);
+    ra[3*i] = mod(pos_colloid[3*i] - b[3], lz);
 
-    aaa=sqrt(ra[3*i-2]*ra[3*i-2]+ra[3*i-1]*ra[3*i-1]+ra[3*i]*ra[3*i]);
+    aaa = sqrt(ra[3*i-2]*ra[3*i-2] + ra[3*i-1]*ra[3*i-1] + ra[3*i]*ra[3*i]);
 
-    /*RA IS THE UNIT VECTOR TOWARDS THE ACTIVE VELOCITY*/
-    ra[3*i-2]=ra[3*i-2]/aaa; 
-    ra[3*i-1]=ra[3*i-1]/aaa;
-    ra[3*i]=ra[3*i]/aaa;
+    ra[3*i-2] /= aaa, ra[3*i-1] /= aaa, ra[3*i] /= aaa;
   }
 }
