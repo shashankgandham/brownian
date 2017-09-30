@@ -11,7 +11,7 @@ void initialize() {
 	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
 	pos_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
 	vel_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
-	f = (double *)calloc(sizeof(double),(3 * no_of_colloid + 2));
+	f = (double *)malloc(sizeof(double)*(3 * no_of_colloid + 2));
 	old_force = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
 	pos_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
 	vel_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
@@ -26,8 +26,4 @@ void initialize() {
 		neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 	for(int i = 0; i < no_of_colloid; i++)
 		dist[i] = (double *)malloc(sizeof(double)*(no_of_colloid + 2));
-}
-
-double mod(double a, double b) {
-	return (fmod(fmod(a, b) + b, b));
 }

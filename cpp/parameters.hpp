@@ -5,6 +5,7 @@
 #include <cstring>
 #include <algorithm>
 #define ran() (((double)rand()/RAND_MAX))
+#define mod(a, b) ((fmod(fmod(a, b) + b, b)))
 
 extern int n, niter, file, lx, ly, lz, nbin, no_of_fluid, maxpart, no_of_colloid;
 extern int *neighbour[200], *n_neighbour, *no_neigh, *neigh_fl[10000];
@@ -28,4 +29,3 @@ void update_pos_md();
 void update_pos_mpcd();
 void update_activity_direction();
 void initialize();
-double mod(double, double);

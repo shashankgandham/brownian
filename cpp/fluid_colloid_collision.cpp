@@ -24,6 +24,7 @@ void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double
 		x[1] = 2.0 * ran() - 1, x[2] = 2.0 * ran() - 1;
 		z = x[1]*x[1] + x[2]*x[2];
 	}
+
 	z = sqrt((-2.0*log(z))/z);
 	v[1] = x[1]*z*sqrt(kbt/mass_fl);
 	v[2] = x[2]*z*sqrt(kbt/mass_fl);
