@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
 void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double rsx, double rsy, double rsz) {
-	double unx, uny, unz, m_beta, random_e, ut, utx, uty, utz, txx, tyy, tzz, val, v[2], den, x[4], z = 2;
+	double unx, uny, unz, m_beta, random_e, ut, utx, uty, utz, txx, tyy, tzz, val, v[4], den, x[4], z = 2;
 
 	m_beta = mass_fl/kbt;
 	den = sqrt(rsx*rsx + rsy*rsy + rsz*rsz);
@@ -34,7 +34,7 @@ void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double
 }
 
 void fluid_colloid_collision(double I_colloid) {
-	double dump_vel_fl[3*no_of_fluid], vc[4], omega[3], v[4], rr, rrx, rry, rrz, u[4];
+	double dump_vel_fl[3*no_of_fluid], vc[4], omega[4], v[4], rr, rrx, rry, rrz, u[4];
 	double rfx, rfy, rfz, rsx, rsy, rsz, rcx, rcy, rcz;
 
 	for (int i = 3; i <= 3*no_of_fluid; i++)

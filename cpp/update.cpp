@@ -6,8 +6,8 @@ void update_activity_direction(){
 		b[1] = ang_vel_colloid[3*i-2]*dt;
 		b[2] = ang_vel_colloid[3*i-1]*dt;
 		b[3] = ang_vel_colloid[3*i]*dt;
-		for(int i = 1; i <= 3; i++)
-			sb[i] = sin(b[i]), cb[i] = cos(b[i]);
+		for(int j = 1; j <= 3; j++)
+			sb[j] = sin(b[j]), cb[j] = cos(b[j]);
 
 		m[1][1] =  cb[2]*cb[3], m[1][2] = -cb[2]*sb[3], m[1][3] =  sb[2];
 		m[2][1] =  sb[1]*sb[2]*cb[3] + cb[1]*sb[3];
