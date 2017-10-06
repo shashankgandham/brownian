@@ -100,11 +100,11 @@ void initialize_fluid() {
 	average_vel_fl_x = average_vel_fl_y = average_vel_fl_z = 0;
 
 	for(int j = 1; j <= no_of_fluid; j++) {
-		vel_fl[3*j-1] = vel_fl[3*j-1] - avr_vel_fl_x;
-		vel_fl[3*j-2] = vel_fl[3*j-2] - avr_vel_fl_y;
+		vel_fl[3*j-2] = vel_fl[3*j-2] - avr_vel_fl_x;
+		vel_fl[3*j-1] = vel_fl[3*j-1] - avr_vel_fl_y;
 		vel_fl[3*j]   = vel_fl[3*j] - avr_vel_fl_z;
-		average_vel_fl_x += vel_fl[3*j-1];
-		average_vel_fl_y += vel_fl[3*j-2];
+		average_vel_fl_x += vel_fl[3*j-2];
+		average_vel_fl_y += vel_fl[3*j-1];
 		average_vel_fl_z += vel_fl[3*j];
 	}
 }
