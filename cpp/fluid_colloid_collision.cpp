@@ -43,38 +43,37 @@ void fluid_colloid_collision(double I_colloid) {
 	for (int j = 1; j <= no_of_colloid; j++){
 		vc[1] = vc[2] = vc[3] = 0;
 		omega[1] = omega[2] = omega[3] = 0;
-
 		for (int i = 1; i <= no_neigh[j]; i++) {
-			int lll = neigh_fl[i][j];
-			rrx = img(pos_colloid[3*j-2] - pos_fl[3*lll-2], lz);
-			rry = img(pos_colloid[3*j-1] - pos_fl[3*lll-1], ly);
-			rrz = img(pos_colloid[3*j] - pos_fl[3*lll], lz);
+			int l = neigh_fl[i][j];
+			rrx = img(pos_colloid[3*j-2] - pos_fl[3*l-2], lz);
+			rry = img(pos_colloid[3*j-1] - pos_fl[3*l-1], ly);
+			rrz = img(pos_colloid[3*j] - pos_fl[3*l], lz);
 			rr = rrx*rrx + rry*rry + rrz*rrz;
 			if(rr <= pow(sigma, 2)*0.25) {
-				pos_fl[3*lll - 2] = mod(pos_fl[3*lll - 2] - vel_fl[3*lll - 2]*dt*0.5, lx);
-				pos_fl[3*lll - 1] = mod(pos_fl[3*lll - 1] - vel_fl[3*lll - 1]*dt*0.5, ly);
-				pos_fl[3*lll] = mod(pos_fl[3*lll] - vel_fl[3*lll]*dt*0.5, lz);
+				pos_fl[3*l - 2] = mod(pos_fl[3*l - 2] - vel_fl[3*l - 2]*dt*0.5, lx);
+				pos_fl[3*l - 1] = mod(pos_fl[3*l - 1] - vel_fl[3*l - 1]*dt*0.5, ly);
+				pos_fl[3*l] = mod(pos_fl[3*l] - vel_fl[3*l]*dt*0.5, lz);
 				rcx = pos_colloid[3*j-2], rcy = pos_colloid[3*j-1], rcz = pos_colloid[3*j];
-				rfx = pos_fl[3*lll-2], rfy = pos_fl[3*lll-1], rfz = pos_fl[3*lll];
+				rfx = pos_fl[3*l-2], rfy = pos_fl[3*l-1], rfz = pos_fl[3*l];
 				rsx = img(rfx - rcx, lx), rsy = img(rfy - rcy, ly), rsz = img(rfz - rcz, lz);
 				stochastic_reflection(u, rfx, rfy, rfz, rsx, rsy, rsz);
 
-				vel_fl[3*lll-2] = u[1] + vel_colloid[3*j-2] + ang_vel_colloid[3*j-1]*rsz - ang_vel_colloid[3*j]*rsy;
-				vel_fl[3*lll-1] = u[2] + vel_colloid[3*j-1] - ang_vel_colloid[3*j-2]*rsz + ang_vel_colloid[3*j]*rsx;
-				vel_fl[3*lll] = u[3] + vel_colloid[3*j] + ang_vel_colloid[3*j-2]*rsy - ang_vel_colloid[3*j-1]*rsx;
+				vel_fl[3*l-2] = u[1] + vel_colloid[3*j-2] + ang_vel_colloid[3*j-1]*rsz - ang_vel_colloid[3*j]*rsy;
+				vel_fl[3*l-1] = u[2] + vel_colloid[3*j-1] - ang_vel_colloid[3*j-2]*rsz + ang_vel_colloid[3*j]*rsx;
+				vel_fl[3*l] = u[3] + vel_colloid[3*j] + ang_vel_colloid[3*j-2]*rsy - ang_vel_colloid[3*j-1]*rsx;
 
-				v[1] = dump_vel_fl[3*lll-2] - vel_fl[3*lll-2];
-				v[2] = dump_vel_fl[3*lll-1] -vel_fl[3*lll-1];
-				v[3] = dump_vel_fl[3*lll] - vel_fl[3*lll];
+				v[1] = dump_vel_fl[3*l-2] - vel_fl[3*l-2];
+				v[2] = dump_vel_fl[3*l-1] -vel_fl[3*l-1];
+				v[3] = dump_vel_fl[3*l] - vel_fl[3*l];
 
 				vc[1] += v[1], vc[2] += v[2], vc[3] += v[3];
 				omega[1] +=  rsy*v[3] - v[2]*rsz;
 				omega[2] += -rsx*v[3] + v[1]*rsz;
 				omega[3] +=  rsx*v[2] - v[1]*rsy;
 
-				pos_fl[3*lll - 2] = mod(pos_fl[3*lll - 2] + vel_fl[3*lll - 2]*dt*0.5, lx);
-				pos_fl[3*lll - 1] = mod(pos_fl[3*lll - 1] + vel_fl[3*lll - 1]*dt*0.5, ly);
-				pos_fl[3*lll] = mod(pos_fl[3*lll] + vel_fl[3*lll]*dt*0.5, lz);
+				pos_fl[3*l - 2] = mod(pos_fl[3*l - 2] + vel_fl[3*l - 2]*dt*0.5, lx);
+				pos_fl[3*l - 1] = mod(pos_fl[3*l - 1] + vel_fl[3*l - 1]*dt*0.5, ly);
+				pos_fl[3*l] = mod(pos_fl[3*l] + vel_fl[3*l]*dt*0.5, lz);
 			}
 		}
 		vel_colloid[3*j-2] += vc[1]*mass_fl/mass_colloid;

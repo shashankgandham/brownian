@@ -1,5 +1,30 @@
 #include "parameters.hpp"
 
+void initialize() {
+	n_neighbour = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+	IV = (int *)malloc(sizeof(int)*(NTAB + 8));
+	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	pos_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
+	vel_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
+	f = (double *)malloc(sizeof(double)*(3 * no_of_colloid + 2));
+	old_force = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	pos_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	vel_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	ang_vel_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	ra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
+	dist = (double **)malloc(sizeof(double *)*(no_of_colloid + 2));
+	std::srand(seed);
+
+	for(int i = 0; i <= 500; i++)
+		box_neigh[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));
+	for(int i = 0; i < 10000; i++)
+		neigh_fl[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+	for(int i = 0; i < 200; i++)
+		neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+	for(int i = 0; i < no_of_colloid; i++)
+		dist[i] = (double *)malloc(sizeof(double)*(no_of_colloid + 2));
+}
+
 void initialize_colloid(double I_colloid) {
 	int counter, check, nofp = 0, x, y, z, r;
 	double avr_vel_colloid_x, avr_vel_colloid_y, avr_vel_colloid_z, tx, ty, tz, space_limit = 1.3*sig_colloid;
@@ -22,6 +47,7 @@ void initialize_colloid(double I_colloid) {
 		tx = ran()*lx, ty = ran()*ly, tz = ran()*lz;
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
+		//Check if img works !!
 			x = tx - pos_colloid[3*j-2];
 			y = ty - pos_colloid[3*j-1];
 			z = tz - pos_colloid[3*j];

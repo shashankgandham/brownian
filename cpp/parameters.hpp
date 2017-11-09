@@ -1,4 +1,3 @@
-//Simulation Specifications
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -12,13 +11,14 @@ extern double *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *r
 
 
 int create_box();
+double compute_force_md();
+
 void neighbour_list_md();
 void neighbour_list_mpcd(int);
 void rotation_mpcd();
 void initialize_fluid();
 void initialize_colloid(double);
 void fluid_colloid_collision(double);
-double compute_force_md();
 void tumble();
 void run();
 void updown_velocity();
@@ -31,5 +31,3 @@ void initialize();
 double mod(double, double);
 double img(double, double);
 double ran();
-
-void check_velfl();
