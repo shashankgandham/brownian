@@ -17,7 +17,6 @@ void initialize_colloid(double I_colloid) {
 			}
 		}
 	}
-
 	counter = avr_vel_colloid_x = avr_vel_colloid_y = avr_vel_colloid_z = 0;
 	while(counter < no_of_colloid) {
 		tx = ran()*lx, ty = ran()*ly, tz = ran()*lz;
@@ -69,7 +68,6 @@ void initialize_fluid() {
 	double x, y, z, avr_vel_fl_x, avr_vel_fl_y, avr_vel_fl_z, tx, ty, tz;
 	double average_vel_fl_x, average_vel_fl_y, average_vel_fl_z, vscale_fluid = sqrt(12.0*kbt/mass_fl);
 	counter_fl = 0, avr_vel_fl_x = avr_vel_fl_y = avr_vel_fl_z = 0;
-
 	while(counter_fl < no_of_fluid) {
 		tx = ran()*lx, ty = ran()*ly, tz = ran()*lz;
 		check_fl = 1;
@@ -77,7 +75,7 @@ void initialize_fluid() {
 			x = mod(tx - pos_colloid[3*j-2], lx);
 			y = mod(ty - pos_colloid[3*j-1], ly);
 			z = mod(tz - pos_colloid[3*j], lz);
-			check_fl = (x*x + y*y + z*z < sigma*0.5)? 0: check_fl;
+			check_fl = ((x*x + y*y + z*z) < sigma*0.5)? 0: check_fl;
 		}
 		if(check_fl) {
 			counter_fl++;
@@ -90,6 +88,8 @@ void initialize_fluid() {
 		vel_fl[3*j-2] = (ran() - 0.5)*vscale_fluid;
 		vel_fl[3*j-1] = (ran() - 0.5)*vscale_fluid;
 		vel_fl[3*j]   = (ran() - 0.5)*vscale_fluid;
+		printf("%lf %lf %lf %lf\n", vel_fl[3*j - 2], vel_fl[3*j - 1], vel_fl[3*j], vscale_fluid);
+		exit(0);
 		avr_vel_fl_x += vel_fl[3*j-2];
 		avr_vel_fl_y += vel_fl[3*j-1];
 		avr_vel_fl_z += vel_fl[3*j];
@@ -106,5 +106,6 @@ void initialize_fluid() {
 		average_vel_fl_x += vel_fl[3*j-2];
 		average_vel_fl_y += vel_fl[3*j-1];
 		average_vel_fl_z += vel_fl[3*j];
+		printf("%lf %lf %lf\n", vel_fl[3*j - 2], vel_fl[3*j - 1], vel_fl[3*j]);
 	}
 }

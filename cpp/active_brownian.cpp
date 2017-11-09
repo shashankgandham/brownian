@@ -7,7 +7,6 @@ int main() {
 	initialize();
 	initialize_colloid(I_colloid);
 	initialize_fluid();
-
 	nbox = create_box();
 	neighbour_list_mpcd(nbox);
 	compute_force_md();

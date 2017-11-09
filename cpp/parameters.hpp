@@ -4,11 +4,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
-#define ran() (((double)rand()/RAND_MAX))
-#define mod(a, b) ((fmod(fmod(a, b) + b, b)))
 
-extern int n, niter, file, lx, ly, lz, nbin, no_of_fluid, maxpart, no_of_colloid;
-extern int *neighbour[200], *n_neighbour, *no_neigh, *neigh_fl[10000], *box_neigh[512];
+extern int n, niter, file, lx, ly, lz, nbin, no_of_fluid, maxpart, no_of_colloid, NTAB, IY;
+extern int *neighbour[200], *n_neighbour, *no_neigh, *neigh_fl[10000], *box_neigh[512], *IV;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl;
 extern double *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *ra, **dist, *old_force, *f;
 
@@ -29,3 +27,8 @@ void update_pos_md();
 void update_pos_mpcd();
 void update_activity_direction();
 void initialize();
+
+double mod(double, double);
+double ran();
+
+void check_velfl();

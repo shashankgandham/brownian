@@ -14,7 +14,7 @@ int create_box() {
 						for(int ii = mn; ii <= mn + 6; ii++) {
 							i = mod(ii - 3, lx);
 							temp = (k - 1)*lx*ly + (j-1)*lx + i;
-							if(temp /= box) {
+							if(temp != box) {
 								nbox++;
 								box_neigh[nbox][box] = (k - 1)*lx*ly + (j - 1)*lx + 1;
 							}

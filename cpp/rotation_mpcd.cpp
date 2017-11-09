@@ -1,4 +1,5 @@
 #include "parameters.hpp"
+#include <assert.h>
 
 void rotation_mpcd() {
 	int j, k, **cell_part, cell_no, *fluid_no;

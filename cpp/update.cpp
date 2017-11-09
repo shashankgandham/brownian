@@ -35,10 +35,17 @@ void update_pos_md() {
 }
 
 void update_pos_mpcd(){
+	check_velfl();
 	for (int i = 1; i <= no_of_fluid; i++) {
 		pos_fl[3*i-2] = mod(pos_fl[3*i-2] + vel_fl[3*i-2]*dt, lx);
 		pos_fl[3*i-1] = mod(pos_fl[3*i-1] + vel_fl[3*i-1]*dt, ly);
 		pos_fl[3*i]   = mod(pos_fl[3*i] + vel_fl[3*i]*dt, lz);
+		if(!(pos_fl[3*i - 2] > 0 && pos_fl[3*i - 2] <= 30))
+			printf("%d --> %lf %lf\n", i, pos_fl[3*i - 2], vel_fl[3*i - 2]);
+		if(!(pos_fl[3*i - 1] > 0 && pos_fl[3*i - 1] <= 30))
+			printf("%d --> %lf %lf\n", i, pos_fl[3*i - 1], vel_fl[3*i - 1]);
+		if(!(pos_fl[3*i - 0] > 0 && pos_fl[3*i - 0] <= 30))
+			printf("%d --> %lf %lf\n", i, pos_fl[3*i - 0], vel_fl[3*i - 0]);
 	}
 }
 
