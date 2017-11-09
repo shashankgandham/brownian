@@ -16,7 +16,7 @@ int create_box() {
 							temp = (k - 1)*lx*ly + (j-1)*lx + i;
 							if(temp != box) {
 								nbox++;
-								box_neigh[nbox][box] = (k - 1)*lx*ly + (j - 1)*lx + 1;
+								box_neigh[nbox][box] = (k - 1)*lx*ly + (j - 1)*lx + i;
 							}
 						}
 					}

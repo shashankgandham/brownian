@@ -36,6 +36,10 @@ double mod(double a, double b) {
 	double c = fmod(fmod(a, b) + b, b);
 	return c? c: b;
 }
+double img(double a, double b) {
+	return a - b*round(a/b);
+}
+
 
 double ran() {
 	static int IM1 = 2147483563, IM2 = 2147483399;

@@ -17,9 +17,9 @@ void updown_velocity(){
 		for (int j = 1; j <= no_neigh[i]; j++) {
 			jj = neigh_fl[j][i];
 
-			vector_x = mod(pos_fl[3*jj-2] - pos_colloid[3*i-2], lx);
-			vector_y = mod(pos_fl[3*jj-1]-pos_colloid[3*i-1], ly);
-			vector_z = mod(pos_fl[3*jj]-pos_colloid[3*i], lz);
+			vector_x = img(pos_fl[3*jj-2] - pos_colloid[3*i-2], lx);
+			vector_y = img(pos_fl[3*jj-1]-pos_colloid[3*i-1], ly);
+			vector_z = img(pos_fl[3*jj]-pos_colloid[3*i], lz);
 			vector = vector_x*vector_x + vector_y*vector_y + vector_z*vector_z;
 
 			dot = vector_x*vel_colloid[3*i-2] + vector_y*vel_colloid[3*i-1] + vector_z*vel_colloid[3*i];

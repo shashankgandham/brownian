@@ -18,7 +18,6 @@ void rotation_mpcd() {
 
 	for(int i = 1; i <= 3; i++)
 		rr[i] = ran() - 0.5;
-
 	for(int i=1; i <= no_of_fluid; i++) {
 		tmp_pos[3*i-2] = mod(tmp_pos[3*i - 2] + rr[1], lx);
 		tmp_pos[3*i-1] = mod(tmp_pos[3*i-1] + rr[2], ly);
@@ -26,9 +25,7 @@ void rotation_mpcd() {
 	}
 	for(int i=1; i <= no_of_fluid; i++) {
 		cell_no = 1 + int(tmp_pos[3*i-2]) + lx*int(tmp_pos[3*i-1]) + lx*ly*int(tmp_pos[3*i]);
-		fluid_no[cell_no] = fluid_no[cell_no] + 1;
-		j = fluid_no[cell_no];
-		cell_part[j][cell_no] = i;
+		cell_part[++fluid_no[cell_no]][cell_no] = i;
 	}
 	memset(cell_velx, 0, sizeof cell_velx);
 	memset(cell_vely, 0, sizeof cell_vely);

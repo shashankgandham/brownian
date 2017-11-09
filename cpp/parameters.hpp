@@ -29,6 +29,7 @@ void update_activity_direction();
 void initialize();
 
 double mod(double, double);
+double img(double, double);
 double ran();
 
 void check_velfl();

@@ -22,7 +22,7 @@ double compute_force_md() {
 				mag_f = 4.0*eps*(12.0*pow(sig_colloid,12)/pow(r,13) - 6.0*sig_colloid/pow(r, 7));
 				ffx = mag_f*x[0]/r, ffy = mag_f*y[0]/r, ffz = mag_f*z[0]/r;
 				f[3*i - 2] += ffx, f[3*i - 1] += ffy, f[3*i] += ffz;
-				f[3*m - 2] += ffx, f[3*m - 2] += ffy, f[3*m] += ffz;
+				f[3*m - 2] += ffx, f[3*m - 1] += ffy, f[3*m] += ffz;
 			}
 		}
 	}

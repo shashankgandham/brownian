@@ -10,9 +10,9 @@ void stochastic_reflection(double *u, double rfx, double rfy, double rfz, double
 
 	unx = val*rsx/den, uny = val*rsy/den, unz = val*rsz/den;
 
-	txx = mod(ran()*lx - rfx, lx);
-	tyy = mod(ran()*ly - rfy, ly);
-	tzz = mod(ran()*lz - rfz, lz);
+	txx = img(ran()*lx - rfx, lx);
+	tyy = img(ran()*ly - rfy, ly);
+	tzz = img(ran()*lz - rfz, lz);
 
 	utx = uny*tzz - tyy*unz;
 	uty = unz*txx - unx*tzz;
@@ -46,23 +46,19 @@ void fluid_colloid_collision(double I_colloid) {
 
 		for (int i = 1; i <= no_neigh[j]; i++) {
 			int lll = neigh_fl[i][j];
-			rrx = mod(pos_colloid[3*j-2] - pos_fl[3*lll-2], lz);
-			rry = mod(pos_colloid[3*j-1] - pos_fl[3*lll-1], ly);
-			rrz = mod(pos_colloid[3*j] - pos_fl[3*lll], lz);
+			rrx = img(pos_colloid[3*j-2] - pos_fl[3*lll-2], lz);
+			rry = img(pos_colloid[3*j-1] - pos_fl[3*lll-1], ly);
+			rrz = img(pos_colloid[3*j] - pos_fl[3*lll], lz);
 			rr = rrx*rrx + rry*rry + rrz*rrz;
-
 			if(rr <= pow(sigma, 2)*0.25) {
 				pos_fl[3*lll - 2] = mod(pos_fl[3*lll - 2] - vel_fl[3*lll - 2]*dt*0.5, lx);
 				pos_fl[3*lll - 1] = mod(pos_fl[3*lll - 1] - vel_fl[3*lll - 1]*dt*0.5, ly);
 				pos_fl[3*lll] = mod(pos_fl[3*lll] - vel_fl[3*lll]*dt*0.5, lz);
-
 				rcx = pos_colloid[3*j-2], rcy = pos_colloid[3*j-1], rcz = pos_colloid[3*j];
 				rfx = pos_fl[3*lll-2], rfy = pos_fl[3*lll-1], rfz = pos_fl[3*lll];
-				rsx = mod(rfx - rcx, lx), rsy = mod(rfy - rcy, ly), rsz = mod(rfz - rcz, lz);
-
+				rsx = img(rfx - rcx, lx), rsy = img(rfy - rcy, ly), rsz = img(rfz - rcz, lz);
 				stochastic_reflection(u, rfx, rfy, rfz, rsx, rsy, rsz);
 
-				/*velocity of fluid in streaming step */
 				vel_fl[3*lll-2] = u[1] + vel_colloid[3*j-2] + ang_vel_colloid[3*j-1]*rsz - ang_vel_colloid[3*j]*rsy;
 				vel_fl[3*lll-1] = u[2] + vel_colloid[3*j-1] - ang_vel_colloid[3*j-2]*rsz + ang_vel_colloid[3*j]*rsx;
 				vel_fl[3*lll] = u[3] + vel_colloid[3*j] + ang_vel_colloid[3*j-2]*rsy - ang_vel_colloid[3*j-1]*rsx;
@@ -71,24 +67,19 @@ void fluid_colloid_collision(double I_colloid) {
 				v[2] = dump_vel_fl[3*lll-1] -vel_fl[3*lll-1];
 				v[3] = dump_vel_fl[3*lll] - vel_fl[3*lll];
 
-				/*calculation for linear and angular velocity of the colloidal particle*/
 				vc[1] += v[1], vc[2] += v[2], vc[3] += v[3];
 				omega[1] +=  rsy*v[3] - v[2]*rsz;
 				omega[2] += -rsx*v[3] + v[1]*rsz;
 				omega[3] +=  rsx*v[2] - v[1]*rsy;
 
-				/*updating position for next dt/2 time */
 				pos_fl[3*lll - 2] = mod(pos_fl[3*lll - 2] + vel_fl[3*lll - 2]*dt*0.5, lx);
 				pos_fl[3*lll - 1] = mod(pos_fl[3*lll - 1] + vel_fl[3*lll - 1]*dt*0.5, ly);
 				pos_fl[3*lll] = mod(pos_fl[3*lll] + vel_fl[3*lll]*dt*0.5, lz);
 			}
 		}
-		vel_colloid[3*j-2] += vel_colloid[3*j-2] + vc[1]*mass_fl/mass_colloid;
-		vel_colloid[3*j-1] += vel_colloid[3*j-1] + vc[2]*mass_fl/mass_colloid;
-		vel_colloid[3*j] += vel_colloid[3*j] + vc[3]*mass_fl/mass_colloid;
-
-		/*angular velocity of colloidal particle */
-
+		vel_colloid[3*j-2] += vc[1]*mass_fl/mass_colloid;
+		vel_colloid[3*j-1] += vc[2]*mass_fl/mass_colloid;
+		vel_colloid[3*j] += vc[3]*mass_fl/mass_colloid;
 		ang_vel_colloid[3*j-2] += omega[1]*mass_fl/I_colloid;
 		ang_vel_colloid[3*j-1] += omega[2]*mass_fl/I_colloid;
 		ang_vel_colloid[3*j] += omega[3]*mass_fl/I_colloid;
