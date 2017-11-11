@@ -68,6 +68,4 @@
         real*8 ::dist(no_of_colloid,no_of_colloid)
         integer,parameter:: file_colloid=0 !set 1 to read initial
                                            !colloid and fluid from file
-
        end module
-

@@ -1,46 +1,35 @@
-        subroutine neighbour_list_mpcd
-        use all_parameters
-      implicit none
-      integer::i,j,k,ii,box_no,fluid_no(lx*ly*lz),box_part(maxpart,lx*ly*lz)
-      integer::p,l,lxly,mm
-      integer::bx1,bx2,by1,by2,bz1,bz2
-      real*8 ::x1,x2,y1,y2,z1,z2,sigmaby2
-      integer::di,idx,idy,idz,int_sigma
-      integer :: x1c,y1c,z1c,cbox
+subroutine neighbour_list_mpcd
+	use all_parameters
+	implicit none
+	integer::i,j,k,ii,box_no,fluid_no(lx*ly*lz),box_part(maxpart,lx*ly*lz)
+	integer::p,l,lxly,mm,bx1,bx2,by1,by2,bz1,bz2
+	real*8 ::x1,x2,y1,y2,z1,z2,sigmaby2
+	integer::di,idx,idy,idz,int_sigma,x1c,y1c,z1c,cbox
 
-       sigmaby2=sigma*0.50d0
-       fluid_no=0; box_part=0
+	sigmaby2=sigma*0.50d0
+	fluid_no=0; box_part=0
+	lxly= lx*ly
 
-       lxly= lx*ly
-
-       do i=1,no_of_fluid
-
-       box_no =1+int(pos_fl(3*i-2))+lx*int(pos_fl(3*i-1))+lxly*int(pos_fl(3*i))
-       fluid_no(box_no) = fluid_no(box_no) + 1
-
-         j = fluid_no(box_no)
-         box_part(j,box_no) = i
-
-       end do
-      do j=1,no_of_colloid
-        no_neigh(j)=0
-         x1=int(pos_colloid(3*j-2))
-         y1=int(pos_colloid(3*j-1))
-         z1=int(pos_colloid(3*j))
-           cbox=1+x1+y1*lx+z1*lx*ly       !Find the box containing colloid's centre
-        do k=1,nbox
-
-!       if(box_neigh(k,cbox).gt.125000) write(*,*)'error',cbox,j,nn
-           mm = box_neigh(k,cbox)
-          do i=1,fluid_no(mm)
-             ii=box_part(i,mm)
-             no_neigh(j)=no_neigh(j)+1
-             neigh_fl(no_neigh(j),j)=ii
-
-      enddo
-      enddo
-      enddo
-
-
-        end subroutine neighbour_list_mpcd
-!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	do i=1,no_of_fluid
+		box_no =1+int(pos_fl(3*i-2))+lx*int(pos_fl(3*i-1))+lxly*int(pos_fl(3*i))
+		fluid_no(box_no) = fluid_no(box_no) + 1
+		j = fluid_no(box_no)
+		box_part(j,box_no) = i
+	end do
+	do j=1,no_of_colloid
+		no_neigh(j)=0
+		x1=int(pos_colloid(3*j-2))
+		y1=int(pos_colloid(3*j-1))
+		z1=int(pos_colloid(3*j))
+		cbox=1+x1+y1*lx+z1*lx*ly       !Find the box containing colloid's centre
+		do k=1,nbox
+!			if(box_neigh(k,cbox).gt.125000) write(*,*)'error',cbox,j,nn
+			mm = box_neigh(k,cbox)
+			do i=1,fluid_no(mm)
+				ii=box_part(i,mm)
+				no_neigh(j)=no_neigh(j)+1
+				neigh_fl(no_neigh(j),j)=ii
+			enddo
+		enddo
+	enddo
+end subroutine neighbour_list_mpcd

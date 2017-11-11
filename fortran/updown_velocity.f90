@@ -71,18 +71,18 @@
        enddo
 
        up_velx2=up_velx2/dfloat(up_cnt(i)) !avg vel along colloid velocity
-       up_vely2=up_vely2/dfloat(up_cnt(i)) 
-       up_velz2=up_velz2/dfloat(up_cnt(i)) 
+       up_vely2=up_vely2/dfloat(up_cnt(i))
+       up_velz2=up_velz2/dfloat(up_cnt(i))
 
         velx2=velx2/dfloat(cnt(i))     !avg vel opposite to colloid velocity
         vely2=vely2/dfloat(cnt(i))
         velz2=velz2/dfloat(cnt(i))
 
-       write(172,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2 
-       
+       write(172,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2
+
        up_velx2=up_velx2-vel_colloid(3*i-2) !relative avg vel along colloid velocity
-       up_vely2=up_vely2-vel_colloid(3*i-1) 
-       up_velz2=up_velz2-vel_colloid(3*i) 
+       up_vely2=up_vely2-vel_colloid(3*i-1)
+       up_velz2=up_velz2-vel_colloid(3*i)
 
         velx2=velx2-vel_colloid(3*i-2)     !relative avg vel opposite to colloid velocity
         vely2=vely2-vel_colloid(3*i-1)
@@ -91,4 +91,4 @@
        write(173,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2
       endif
       enddo
-       end subroutine 
+       end subroutine

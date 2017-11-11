@@ -88,4 +88,4 @@ stochastic_reflection.o : stochastic_reflection.f90
 gauss.o : gauss.f90
 	$(COMPILER) $(FLAGS) -c  gauss.f90
 clean :
-	rm -f *.mod *.o 
+	rm -f *.mod *.o fort* *.dat
