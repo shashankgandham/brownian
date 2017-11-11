@@ -13,7 +13,6 @@ void initialize() {
 	ang_vel_colloid = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
 	ra = (double *)malloc((3 * no_of_colloid + 2)*sizeof(double));
 	dist = (double **)malloc(sizeof(double *)*(no_of_colloid + 2));
-	std::srand(seed);
 
 	for(int i = 0; i <= 500; i++)
 		box_neigh[i] = (int *)malloc(sizeof(int)*(lx*ly*lz + 2));

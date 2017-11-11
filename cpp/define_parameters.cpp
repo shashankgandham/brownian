@@ -1,6 +1,4 @@
 #include "parameters.hpp"
-#define mod(a, b) ((fmod(fmod(a, b) + b, b)? fmod(fmod(a, b) + b, b): b))
-#define img(a, b) ((a - b*round(a/b)))
 int n = 10, niter = 21000, file = 0, lx = 30, ly = 30, lz = 30 , nbin = 300, maxpart = 100, no_of_colloid = 1;
 int NTAB = 32, seed = 77777, IY;
 int no_of_fluid = lx*ly*lz*10, *no_neigh, *neigh_fl[10000], *neighbour[200], *n_neighbour, *box_neigh[512], *IV;
