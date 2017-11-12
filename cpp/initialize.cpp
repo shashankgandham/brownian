@@ -2,7 +2,7 @@
 
 void initialize() {
 	n_neighbour = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-	IV = (int *)malloc(sizeof(int)*(NTAB + 8));
+	iv = (int *)malloc(sizeof(int)*(ntab + 8));
 	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
 	pos_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));
 	vel_fl = (double *)malloc((3 * no_of_fluid + 2)*sizeof(double));

@@ -6,8 +6,8 @@
 #define mod(a, b) ((fmod(fmod(a, b) + b, b)? fmod(fmod(a, b) + b, b): b))
 #define img(a, b) ((a - b*round(a/b)))
 
-extern int n, niter, file, lx, ly, lz, nbin, no_of_fluid, maxpart, no_of_colloid, NTAB, IY;
-extern int *neighbour[200], *n_neighbour, *no_neigh, *neigh_fl[10000], *box_neigh[512], *IV;
+extern int n, niter, file, lx, ly, lz, nbin, no_of_fluid, maxpart, no_of_colloid, ntab;
+extern int *neighbour[200], *n_neighbour, *no_neigh, *neigh_fl[10000], *box_neigh[512], *iv;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl;
 extern double *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *ra, **dist, *old_force, *f;
 
