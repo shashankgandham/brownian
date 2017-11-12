@@ -1,7 +1,7 @@
 subroutine create_box
 	use all_parameters
 	implicit none
-	integer :: i, j, k, l, m, mn, ii, pp, k, temp, box
+	integer :: i, j, k, l, m, mn, ii, pp, temp, box, kk
 
 	do l = 1, lz
 		do m = 1, ly
