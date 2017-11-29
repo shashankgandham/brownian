@@ -1,14 +1,13 @@
 #include "parameters.hpp"
 
 int main() {
-	int energy_colloid, qq, nbox;
-	double mom_x, mom_y, mom_z, potential_colloid, ke_colloid, ke_fluid, ang_ke_colloid;
-	double I_colloid = 0.4*mass_colloid*sigma*sigma*0.25;
+	int energy_colloid;
+	double mom_x, mom_y, mom_z, ke_colloid, ke_fluid, ang_ke_colloid;
 	initialize();
-	initialize_colloid(I_colloid);
+	initialize_colloid();
 	initialize_fluid();
-	nbox = create_box();
-	neighbour_list_mpcd(nbox);
+	create_box();
+	neighbour_list_mpcd();
 	compute_force_md();
 	tumble();
 	printf("After Tumble\n");
@@ -17,17 +16,16 @@ int main() {
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
-			qq = (nn  - 1)*10 + l;
 			std::copy(f, f + 3*no_of_colloid + 2, old_force);
 			update_pos_md();
 			neighbour_list_md();
 			update_pos_mpcd();
-			neighbour_list_mpcd(nbox);
-			if(!(qq%10) && nn > 10000)
+			neighbour_list_mpcd();
+			if(!(l%10) && nn > 10000)
 				updown_velocity();
-			fluid_colloid_collision(I_colloid);
+			fluid_colloid_collision();
 			update_activity_direction();
-			potential_colloid = compute_force_md();
+			compute_force_md();
 			update_velocity_colloid();
 		}
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;

@@ -24,7 +24,7 @@ void initialize() {
 		dist[i] = (double *)malloc(sizeof(double)*(no_of_colloid + 2));
 }
 
-void initialize_colloid(double I_colloid) {
+void initialize_colloid() {
 	int counter, check, nofp = 0, x, y, z, r;
 	double avr_vel_colloid_x, avr_vel_colloid_y, avr_vel_colloid_z, tx, ty, tz, space_limit = 1.3*sig_colloid;
 	double ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
