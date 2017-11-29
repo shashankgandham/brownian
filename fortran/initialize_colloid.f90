@@ -68,7 +68,7 @@ subroutine initialize_colloid
 !   pos_colloid(4)=15.0d0
 !   pos_colloid(5)=15.0d0
 !   pos_colloid(6)=15.0d0
-	mmm=dsqrt(kbt1/mass_colloid)
+	mmm = dsqrt(kbt1/mass_colloid)
 
 !	do i=1,no_of_colloid
 !		vel_colloid(3*i-2)=mmm
@@ -85,7 +85,7 @@ subroutine initialize_colloid
 !	vel_colloid(5)=-mmm
 !	vel_colloid(6)=-mmm
 
-	do j=1,no_of_colloid
+	do j = 1, no_of_colloid
 		vel_colloid(3*j-2) = (ran1(zzzz)-0.5d0)*vscale_colloid
 		vel_colloid(3*j-1) = (ran1(zzzz)-0.5d0)*vscale_colloid
 		vel_colloid(3*j) = (ran1(zzzz)-0.5d0)*vscale_colloid

@@ -1,4 +1,5 @@
 #include "parameters.hpp"
+
 int n = 10, niter = 21000, file = 0, lx = 30, ly = 30, lz = 30 , nbin = 300, maxpart = 100, no_of_colloid = 1;
 int ntab = 32, seed = 77777;
 int no_of_fluid = lx*ly*lz*10, *no_neigh, *neigh_fl[10000], *neighbour[200], *n_neighbour, *box_neigh[512], *iv;
@@ -8,7 +9,7 @@ double *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *ra, **di
 
 double ran() {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy;
-	static int imm = im1-1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv=1+imm/ntab, idum = 123456789, j, k;
+	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789, j, k;
 	double eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1;
 	if(seed <= 0) {
 		seed = std::max(-seed,1);

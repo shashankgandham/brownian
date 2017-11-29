@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
 void neighbour_list_md() {
-	double x, y, z, r2, neigh_cutoff = 3.0*sig_colloid;
+	double x, y, z, r, neigh_cutoff = 3.0*sig_colloid;
 	memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
 
 	for(int i = 1; i < no_of_colloid; i++) {
@@ -9,8 +9,8 @@ void neighbour_list_md() {
 			x = img(pos_colloid[3*i - 2] - pos_colloid[3*j - 2], lx);
 			y = img(pos_colloid[3*i - 1] - pos_colloid[3*j - 1], ly);
 			z = img(pos_colloid[3*i - 0] - pos_colloid[3*j - 0], lz);
-			r2 = x*x + y*y + z*z;
-			if(r2 < pow(neigh_cutoff,2)){
+			r = x*x + y*y + z*z;
+			if(r < pow(neigh_cutoff,2)){
 				n_neighbour[i] = n_neighbour[i] + 1;
 				neighbour[n_neighbour[i]][i] = j;
 			}

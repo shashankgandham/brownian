@@ -1,28 +1,28 @@
 program colloid
 	use all_parameters
 	implicit none
-	real*8 :: zz1,ran1,random_expo,energy_colloid,ke_colloid2
-	real*8 :: distance_x,distance_y,distance_z,distance
-	real*8 :: mom1_x,mom1_y,mom1_z,mom2_x,mom2_y,mom2_z
-	integer:: j,i,l,mm,nnn
-	character(len=30) :: charac_a,charac_b,charac_c,charac_d
+	real*8 :: zz1, ran1, random_expo, energy_colloid, ke_colloid2
+	real*8 :: distance_x, distance_y, distance_z, distance
+	real*8 :: mom1_x, mom1_y, mom1_z, mom2_x, mom2_y, mom2_z
+	integer:: i, j, l, mm, nnn
+	character(len=30):: charac_a, charac_b, charac_c, charac_d
 
-	open(39,file='cluster.dat')
-	open(1111,file='final_colloid_position.dat')
-	open(1112,file='final_colloid_velocity.dat')
-	open(1113,file='final_fluid_position.dat')
-	open(1114,file='final_fluid_velocity.dat')
-	open(1116,file='ke_fluid.dat')
-	open(1117,file='ke_colloid.dat')
+	open(39, file='cluster.dat')
+	open(1111, file='final_colloid_position.dat')
+	open(1112, file='final_colloid_velocity.dat')
+	open(1113, file='final_fluid_position.dat')
+	open(1114, file='final_fluid_velocity.dat')
+	open(1116, file='ke_fluid.dat')
+	open(1117, file='ke_colloid.dat')
 
 	if (file_colloid.eq.1) then
-		do mm=1,no_of_colloid
-			read(1111,fmt='(9g25.15)') pos_colloid(3*mm-2),pos_colloid(3*mm-1),pos_colloid(3*mm)
-			read(1112,fmt='(9g25.15)') vel_colloid(3*mm-2),vel_colloid(3*mm-1),vel_colloid(3*mm)
+		do mm = 1, no_of_colloid
+			read(1111, fmt='(9g25.15)') pos_colloid(3*mm - 2), pos_colloid(3*mm - 1), pos_colloid(3*mm)
+			read(1112, fmt='(9g25.15)') vel_colloid(3*mm - 2), vel_colloid(3*mm - 1), vel_colloid(3*mm)
 		enddo
-		do  mm=1,no_of_fluid
-			read(1113,*)pos_fl(3*mm-2),pos_fl(3*mm-1),pos_fl(3*mm)
-			read(1114,*)vel_fl(3*mm-2),vel_fl(3*mm-1),vel_fl(3*mm)
+		do  mm = 1, no_of_fluid
+			read(1113,*) pos_fl(3*mm-2), pos_fl(3*mm - 1), pos_fl(3*mm)
+			read(1114,*) vel_fl(3*mm-2), vel_fl(3*mm - 1), vel_fl(3*mm)
 		enddo
 
 	else
@@ -40,13 +40,13 @@ program colloid
 	call tumble
 	write(*,*) "After Tumble"
 !	vel_fl=0.0d0
-	do nn=1,niter
+	do nn = 1, niter
 		write(*,*) nn
 		call rotation_mpcd
 		call run
-		do l=1, n
-			qq = (nn-1)*10+l
-			old_force=f
+		do l = 1, n
+			qq = (nn - 1)*10 + l
+			old_force = f
 !			write(*,*) qq
 			call update_pos_md
 !			old_ra=ra
@@ -77,14 +77,14 @@ program colloid
 			ang_ke_colloid = ang_ke_colloid + ang_vel_colloid(3*i-2)**2 + ang_vel_colloid(3*i-1)**2 + ang_vel_colloid(3*i)**2
 		enddo
 
-		ang_ke_colloid=0.50d0*ang_ke_colloid*I_colloid
+		ang_ke_colloid = 0.50d0*ang_ke_colloid*I_colloid
 		!if(mod(nn,step_thermo)==0)  call thermostat_colloid
 
-		write(1117,*) nn,ke_colloid,ang_ke_colloid
+		write(1117,*) nn, ke_colloid, ang_ke_colloid
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid
 
-		do i=1, no_of_fluid
-			ke_fluid = ke_fluid + vel_fl(3*i-2)**2 + vel_fl(3*i-1)**2 + vel_fl(3*i)**2
+		do i = 1, no_of_fluid
+			ke_fluid = ke_fluid + vel_fl(3*i - 2)**2 + vel_fl(3*i - 1)**2 + vel_fl(3*i)**2
 		enddo
 
 		ke_fluid = 0.50d0*ke_fluid*mass_fl
@@ -93,26 +93,26 @@ program colloid
 		mom2_x = 0.0d0; mom2_y = 0.0d0; mom2_z = 0.0d0
 
 		do i=1, no_of_fluid
-			mom1_x=mom1_x+mass_fl*vel_fl(3*i-2)
-			mom1_y=mom1_y+mass_fl*vel_fl(3*i-1)
-			mom1_z=mom1_z+mass_fl*vel_fl(3*i)
+			mom1_x = mom1_x + mass_fl*vel_fl(3*i - 2)
+			mom1_y = mom1_y + mass_fl*vel_fl(3*i - 1)
+			mom1_z = mom1_z + mass_fl*vel_fl(3*i)
 		enddo
 
 		do j=1, no_of_colloid
-			mom2_x=mom2_x+mass_colloid*vel_colloid(3*j-2)
-			mom2_y=mom2_y+mass_colloid*vel_colloid(3*j-1)
-			mom2_z=mom2_z+mass_colloid*vel_colloid(3*j)
+			mom2_x = mom2_x + mass_colloid*vel_colloid(3*j - 2)
+			mom2_y = mom2_y + mass_colloid*vel_colloid(3*j - 1)
+			mom2_z = mom2_z + mass_colloid*vel_colloid(3*j)
 		enddo
 
-		mom_x=mom1_x+mom2_x
-		mom_y=mom1_y+mom2_y
-		mom_z=mom1_z+mom2_z
+		mom_x = mom1_x + mom2_x
+		mom_y = mom1_y + mom2_y
+		mom_z = mom1_z + mom2_z
 
-		write(115,*) mom_x,mom_y,mom_z
+		write(115,*) mom_x, mom_y, mom_z
 
 !		if(ke_colloid/dfloat(no_of_colloid).gt.30.0d0) then
 !			write(8777,fmt='(9g25.15)') nn,pos_colloid(1),pos_colloid(2),pos_colloid(3)
-			write(8778,fmt='(9g25.15)') nn,vel_colloid(1),vel_colloid(2),vel_colloid(3)
+!			write(8778,fmt='(9g25.15)') nn,vel_colloid(1),vel_colloid(2),vel_colloid(3)
 !			write(7778,*) pos_colloid(4),pos_colloid(5),pos_colloid(6)
 !		endif
 
@@ -157,8 +157,8 @@ program colloid
 !		write(1113,*)pos_fl(3*mm-2),pos_fl(3*mm-1),pos_fl(3*mm)
 !		write(1114,*)vel_fl(3*mm-2),vel_fl(3*mm-1),vel_fl(3*mm)
 !	enddo
-	do mm=1, no_of_colloid
-		write(1111,fmt='(9g25.15)') pos_colloid(3*mm-2),pos_colloid(3*mm-1),pos_colloid(3*mm)
-		write(1112,fmt='(9g25.15)') vel_colloid(3*mm-2),vel_colloid(3*mm-1),vel_colloid(3*mm)
+	do mm = 1, no_of_colloid
+		write(1111, fmt='(9g25.15)') pos_colloid(3*mm - 2), pos_colloid(3*mm - 1), pos_colloid(3*mm)
+		write(1112, fmt='(9g25.15)') vel_colloid(3*mm - 2), vel_colloid(3*mm - 1), vel_colloid(3*mm)
 	enddo
 end program colloid
