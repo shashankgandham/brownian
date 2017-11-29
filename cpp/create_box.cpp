@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
-int create_box() {
-	int temp, box, k, j, i, nbox;
+void create_box() {
+	int temp, box, k, j, i;
 	for(int l = 1; l <= lz; l++) {
 		for(int m = 1; m <= ly; m++) {
 			for(int mn = 1; mn <= lx; mn++) {
@@ -24,5 +24,4 @@ int create_box() {
 			}
 		}
 	}
-	return nbox;
 }
