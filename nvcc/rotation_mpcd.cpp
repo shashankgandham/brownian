@@ -3,9 +3,9 @@
 void rotation_mpcd() {
 	int j, k, **cell_part, cell_no, *fluid_no;
 	double r[4], theta, phi, rho, var, scale_fac_mpcd;
-	coord *tmp_pos, cell_vel[(int)len.prod() + 1], del_v, del_v1[no_of_fluid + 1], rr, rot[4];
+	point *tmp_pos, cell_vel[(int)len.prod() + 1], del_v, del_v1[no_of_fluid + 1], rr, rot[4];
 
-	tmp_pos   = (coord *)malloc(sizeof(coord)*(no_of_fluid + 2));
+	tmp_pos   = (point *)malloc(sizeof(point)*(no_of_fluid + 2));
 	fluid_no  = (int *)malloc(sizeof(int)*(len.prod() + 2));
 	cell_part = (int **)malloc(sizeof(int *)*(maxpart + 2));
 	memset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
@@ -14,7 +14,7 @@ void rotation_mpcd() {
 	for(int i = 0; i <= maxpart; i++)
 		cell_part[i] = (int *)malloc(sizeof(int)*(len.prod() + 2));
 
-	rr = coord(ran() - 0.5, ran() - 0.5, ran() - 0.5);
+	rr = point(ran() - 0.5, ran() - 0.5, ran() - 0.5);
 	for(int i=1; i <= no_of_fluid; i++) {
 		tmp_pos[i] = mod(tmp_pos[i] + rr, len);
 	}
@@ -45,7 +45,7 @@ void rotation_mpcd() {
 			rot[3].z = (1 - cos(theta))*r[3]*r[3] + cos(theta);
 			for(int j = 1;j <= fluid_no[i]; j++) {
 				del_v = vel_fl[cell_part[j][i]] - cell_vel[i];
-				vel_fl[k] = cell_vel[i] + coord((rot[1]*del_v).sum(), (rot[2]*del_v).sum(), (rot[3]*del_v).sum());
+				vel_fl[k] = cell_vel[i] + point((rot[1]*del_v).sum(), (rot[2]*del_v).sum(), (rot[3]*del_v).sum());
 			}
 		}
 	}

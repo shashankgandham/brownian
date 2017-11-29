@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
 void update_activity_direction(){
-	coord raa, m[4], b, sb, cb;
+	point raa, m[4], b, sb, cb;
 	for (int i = 1; i <= no_of_colloid; i++) {
 		b = ang_vel_colloid[i]*dt;
 		sb.x = sin(b.x), cb.x = cos(b.x);
@@ -17,7 +17,7 @@ void update_activity_direction(){
 		m[3].x = -cb.x*sb.y*cb.z + sb.x*sb.z;
 		m[3].y =  cb.x*sb.y*sb.z + sb.x*cb.z;
 		m[3].z =  cb.x*cb.y;
-		ra[i] = coord((m[1]*ra[i]).sum(), (m[2]*ra[i]).sum(), (m[3]*ra[i]).sum());
+		ra[i] = point((m[1]*ra[i]).sum(), (m[2]*ra[i]).sum(), (m[3]*ra[i]).sum());
 	}
 }
 

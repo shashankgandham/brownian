@@ -2,14 +2,14 @@
 
 void tumble(){
 	for (int i = 1; i <= no_of_colloid; i++) {
-		ra[i] = img(pos_colloid[i] - coord(ran()*len.x, ran()*len.y, ran()*len.z), len);
+		ra[i] = img(pos_colloid[i] - point(ran()*len.x, ran()*len.y, ran()*len.z), len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
 	}
 }
 
 void run() {
 	int jj, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
-	coord vector, del;
+	point vector, del;
 
 	nbr    = (int **)malloc(sizeof(int *) * 7005);
 	up_nbr = (int **)malloc(sizeof(int *) * 7005);

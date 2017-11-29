@@ -2,7 +2,7 @@
 
 void updown_velocity(){
 	int jj, mm, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
-	coord up_vel = coord(0, 0, 0), vector, vel;
+	point up_vel = point(0, 0, 0), vector, vel;
 
 	nbr = (int **)malloc(sizeof(int *)*7005);
 	up_nbr = (int **)malloc(sizeof(int *)*7005);
@@ -12,7 +12,7 @@ void updown_velocity(){
 	}
 
 	for (int i = 1; i <= no_of_colloid; i++){
-		cnt[i] = 0, up_cnt[i] = 0, vel = coord(0, 0, 0);
+		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
 		for (int j = 1; j <= no_neigh[i]; j++) {
 			jj = neigh_fl[j][i];
 			vector = img(pos_fl[jj] - pos_colloid[i], len);
