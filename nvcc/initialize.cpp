@@ -5,14 +5,14 @@ void initialize() {
 	iv = (int *)malloc(sizeof(int)*(ntab + 8));
 	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
 	dist = (double **)malloc(sizeof(double *)*(no_of_colloid + 2));
-	f 				= (coord *)malloc((no_of_colloid + 2)*sizeof(coord));
-	pos_fl 			= (coord *)malloc((no_of_fluid 	 + 2)*sizeof(coord));
-	vel_fl 			= (coord *)malloc((no_of_fluid   + 2)*sizeof(coord));
-	pos_colloid 	= (coord *)malloc((no_of_colloid + 2)*sizeof(coord));
-	vel_colloid 	= (coord *)malloc((no_of_colloid + 2)*sizeof(coord));
-	ang_vel_colloid = (coord *)malloc((no_of_colloid + 2)*sizeof(coord));
-	old_force 		= (coord *)malloc((no_of_colloid + 2)*sizeof(coord));
-	ra 				= (coord *)malloc((no_of_colloid + 2)*sizeof(coord));
+	f 				= (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	pos_fl 			= (point *)malloc((no_of_fluid 	 + 2)*sizeof(point));
+	vel_fl 			= (point *)malloc((no_of_fluid   + 2)*sizeof(point));
+	pos_colloid 	= (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	vel_colloid 	= (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	ang_vel_colloid = (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	old_force 		= (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	ra 				= (point *)malloc((no_of_colloid + 2)*sizeof(point));
 
 	for(int i = 0; i <= 500; i++)
 		box_neigh[i] = (int *)malloc(sizeof(int)*(len.x*len.y*len.z + 2));
@@ -27,43 +27,43 @@ void initialize() {
 void initialize_colloid() {
 	int counter = 0, check, nofp = 0;
 	double space_limit = 1.3*sig_colloid, ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
-	coord avr_vel_colloid = coord(0, 0, 0), t, temp;
+	point avr_vel_colloid = point(0, 0, 0), t, temp;
 	for(int k = 40; k <= (len.x-1)*10; k += 50) {
 		for(int j = 40; j <= (len.y-1)*10; j+= 50) {
 			for(int i = 40; i <= (len.z-1)*10; i += 50) {
 				if(nofp < no_of_colloid)
-					pos_colloid[++nofp] = coord(i, j, k)/10.0;
+					pos_colloid[++nofp] = point(i, j, k)/10.0;
 			}
 		}
 	}
 	while(counter < no_of_colloid) {
-		t = coord(ran()*len.x, ran()*len.y, ran()*len.z);
+		t = point(ran()*len.x, ran()*len.y, ran()*len.z);
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
 			temp = img(t - pos_colloid[j], len);
-			temp = coord(abs(temp.x), abs(temp.y), abs(temp.z));
+			temp = point(abs(temp.x), abs(temp.y), abs(temp.z));
 			check = ((temp*temp).sum() < space_limit)? 0: check;
 		}
 		if(check == 1) pos_colloid[++counter] = t;
 	}
 	for(int j = 1; j <= no_of_colloid; j++) {
-		vel_colloid[j] = coord(ran() - 0.5, ran() - 0.5, ran() - 0.5)*vscale_colloid;
+		vel_colloid[j] = point(ran() - 0.5, ran() - 0.5, ran() - 0.5)*vscale_colloid;
 		avr_vel_colloid += vel_colloid[j];
 	}
 	avr_vel_colloid = avr_vel_colloid/no_of_colloid;
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vel_colloid[j] = vel_colloid[j] - avr_vel_colloid;
-		ang_vel_colloid[j] = coord((ran() - 0.5), ran() - 0.5, ran() - 0.5)*ang_vscale_colloid;
+		ang_vel_colloid[j] = point((ran() - 0.5), ran() - 0.5, ran() - 0.5)*ang_vscale_colloid;
 	}
 }
 
 void initialize_fluid() {
 	int counter = 0, check, count = 0;
 	double vscale_fluid = sqrt(12.0*kbt/mass_fl);
-	coord avr_vel = coord(0, 0, 0), t, temp;
+	point avr_vel = point(0, 0, 0), t, temp;
 
 	while(counter < no_of_fluid) {
-		t = coord(ran()*len.x, ran()*len.y, ran()*len.z);
+		t = point(ran()*len.x, ran()*len.y, ran()*len.z);
 		check = 1;
 		for(int j = 1; j <= no_of_colloid; j++) {
 			temp = img(t - pos_colloid[j], len);
@@ -72,7 +72,7 @@ void initialize_fluid() {
 		if(check) pos_fl[++counter] = t;
 	}
 	for(int j = 1; j <= no_of_fluid; j++) {
-		vel_fl[j]   = coord(ran() - 0.5, ran() - 0.5 , ran() - 0.5)*vscale_fluid;
+		vel_fl[j]   = point(ran() - 0.5, ran() - 0.5 , ran() - 0.5)*vscale_fluid;
 		avr_vel += vel_fl[j];
 	}
 	avr_vel = avr_vel/no_of_fluid;

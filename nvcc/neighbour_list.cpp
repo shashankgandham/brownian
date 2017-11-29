@@ -2,7 +2,7 @@
 
 void neighbour_list_md() {
 	double neigh_cutoff = 3.0*sig_colloid;
-	coord temp;
+	point temp;
 	memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
 
 	for(int i = 1; i < no_of_colloid; i++) {

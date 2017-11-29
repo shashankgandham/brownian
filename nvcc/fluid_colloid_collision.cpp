@@ -1,12 +1,12 @@
 #include "parameters.hpp"
 
-coord crossmul(coord a, coord b) {
-	return coord(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+point crossmul(point a, point b) {
+	return point(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
 }
 
-void stochastic_reflection(coord *u, coord rf, coord rs) {
+void stochastic_reflection(point *u, point rf, point rs) {
 	double m_beta = mass_fl/kbt, random_e = pow(1 - ran(), 2), val, v[4], den, x[4], z = 2;
-	coord un, ut, t;
+	point un, ut, t;
 	den = sqrt((rs*rs).sum());
 	val = sqrt(-log(random_e)/m_beta);
 
@@ -30,13 +30,13 @@ void stochastic_reflection(coord *u, coord rf, coord rs) {
 }
 
 void fluid_colloid_collision() {
-	coord rr, rf, rs, rc, dump_vel_fl[no_of_fluid], u, v, omega, vc;
+	point rr, rf, rs, rc, dump_vel_fl[no_of_fluid], u, v, omega, vc;
 
 	for (int i = 1; i < no_of_fluid; i++)
 		dump_vel_fl[i] = vel_fl[i];
 
 	for (int j = 1; j <= no_of_colloid; j++) {
-		vc = omega = coord(0, 0, 0);
+		vc = omega = point(0, 0, 0);
 		for (int i = 1; i <= no_neigh[j]; i++) {
 			int l = neigh_fl[i][j];
 			rr = img(pos_colloid[j] - pos_fl[l], len);
