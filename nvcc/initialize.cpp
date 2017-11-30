@@ -1,27 +1,20 @@
 #include "parameters.hpp"
 
 void initialize() {
+	point **pointers[] = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
 	n_neighbour = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-	iv = (int *)malloc(sizeof(int)*(ntab + 8));
-	no_neigh = (int *)malloc((no_of_colloid + 2)*sizeof(int));
-	dist = (double **)malloc(sizeof(double *)*(no_of_colloid + 2));
-	f 				= (point *)malloc((no_of_colloid + 2)*sizeof(point));
-	pos_fl 			= (point *)malloc((no_of_fluid 	 + 2)*sizeof(point));
-	vel_fl 			= (point *)malloc((no_of_fluid   + 2)*sizeof(point));
-	pos_colloid 	= (point *)malloc((no_of_colloid + 2)*sizeof(point));
-	vel_colloid 	= (point *)malloc((no_of_colloid + 2)*sizeof(point));
-	ang_vel_colloid = (point *)malloc((no_of_colloid + 2)*sizeof(point));
-	old_force 		= (point *)malloc((no_of_colloid + 2)*sizeof(point));
-	ra 				= (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	iv 			= (int *)malloc(sizeof(int)*(ntab + 2));
+	no_neigh 	= (int *)malloc((no_of_colloid + 2)*sizeof(int));
 
-	for(int i = 0; i <= 500; i++)
-		box_neigh[i] = (int *)malloc(sizeof(int)*(len.x*len.y*len.z + 2));
-	for(int i = 0; i < 10000; i++)
+	for(int i = 0; i < 8; i++) {
+		if(i < 2) *pointers[i] = (point *)malloc((no_of_fluid   + 2)*sizeof(point));
+		else 	  *pointers[i] = (point *)malloc((no_of_colloid + 2)*sizeof(point));
+	}
+	for(int i = 0; i <= 10000; i++) {
+		if(i <= 200) neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+		if(i <= 500) box_neigh[i] = (int *)malloc(sizeof(int)*(len.prod()    + 2));
 		neigh_fl[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-	for(int i = 0; i < 200; i++)
-		neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-	for(int i = 0; i < no_of_colloid; i++)
-		dist[i] = (double *)malloc(sizeof(double)*(no_of_colloid + 2));
+	}
 }
 
 void initialize_colloid() {
@@ -76,7 +69,6 @@ void initialize_fluid() {
 		avr_vel += vel_fl[j];
 	}
 	avr_vel = avr_vel/no_of_fluid;
-
 	for(int j = 1; j <= no_of_fluid; j++)
 		vel_fl[j] = vel_fl[j] - avr_vel;
 }

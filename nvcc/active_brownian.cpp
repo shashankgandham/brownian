@@ -16,7 +16,7 @@ int main() {
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
-			std::copy(f, f + 3*no_of_colloid + 2, old_force);
+			std::copy(f, f + no_of_colloid + 2, old_force);
 			update_pos_md();
 			neighbour_list_md();
 			update_pos_mpcd();
@@ -38,7 +38,6 @@ int main() {
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		for(int i = 1; i <= no_of_fluid; i++)
 			ke_fluid += (vel_fl[i]*vel_fl[i]).sum();
-
 		ke_fluid = 0.5*ke_fluid*mass_fl;
 		for(int i = 1; i <= no_of_fluid; i++)
 			mom += (vel_fl[i]*mass_fl).sum();

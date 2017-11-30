@@ -30,11 +30,9 @@ void stochastic_reflection(point *u, point rf, point rs) {
 }
 
 void fluid_colloid_collision() {
-	point rr, rf, rs, rc, dump_vel_fl[no_of_fluid], u, v, omega, vc;
+	point rr, rs, dump_vel_fl[no_of_fluid + 1], u, v, omega, vc;
 
-	for (int i = 1; i < no_of_fluid; i++)
-		dump_vel_fl[i] = vel_fl[i];
-
+	std::copy(vel_fl, vel_fl + no_of_fluid + 1, dump_vel_fl);
 	for (int j = 1; j <= no_of_colloid; j++) {
 		vc = omega = point(0, 0, 0);
 		for (int i = 1; i <= no_neigh[j]; i++) {
@@ -42,16 +40,14 @@ void fluid_colloid_collision() {
 			rr = img(pos_colloid[j] - pos_fl[l], len);
 			if((rr*rr).sum() <= pow(sigma, 2)*0.25) {
 				pos_fl[l] = mod(pos_fl[l] - vel_fl[l]*dt*0.5, len);
-				rc = pos_colloid[j], rf = pos_fl[l];
-				rs = img(rf - rc, len);
-				stochastic_reflection(&u, rf, rs);
-				vel_fl[l] = u + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
+				rs = img(pos_fl[l] - pos_colloid[j], len);
+				stochastic_reflection(&u, pos_fl[l], rs);
 
+				vel_fl[l] = u + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
 				v   = dump_vel_fl[l] - vel_fl[l];
 				vc += v;
 
 				omega += crossmul(rs, v);
-
 				pos_fl[l] = mod(pos_fl[l] + vel_fl[l]*dt*0.5, len);
 			}
 		}
