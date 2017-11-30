@@ -17,7 +17,8 @@ void neighbour_list_md() {
 }
 
 void neighbour_list_mpcd() {
-	int box_no, *fluid_no, **box_part, mm, cbox, x, y, z;
+	int box_no, *fluid_no, **box_part, mm, cbox;
+	point temp;
 	fluid_no = (int *)calloc(len.prod() + 1, sizeof(int));
 	box_part = (int **)calloc(maxpart + 1, sizeof(int *));
 
@@ -30,10 +31,8 @@ void neighbour_list_mpcd() {
 	}
 	for(int j = 1; j <= no_of_colloid; j++) {
 		no_neigh[j] = 0;
-		x = int(pos_colloid[3*j].x);
-		y = int(pos_colloid[3*j].y);
-		z = int(pos_colloid[3*j].z);
-		cbox = 1 + x + y*len.x + z*len.x*len.y;
+		temp = point(int(pos_colloid[j].x), int(pos_colloid[j].y), int(pos_colloid[j].z));
+		cbox = 1 + temp.x + temp.y*len.x + temp.z*len.x*len.y;
 		for(int k = 1; k <= nbox; k++) {
 			mm = box_neigh[k][cbox];
 			for(int i = 1; i <= fluid_no[mm]; i++) {
@@ -45,6 +44,5 @@ void neighbour_list_mpcd() {
 
 	for(int i = 0; i < maxpart; i++)
 		free(box_part[i]);
-	free(box_part);
-	free(fluid_no);
+	free(box_part), free(fluid_no);
 }

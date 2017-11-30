@@ -22,7 +22,7 @@ struct point{
 
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, ntab, nbox;
 extern int *neighbour[200], *n_neighbour, *no_neigh, *neigh_fl[10000], *box_neigh[512], *iv;
-extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid, **dist;
+extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
 void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();

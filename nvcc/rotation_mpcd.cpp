@@ -2,7 +2,7 @@
 
 void rotation_mpcd() {
 	int j, k, **cell_part, cell_no, *fluid_no;
-	double r[4], theta, phi, rho, var, scale_fac_mpcd;
+	double r[4], theta, phi, rho, var, scale_fac_mpcd, ct, st, ict;
 	point *tmp_pos, cell_vel[(int)len.prod() + 1], del_v, del_v1[no_of_fluid + 1], rr, rot[4];
 
 	tmp_pos   = (point *)malloc(sizeof(point)*(no_of_fluid + 2));
@@ -15,11 +15,11 @@ void rotation_mpcd() {
 		cell_part[i] = (int *)malloc(sizeof(int)*(len.prod() + 2));
 
 	rr = point(ran() - 0.5, ran() - 0.5, ran() - 0.5);
-	for(int i=1; i <= no_of_fluid; i++) {
+	for(int i = 1; i <= no_of_fluid; i++) {
 		tmp_pos[i] = mod(tmp_pos[i] + rr, len);
 	}
 	for(int i=1; i <= no_of_fluid; i++) {
-		cell_no = 1 + int(tmp_pos[3*i].x) + len.x*int(tmp_pos[3*i].y) + len.x*len.y*int(tmp_pos[3*i].z);
+		cell_no = 1 + int(tmp_pos[i].x) + len.x*int(tmp_pos[i].y) + len.x*len.y*int(tmp_pos[i].z);
 		cell_part[++fluid_no[cell_no]][cell_no] = i;
 	}
 	memset(cell_vel, 0, sizeof cell_vel);
@@ -29,20 +29,16 @@ void rotation_mpcd() {
 				k = cell_part[j][i];
 				cell_vel[i] += vel_fl[k]/fluid_no[i];
 			}
+
 			rho = 2*ran() - 1, phi = 4.0*asin(1.0)*ran();
-			r[1] = cos(phi)*sqrt(1 - rho*rho);
-			r[2] = sin(phi)*sqrt(1 - rho*rho);
-			r[3] = rho;
+			r[1] = cos(phi)*sqrt(1 - rho*rho), r[2] = sin(phi)*sqrt(1 - rho*rho), r[3] = rho;
 			theta = 2*asin(1)*(130/180.0);
-			rot[1].x = (1 - cos(theta))*r[1]*r[1] + cos(theta);
-			rot[1].y = (1 - cos(theta))*r[1]*r[2] - sin(theta)*r[3];
-			rot[1].z = (1 - cos(theta))*r[1]*r[3] + sin(theta)*r[2];
-			rot[2].x = (1 - cos(theta))*r[2]*r[1] + sin(theta)*r[3];
-			rot[2].y = (1 - cos(theta))*r[2]*r[2] + cos(theta);
-			rot[2].z = (1 - cos(theta))*r[2]*r[3] - sin(theta)*r[1];
-			rot[3].x = (1 - cos(theta))*r[3]*r[1] - sin(theta)*r[2];
-			rot[3].y = (1 - cos(theta))*r[3]*r[2] + sin(theta)*r[1];
-			rot[3].z = (1 - cos(theta))*r[3]*r[3] + cos(theta);
+			ct = cos(theta), st = sin(theta), ict = 1 - cos(theta);
+
+			rot[1] = point(ict*r[1]*r[1] + ct, ict*r[1]*r[2] - st*r[3], ict*r[1]*r[3] + st*r[2]);
+			rot[2] = point(ict*r[2]*r[1] + st*r[3], ict*r[2]*r[2] + ct, ict*r[2]*r[3] - st*r[1]);
+			rot[3] = point(ict*r[3]*r[1] - st*r[2], ict*r[3]*r[2] + st*r[1], ict*r[3]*r[3] + ct);
+
 			for(int j = 1;j <= fluid_no[i]; j++) {
 				del_v = vel_fl[cell_part[j][i]] - cell_vel[i];
 				vel_fl[k] = cell_vel[i] + point((rot[1]*del_v).sum(), (rot[2]*del_v).sum(), (rot[3]*del_v).sum());
@@ -66,7 +62,5 @@ void rotation_mpcd() {
 	}
 	for(int i = 0; i <= maxpart; i++)
 		free(cell_part[i]);
-	free(tmp_pos);
-	free(cell_part);
-	free(fluid_no);
+	free(tmp_pos), free(cell_part), free(fluid_no);
 }
