@@ -11,7 +11,6 @@ subroutine update_velocity_colloid
 		vel_colloid(3*i-2)=vel_colloid(3*i-2)+(old_force(3*i-2)+f(3*i-2))*dtby2m ! NOTE
 		vel_colloid(3*i-1)=vel_colloid(3*i-1)+(old_force(3*i-1)+f(3*i-1))*dtby2m
 		vel_colloid(3*i)=vel_colloid(3*i)+(old_force(3*i)+f(3*i))*dtby2m
-
 !		mom_x = mom_x + mass_colloid*vel_colloid(3*i-2)
 !		mom_y = mom_y + mass_colloid*vel_colloid(3*i-1)
 !		mom_z = mom_z + mass_colloid*vel_colloid(3*i)

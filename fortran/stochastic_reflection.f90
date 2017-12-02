@@ -34,7 +34,6 @@ subroutine stochastic_reflection
 	txx =txx - llx*anint(txx*inv_llx)
 	tyy =tyy - lly*anint(tyy*inv_lly)
 	tzz =tzz - llz*anint(tzz*inv_llz)
-
 	utx = uny*tzz - tyy*unz
 	uty = unz*txx - unx*tzz
 	utz = unx*tyy - txx*uny

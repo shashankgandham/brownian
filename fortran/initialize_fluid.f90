@@ -1,7 +1,7 @@
 subroutine initialize_fluid
 	use all_parameters
 	implicit none
-	integer :: i,j,k,counter_fl,check_fl
+	integer :: i,j,k,counter_fl,check_fl, ct
 	real*8  :: ran1,x12,y12,z12,r,ke1_fluid,zz1
 	real*8  :: avr_vel_fl_x,avr_vel_fl_y,avr_vel_fl_z,tx,ty,tz
 	real*8  :: average_vel_fl_x,average_vel_fl_y,average_vel_fl_z
@@ -11,6 +11,7 @@ subroutine initialize_fluid
 	avr_vel_fl_x = 0.0d0
 	avr_vel_fl_y = 0.0d0
 	avr_vel_fl_z = 0.0d0
+	ct = 0
 	do while(counter_fl < no_of_fluid)
 		tx = ran1(zzzz)*llx
 		ty = ran1(zzzz)*lly
@@ -25,7 +26,6 @@ subroutine initialize_fluid
 			x12 = x12 - llx*anint(x12*inv_llx)!minimum image convention
 			y12 = y12 - lly*anint(y12*inv_lly)
 			z12 = z12 - llz*anint(z12*inv_llz)
-
 !			if(abs(x12)>llxby2) x12 = llx - abs(x12)
 !			if(abs(y12)>llyby2) y12 = lly - abs(y12)
 !			if(abs(z12)>llzby2) z12 = llz - abs(z12)
@@ -40,9 +40,9 @@ subroutine initialize_fluid
 			pos_fl(3*counter_fl-1) = ty
 			pos_fl(3*counter_fl) = tz
 		endif
+		ct = ct + 1
 !		write(*,*) 'counter',counter
 	enddo
-
 	do j=1,no_of_fluid
 		vel_fl(3*j-2) = (ran1(zzzz)-0.5d0)*vscale_fluid
 		vel_fl(3*j-1) = (ran1(zzzz)-0.5d0)*vscale_fluid
@@ -78,6 +78,5 @@ subroutine initialize_fluid
 	do i=1,no_of_fluid
 		write(222,*) pos_fl(3*i-2),pos_fl(3*i-1),pos_fl(3*i) ! initialized position of fluid
 		write(223,*) vel_fl(3*i-2),vel_fl(3*i-1),vel_fl(3*i) !initialized velocity of fluid
-		write(*,*) vel_fl(3*i-2),vel_fl(3*i-1),vel_fl(3*i) !initialized velocity of fluid
 	enddo
 end subroutine initialize_fluid

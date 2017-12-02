@@ -31,7 +31,7 @@ module all_parameters
 
     integer,parameter :: no_of_colloid = 1
     real*8,parameter  :: mass_colloid = 654.10d0, vscale_colloid = dsqrt(12.0d0*kbT1/mass_colloid)
-    real*8,parameter  :: sig_colloid  = 5.0d0, r_cutoff = 2.0**(1.0d0/6.0d0)*sig_colloid, eps = 1.0d0, space_limit = 1.3d0*sig_colloid
+    real*8,parameter:: sig_colloid  = 5.0d0, r_cutoff = 2.0**(1.0d0/6.0d0)*sig_colloid, eps = 1.0d0, space_limit = 1.3d0*sig_colloid
     real*8,parameter  :: fc  = 4.0d0*eps*(12.0d0*(sig_colloid**12/r_cutoff**13) - 6.0d0*(sig_colloid**6/r_cutoff**7))
     real*8,parameter  :: ufc = 4.0d0*eps*((sig_colloid/r_cutoff)**12 - (sig_colloid/r_cutoff)**6) + fc*r_cutoff
     real*8            :: scale_fac, ang_scale_fac

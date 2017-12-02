@@ -1,8 +1,8 @@
 #include "parameters.hpp"
 
 int main() {
-	int energy_colloid;
-	double mom_x, mom_y, mom_z, ke_colloid, ke_fluid, ang_ke_colloid;
+	double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
+	point mom = point(0, 0 , 0);
 	initialize();
 	initialize_colloid();
 	initialize_fluid();
@@ -16,7 +16,7 @@ int main() {
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
-			std::copy(f, f + 3*no_of_colloid + 2, old_force);
+			std::copy(f, f + no_of_colloid + 2, old_force);
 			update_pos_md();
 			neighbour_list_md();
 			update_pos_mpcd();
@@ -30,30 +30,19 @@ int main() {
 		}
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;
 		for(int i = 1; i <= no_of_colloid; i++) {
-			for(int j = 0; j <= 2; j++) {
-				ke_colloid += vel_colloid[3*i - j]*vel_colloid[3*i - j];
-				ang_ke_colloid += ang_vel_colloid[3*i - j]*ang_vel_colloid[3*i - j];
-			}
+			ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();
+			ang_ke_colloid += (ang_vel_colloid[i]*ang_vel_colloid[i]).sum();
 		}
 		ke_colloid = 0.5*mass_colloid*ke_colloid;
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
-		for(int i = 1; i <= no_of_fluid; i++) {
-			for(int j = 0; j <= 2; j++)
-				ke_fluid += vel_fl[3*i - j]*vel_fl[3*i - j];
-		}
+		for(int i = 1; i <= no_of_fluid; i++)
+			ke_fluid += (vel_fl[i]*vel_fl[i]).sum();
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-		mom_x = mom_y = mom_z = 0;
-		for(int i = 1; i <= no_of_fluid; i++) {
-			mom_x += mass_fl*vel_fl[3*i - 2];
-			mom_y += mass_fl*vel_fl[3*i - 1];
-			mom_y += mass_fl*vel_fl[3*i];
-		}
-		for(int i = 1; i <= no_of_colloid; i++) {
-			mom_x += mass_colloid*vel_colloid[3*i - 2];
-			mom_y += mass_colloid*vel_colloid[3*i - 1];
-			mom_z += mass_colloid*vel_colloid[3*i];
-		}
+		for(int i = 1; i <= no_of_fluid; i++)
+			mom += (vel_fl[i]*mass_fl);
+		for(int i = 1; i <= no_of_colloid; i++)
+			mom += (vel_colloid[i]*mass_colloid);
 	}
 	return 0;
 }
