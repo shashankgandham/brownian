@@ -109,6 +109,7 @@ program colloid
 		mom_z = mom1_z + mom2_z
 
 		write(115,*) mom_x, mom_y, mom_z
+		write(*,*) mom_x, mom_y, mom_z
 
 !		if(ke_colloid/dfloat(no_of_colloid).gt.30.0d0) then
 !			write(8777,fmt='(9g25.15)') nn,pos_colloid(1),pos_colloid(2),pos_colloid(3)
@@ -151,6 +152,7 @@ program colloid
 
 !			close(72)
 !		endif
+	call exit(0)
 	enddo !niter
 
 !	do  mm=1, no_of_fluid

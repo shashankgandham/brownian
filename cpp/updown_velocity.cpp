@@ -1,67 +1,35 @@
 #include "parameters.hpp"
 
 void updown_velocity(){
-	double up_velx, up_vely, up_velz, vector_x, vector_y, vector_z, vector, dot, velx , vely, velz;
-	int jj, mm, cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
+	int cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
+	point up_vel = point(0, 0, 0), vector, vel;
 
 	nbr = (int **)malloc(sizeof(int *)*7005);
 	up_nbr = (int **)malloc(sizeof(int *)*7005);
-
 	for(int i = 0; i <= 7000; i++) {
 		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
 		up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
 	}
 
 	for (int i = 1; i <= no_of_colloid; i++){
-		cnt[i] = 0, up_cnt[i]= velx = vely = velz = 0;
+		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
 		for (int j = 1; j <= no_neigh[i]; j++) {
-			jj = neigh_fl[j][i];
+			vector = img(pos_fl[neigh_fl[j][i]] - pos_colloid[i], len);
 
-			vector_x = img(pos_fl[3*jj-2] - pos_colloid[3*i-2], lx);
-			vector_y = img(pos_fl[3*jj-1]-pos_colloid[3*i-1], ly);
-			vector_z = img(pos_fl[3*jj]-pos_colloid[3*i], lz);
-			vector = vector_x*vector_x + vector_y*vector_y + vector_z*vector_z;
+			if((vector*vector).sum() <= pow((sigma*0.5 + 0.5), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
+				nbr[++cnt[i]][i] = neigh_fl[j][i];
 
-			dot = vector_x*vel_colloid[3*i-2] + vector_y*vel_colloid[3*i-1] + vector_z*vel_colloid[3*i];
-
-			if(vector <= (sigma*0.5+0.5)*(sigma*0.5+0.5) && dot <= 0.0) {
-				cnt[i] = cnt[i] + 1;
-				nbr[cnt[i]][i] = jj;
-			}
-
-			if(vector <= (sigma*0.5+0.1)*(sigma*0.5+0.1) && dot >= 0.0) {
-				up_cnt[i]=up_cnt[i]+1;
-				up_nbr[up_cnt[i]][i]=jj;
-			}
+			if((vector*vector).sum() <= pow((sigma*0.5 + 0.1), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
+				up_nbr[++up_cnt[i]][i] = neigh_fl[j][i];
 		}
+		for (int j = 1; j <= cnt[i]; j++)
+			vel += vel_fl[nbr[j][i]];
 
-		if (cnt[i] > 0 && up_cnt[i] > 0) {
-			for (int j = 1; j <= cnt[i]; j++) {
-				mm = nbr[j][i];
-				velx += vel_fl[3*mm-2];
-				vely += vel_fl[3*mm-1];
-				velz += vel_fl[3*mm];
-			}
-			up_velx = up_vely = up_velz = 0;
+		for(int j = 1; j <= up_cnt[i]; j++)
+			up_vel += vel_fl[up_nbr[j][i]];
 
-			for(int j = 1; j <= up_cnt[i]; j++) {
-				mm = up_nbr[j][i];
-				up_velx += vel_fl[3*mm - 2];
-				up_vely += vel_fl[3*mm - 1];
-				up_velz += vel_fl[3*mm];
-			}
-
-			up_velx /= up_cnt[i], up_vely /= up_cnt[i], up_velz /= up_cnt[i];
-			velx /= cnt[i], vely /= cnt[i], velz /= cnt[i];
-
-			up_velx -= vel_colloid[3*i - 2];
-			up_vely -= vel_colloid[3*i - 1];
-			up_velz -= vel_colloid[3*i];
-			velx -= vel_colloid[3*i - 2];
-			vely -= vel_colloid[3*i - 1];
-			velz -= vel_colloid[3*i];
-
-		}
+		up_vel = (up_cnt[i] > 0)? up_vel/up_cnt[i] - vel_colloid[i]: up_vel;
+		vel    = (up_cnt[i] > 0)? vel/cnt[i] - vel_colloid[i]: vel;
 	}
 	for(int i = 1; i <= 7000; i++)
 		free(nbr[i]), free(up_nbr[i]);

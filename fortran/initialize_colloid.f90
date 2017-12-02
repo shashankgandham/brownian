@@ -39,7 +39,6 @@ subroutine initialize_colloid
 			if(abs(x12)>llxby2) x12 = llx - abs(x12)
 			if(abs(y12)>llyby2) y12 = lly - abs(y12)
 			if(abs(z12)>llzby2) z12 = llz - abs(z12)
-
 			r = dsqrt(x12**2+y12**2+z12**2)
 
 			if(r.lt.space_limit) then
