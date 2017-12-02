@@ -1,8 +1,9 @@
 #include "parameters.hpp"
 
 void tumble(){
+	double r;
 	for (int i = 1; i <= no_of_colloid; i++) {
-		ra[i] = img(pos_colloid[i] - point(ran()*len.x, ran()*len.y, ran()*len.z), len);
+		ra[i] = img(pos_colloid[i] - ra[i].random()*len, len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
 	}
 }
@@ -23,8 +24,9 @@ void run() {
 			if((vector*vector).sum() <= pow(sigma*0.5+0.5, 2) && (vector*vel_colloid[i]).sum() <= 0)
 				nbr[++cnt[i]][i] = neigh_fl[j][i];
 		}
-		for(int j = 1; j <= cnt[i]; j++)
+		for(int j = 1; j <= cnt[i]; j++) {
 			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*mass_colloid/(mass_fl*cnt[i]);
+		}
 	}
 
 	for(int i = 0; i <= 7000; i++)
