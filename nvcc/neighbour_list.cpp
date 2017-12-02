@@ -4,7 +4,6 @@ void neighbour_list_md() {
 	double neigh_cutoff = 3.0*sig_colloid;
 	point temp;
 	memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
-
 	for(int i = 1; i < no_of_colloid; i++) {
 		for(int j = i + 1; j <= no_of_colloid; j++) {
 			temp = img(pos_colloid[i] - pos_colloid[j], len);
@@ -41,7 +40,6 @@ void neighbour_list_mpcd() {
 			}
 		}
 	}
-
 	for(int i = 0; i < maxpart; i++)
 		free(box_part[i]);
 	free(box_part), free(fluid_no);

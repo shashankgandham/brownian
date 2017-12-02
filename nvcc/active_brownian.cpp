@@ -40,9 +40,9 @@ int main() {
 			ke_fluid += (vel_fl[i]*vel_fl[i]).sum();
 		ke_fluid = 0.5*ke_fluid*mass_fl;
 		for(int i = 1; i <= no_of_fluid; i++)
-			mom += (vel_fl[i]*mass_fl).sum();
+			mom += (vel_fl[i]*mass_fl);
 		for(int i = 1; i <= no_of_colloid; i++)
-			mom += (vel_colloid[i]*mass_colloid).sum();
+			mom += (vel_colloid[i]*mass_colloid);
 	}
 	return 0;
 }

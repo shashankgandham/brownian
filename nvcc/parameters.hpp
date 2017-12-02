@@ -4,20 +4,26 @@
 #include <cstring>
 #include <algorithm>
 
+double ran();
 struct point{
 	double x, y, z;
 	point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
 	point operator+ (const point &op) { return point(x + op.x, y + op.y, z + op.z); }
-	point operator+=(const point &op) { return point(x + op.x, y + op.y, z + op.z); }
-	point operator- (const point &op) { return point(x - op.x, y + op.y, z - op.z); }
-	point operator-=(const point &op) { return point(x - op.x, y - op.y, z - op.z); }
+	point operator- (const point &op) { return point(x - op.x, y - op.y, z - op.z); }
+	point operator/ (const double &op){ return point(x / op,   y / op,   z / op);   }
 	point operator* (const point &op) { return point(x * op.x, y * op.y, z * op.z); }
-	point operator* (const int &op)   { return point(x * op,   y * op,   z * op);   }
-	point operator* (const double &op){ return point(x * op,   y * op,   z * op);   }
-	point operator/(const int &op)    { return point(x / op,   y / op,   z / op);   }
+	point operator* (const double &op){ return point(x * op, y * op, z * op); }
+	point operator+=(const point &op) { x += op.x, y += op.y, z += op.z; return *this; }
+	point operator-=(const point &op) { x -= op.x, y -= op.y, z -= op.z; return *this; }
 
 	double sum()  { return (x + y + z); }
 	double prod() { return (x * y * z); }
+	void print() { printf("%.16lf %0.16lf %0.16lf\n", x, y, z); }
+
+	point random(double dec = 0) {
+		x = ran() - dec; y = ran() - dec; z = ran() - dec;
+		return point (x, y, z);
+	}
 };
 
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, ntab, nbox;
@@ -29,5 +35,4 @@ void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), 
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
 void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
 
-double ran();
 point img(point, point), mod(point, point);
