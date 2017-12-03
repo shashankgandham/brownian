@@ -6,15 +6,15 @@ void rotation_mpcd() {
 	point *tmp_pos, cell_vel[(int)len.prod() + 1], del_v, del_v1[no_of_fluid + 1], rr, rot[4];
 
 	tmp_pos   = (point *)malloc(sizeof(point)*(no_of_fluid + 2));
-	fluid_no  = (int *)malloc(sizeof(int)*(len.prod() + 2));
-	cell_part = (int **)malloc(sizeof(int *)*(maxpart + 2));
+	fluid_no  = (int *)malloc(sizeof(int) *(len.prod() + 2));
+	cell_part = (int **)malloc(sizeof(int *)*(maxpart  + 2));
 	memset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
 	std::copy(pos_fl, pos_fl + no_of_fluid + 2, tmp_pos);
 
 	for(int i = 0; i <= maxpart; i++)
 		cell_part[i] = (int *)malloc(sizeof(int)*(len.prod() + 2));
 
-	rr = rr.random(0.5);
+	rr.random(0.5);
 	for(int i = 1; i <= no_of_fluid; i++) {
 		tmp_pos[i] = mod(tmp_pos[i] + rr, len);
 		cell_no = 1 + int(tmp_pos[i].x) + len.x*int(tmp_pos[i].y) + len.x*len.y*int(tmp_pos[i].z);

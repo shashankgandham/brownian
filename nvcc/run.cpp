@@ -12,9 +12,9 @@ void run() {
 	int cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid];
 	point vector, del;
 
-	nbr    = (int **)malloc(sizeof(int *) * 7005);
+	nbr = (int **)malloc(sizeof(int *) * 7005);
 	for(int i = 0; i <= 7000; i++)
-		nbr[i]    = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 
 	for(int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;

@@ -1,5 +1,22 @@
 #include "parameters.hpp"
 
+void create_box() {
+	int tbox, box;
+	point temp, iter = point(1, 1, 1);
+	for(int i = 1; i <= len.prod(); i++, iter.next(len, 1), nbox = 0) {
+		for(int z = 0; z <= 6; z++) {
+			for(int y = 0; y <= 6; y++) {
+				for(int x = 0; x <= 6; x++) {
+					temp = mod(iter - point(3 - x, 3 - y, 3 - z), len);
+					box = (iter.z - 1)*len.x*len.y + (iter.y - 1)*len.x + iter.x;
+					tbox = (temp.z - 1)*len.x*len.y + (temp.y - 1)*len.x + temp.x;
+					if(tbox != box) box_neigh[++nbox][box] = tbox;
+				}
+			}
+		}
+	}
+}
+
 void neighbour_list_md() {
 	double neigh_cutoff = 3.0*sig_colloid;
 	point temp;

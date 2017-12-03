@@ -152,7 +152,6 @@ program colloid
 
 !			close(72)
 !		endif
-	call exit(0)
 	enddo !niter
 
 !	do  mm=1, no_of_fluid

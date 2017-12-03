@@ -19,10 +19,10 @@ void initialize() {
 void initialize_colloid() {
 	int counter = 0, check, nofp = 0, x = len.x, y = len.y, z = len.z;
 	double space_limit = 1.3*sig_colloid, ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
-	point avr_vel = point(0, 0, 0), t, temp;
-	for(int i = 0; i <= (len - point(1, 1, 1)).prod(); i += 50) {
-		if(nofp < no_of_colloid)
-			pos_colloid[++nofp] = point(40 + 50*(i/(x*y)), 40 + 50*(i/x)%y, 40 + 50*(i%x))/10.0;
+	point avr_vel = point(0, 0, 0), t, temp, iter = point(4, 4, 4), lim = len - point(1, 1, 1);
+
+	for(int i = 0; i <= lim.prod(); i += 5, iter.next(lim, 5), nofp++) {
+		if(nofp < no_of_colloid) pos_colloid[nofp] = iter;
 		else break;
 	}
 	while(counter < no_of_colloid) {
@@ -47,7 +47,7 @@ void initialize_colloid() {
 }
 
 void initialize_fluid() {
-	int counter = 0, check, count = 0;
+	int counter = 0, check;
 	double vscale_fluid = sqrt(12.0*kbt/mass_fl);
 	point avr_vel = point(0, 0, 0), t, temp;
 	while(counter < no_of_fluid) {
@@ -58,7 +58,6 @@ void initialize_fluid() {
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
 		if(check) pos_fl[++counter] = t;
-		count++;
 	}
 	for(int j = 1; j <= no_of_fluid; j++) {
 		vel_fl[j] = vel_fl[j].random(0.5)*vscale_fluid;
