@@ -8,9 +8,9 @@ subroutine initialize_colloid
 	real*8  :: average_vel_colloid_x,average_vel_colloid_y,average_vel_colloid_z
 
 	nofp=0
-	do k=40,(lx-1)*10,50
+	do k=40,(lz-1)*10,50
 		do j=40,(ly-1)*10,50
-			do i=40,(lz-1)*10,50
+			do i=40,(lx-1)*10,50
 				nofp=nofp+1
 				if(nofp.le.no_of_colloid)then
 					pos_colloid(3*nofp-2)=dfloat(i)/10d0  !initialize in cubic crystal

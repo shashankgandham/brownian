@@ -18,11 +18,15 @@ struct point{
 
 	double sum()  { return (x + y + z); }
 	double prod() { return (x * y * z); }
-	void print() { printf("%.16lf %0.16lf %0.16lf\n", x, y, z); }
-
+	void print()  { printf("%.16lf %0.16lf %0.16lf\n", x, y, z); }
 	point random(double dec = 0) {
 		x = ran() - dec; y = ran() - dec; z = ran() - dec;
-		return point (x, y, z);
+		return *this;
+	}
+	void next(point len, int inc) {
+		x += inc;
+		if(x == len.x + 1) y += inc, x = 1;
+		if(y == len.y + 1) z += inc, y = 1;
 	}
 };
 
