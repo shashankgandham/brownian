@@ -1,6 +1,6 @@
 COMPILER = gfortran
 EXECUTABLE = active_brownian
-FLAGS = 
+FLAGS =
 # Object Files for build
 OBJS = \
 define_parameter.o \
@@ -65,7 +65,7 @@ update_pos_md.o : update_pos_md.f90
 	 $(COMPILER) $(FLAGS) -c  update_pos_md.f90
 
 update_pos_mpcd.o : update_pos_mpcd.f90
-	 $(COMPILER) $(FLAGS) -c update_pos_mpcd.f90 
+	 $(COMPILER) $(FLAGS) -c update_pos_mpcd.f90
 
 update_velocity_colloid.o : update_velocity_colloid.f90
 	$(COMPILER) $(FLAGS) -c update_velocity_colloid.f90

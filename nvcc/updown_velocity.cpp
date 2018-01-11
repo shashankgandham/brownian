@@ -1,15 +1,8 @@
 #include "parameters.hpp"
 
 void updown_velocity(){
-	int cnt[no_of_colloid], **nbr, up_cnt[no_of_colloid], **up_nbr;
+	int cnt[no_of_colloid], up_cnt[no_of_colloid];
 	point up_vel = point(0, 0, 0), vector, vel;
-
-	nbr = (int **)malloc(sizeof(int *)*7005);
-	up_nbr = (int **)malloc(sizeof(int *)*7005);
-	for(int i = 0; i <= 7000; i++) {
-		nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
-		up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 1));
-	}
 
 	for (int i = 1; i <= no_of_colloid; i++){
 		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
@@ -31,7 +24,4 @@ void updown_velocity(){
 		up_vel = (up_cnt[i] > 0)? up_vel/up_cnt[i] - vel_colloid[i]: up_vel;
 		vel    = (up_cnt[i] > 0)? vel/cnt[i] - vel_colloid[i]: vel;
 	}
-	for(int i = 1; i <= 7000; i++)
-		free(nbr[i]), free(up_nbr[i]);
-	free(nbr), free(up_nbr);
 }

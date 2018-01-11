@@ -2,7 +2,7 @@
 
 int main() {
 	double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
-	point mom = point(1, 0 , 0);
+	point mom = point(0, 0, 0);
 	initialize();
 	initialize_colloid();
 	initialize_fluid();
