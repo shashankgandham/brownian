@@ -2,16 +2,25 @@
 
 void initialize() {
 	point **pointers[] = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
-	n_neighbour = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-	iv 			= (int *)malloc(sizeof(int)*(ntab + 2));
-	no_neigh 	= (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	n_neighbour = (int * )malloc(sizeof(int)*(no_of_colloid + 2));
+	iv 			= (int * )malloc(sizeof(int)*(ntab + 2));
+	no_neigh 	= (int * )malloc((no_of_colloid + 2)*sizeof(int));
+	fluid_no 	= (int * )calloc(len.prod() + 2, sizeof(int));
+	box_part 	= (int **)calloc(maxpart + 2, sizeof(int *));
+	cell_part = (int **)malloc(sizeof(int *)*(maxpart  + 2));
+	nbr = (int **)malloc(sizeof(int *) * 7005);
+	up_nbr = (int **)malloc(sizeof(int *) * 7005);
 
 	for(int i = 0; i < 8; i++)
 		*pointers[i] = (point *)malloc((((i < 2)?no_of_fluid:no_of_colloid) + 2)*sizeof(point));
 
 	for(int i = 0; i <= 10000; i++) {
-		if(i <= 200) neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-		if(i <= 500) box_neigh[i] = (int *)malloc(sizeof(int)*(len.prod()    + 2));
+		if(i <= 200)     neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+		if(i <= 500)     box_neigh[i] = (int *)malloc(sizeof(int)*(len.prod()    + 2));
+		if(i < maxpart)  box_part[i]  = (int *)malloc((len.prod() + 1)*sizeof(int));
+		if(i <= maxpart) cell_part[i] = (int *)malloc(sizeof(int)*(len.prod() + 2));
+		if(i <= 7000)    nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+		if(i <= 7000)   up_nbr[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 		neigh_fl[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
 	}
 }
@@ -29,8 +38,7 @@ void initialize_colloid() {
 		t = t.random()*len;
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
-			temp = img(t - pos_colloid[j], len);
-			temp = point(abs(temp.x), abs(temp.y), abs(temp.z));
+			temp = abs(img(t - pos_colloid[j], len));
 			check = ((temp*temp).sum() < space_limit)? 0: check;
 		}
 		if(check) pos_colloid[++counter] = t;
