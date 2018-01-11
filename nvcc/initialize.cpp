@@ -35,7 +35,7 @@ void initialize_colloid() {
 		else break;
 	}
 	while(counter < no_of_colloid) {
-		t = t.random()*len;
+		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
 			temp = abs(img(t - pos_colloid[j], len));
@@ -59,7 +59,7 @@ void initialize_fluid() {
 	double vscale_fluid = sqrt(12.0*kbt/mass_fl);
 	point avr_vel = point(0, 0, 0), t, temp;
 	while(counter < no_of_fluid) {
-		t = t.random()*len;
+		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= no_of_colloid; j++) {
 			temp = img(t - pos_colloid[j], len);
