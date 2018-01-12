@@ -8,9 +8,7 @@ void tumble(){
 }
 
 void run() {
-	int cnt[no_of_colloid], up_cnt[no_of_colloid];
 	point vector, del;
-
 	for(int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;
 		cnt[i] = up_cnt[i] = 0;
@@ -25,9 +23,7 @@ void run() {
 }
 
 void updown_velocity(){
-	int cnt[no_of_colloid], up_cnt[no_of_colloid];
 	point up_vel = point(0, 0, 0), vector, vel;
-
 	for (int i = 1; i <= no_of_colloid; i++){
 		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
 		for (int j = 1; j <= no_neigh[i]; j++) {

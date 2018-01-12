@@ -1,5 +1,8 @@
 #include "parameters.hpp"
 
+double mag_f, r_cutoff = pow(2, 1.0/6.0)*sig_colloid, r;
+double fc = 4.0*eps*(12.0*(pow(sig_colloid,12)/pow(r_cutoff,13)) - 6.0*(pow(sig_colloid, 6)/pow(r_cutoff, 7)));
+double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 void compute_force_md() {
 	point temp, ff;
 	potential_colloid = 0, memset(f, 0, no_of_colloid + 2);
@@ -32,7 +35,7 @@ void update_activity_direction() {
 
 void update_pos_md() {
 	for(int i = 1; i <= no_of_colloid; i++) {
-		pos_colloid[i] +=  vel_colloid[i]*dt + f[i]*0.05*dt*dt/mass_colloid;
+		pos_colloid[i] +=  vel_colloid[i]*dt + f[i]*0.5*dt*dt/mass_colloid;
 		pos_colloid[i]  =  mod(pos_colloid[i], len);
 	}
 }
