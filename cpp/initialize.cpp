@@ -1,18 +1,30 @@
 #include "parameters.hpp"
 
 void initialize() {
-	point **pointers[] = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
-	n_neighbour = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-	iv 			= (int *)malloc(sizeof(int)*(ntab + 2));
-	no_neigh 	= (int *)malloc((no_of_colloid + 2)*sizeof(int));
+	point **ppointers[]  = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
+	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
+	int isize[]          = {len.prod(), no_of_colloid };
+	int psize[]          = {no_of_fluid, no_of_colloid};
 
-	for(int i = 0; i < 8; i++)
-		*pointers[i] = (point *)malloc((((i < 2)?no_of_fluid:no_of_colloid) + 2)*sizeof(point));
+	box_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
+	cell_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
+	nbr 		= (int **)calloc(7005,sizeof(int *));
+	up_nbr 		= (int **)calloc(7005,sizeof(int *));
+    iv = (int *)calloc(ntab + 2, sizeof(int));
 
+	for(int i = 0; i < 8; i++) {
+		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
+				  *ppointers[i] = (point *)calloc(psize[i>1] + 2, sizeof(point));
+
+	}
 	for(int i = 0; i <= 10000; i++) {
-		if(i <= 200) neighbour[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
-		if(i <= 500) box_neigh[i] = (int *)malloc(sizeof(int)*(len.prod()    + 2));
-		neigh_fl[i] = (int *)malloc(sizeof(int)*(no_of_colloid + 2));
+		if(i <= 500)      box_neigh[i] = (int *)calloc(sizeof(int),(len.prod()    + 2));
+		if(i <= maxpart)  box_part[i]  = (int *)calloc(sizeof(int),(len.prod()    + 2));
+		if(i <= maxpart)  cell_part[i] = (int *)calloc(sizeof(int),(len.prod()    + 2));
+		if(i <= 200)      neighbour[i] = (int *)calloc(sizeof(int),(no_of_colloid + 2));
+		if(i <= 7000)     nbr[i]       = (int *)calloc(sizeof(int),(no_of_colloid + 2));
+		if(i <= 7000)     up_nbr[i]    = (int *)calloc(sizeof(int),(no_of_colloid + 2));
+						  neigh_fl[i]  = (int *)calloc(sizeof(int),(no_of_colloid + 2));
 	}
 }
 
@@ -26,23 +38,23 @@ void initialize_colloid() {
 		else break;
 	}
 	while(counter < no_of_colloid) {
-		t = t.random()*len;
+		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
-			temp = img(t - pos_colloid[j], len);
-			temp = point(abs(temp.x), abs(temp.y), abs(temp.z));
+			temp = abs(img(t - pos_colloid[j], len));
 			check = ((temp*temp).sum() < space_limit)? 0: check;
 		}
-		if(check) pos_colloid[++counter] = t;
+		if(check)
+			pos_colloid[++counter] = t;
 	}
 	for(int j = 1; j <= no_of_colloid; j++) {
-		vel_colloid[j] = vel_colloid[j].random(0.5)*vscale_colloid;
+		vel_colloid[j] = vel_colloid[j].random(point(0.5, 0.5, 0.5))*vscale_colloid;
 		avr_vel += vel_colloid[j];
 	}
 	avr_vel = avr_vel/no_of_colloid;
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vel_colloid[j] = vel_colloid[j] - avr_vel;
-		ang_vel_colloid[j] = ang_vel_colloid[j].random(0.5)*ang_vscale_colloid;
+		ang_vel_colloid[j] = (t.random(point(0.5, 0.5, 0.5)))*ang_vscale_colloid;
 	}
 }
 
@@ -51,20 +63,20 @@ void initialize_fluid() {
 	double vscale_fluid = sqrt(12.0*kbt/mass_fl);
 	point avr_vel = point(0, 0, 0), t, temp;
 	while(counter < no_of_fluid) {
-		t = t.random()*len;
+		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= no_of_colloid; j++) {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
-		if(check) pos_fl[++counter] = t;
+		if(check)
+			pos_fl[++counter] = t;
 	}
 	for(int j = 1; j <= no_of_fluid; j++) {
-		vel_fl[j] = vel_fl[j].random(0.5)*vscale_fluid;
+		vel_fl[j] = vel_fl[j].random(point(0.5, 0.5, 0.5))*vscale_fluid;
 		avr_vel += vel_fl[j];
 	}
 	avr_vel = avr_vel/no_of_fluid;
-	for(int j = 1; j <= no_of_fluid; j++) {
+	for(int j = 1; j <= no_of_fluid; j++)
 		vel_fl[j] = vel_fl[j] - avr_vel;
-	}
 }

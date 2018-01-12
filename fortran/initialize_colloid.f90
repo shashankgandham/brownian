@@ -123,7 +123,8 @@ subroutine initialize_colloid
 		ang_vel_colloid(3*j-1) = (ran1(zzzz)-0.5d0)*ang_vscale_colloid
 		ang_vel_colloid(3*j)   = (ran1(zzzz)-0.5d0)*ang_vscale_colloid
 	enddo
-
+	write(*, *) ang_vel_colloid(3), ang_vel_colloid(2), ang_vel_colloid(1)
+	call exit(0)
 	ang_ke_colloid1=0.0d0
 	do j = 1, no_of_colloid
 		ang_ke_colloid1 = ang_ke_colloid1 + ang_vel_colloid(3*j-2)**2 + ang_vel_colloid(3*j-1)**2 + ang_vel_colloid(3*j)**2

@@ -4,7 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <climits>
-extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt;
+extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed;
 extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
 
@@ -12,15 +12,14 @@ void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), 
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
 void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
 
-inline double ran(int seed = 77777) {
-	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k = INT_MAX;
-	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789, *iv;
+inline double ran() {
+	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
+	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789;
 	double eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1;
-	if(k == INT_MAX) iv = (int *)calloc(ntab + 2, sizeof(int));
 	if(seed <= 0) {
 		seed = std::max(-seed,1);
 		idum = seed;
-		for(j = ntab + 8; j > 1; j--) {
+		for(j = ntab + 8; j >= 1; j--) {
 			k = seed/iq1;
 			seed = ia1*(seed - k*iq1) - k*ir1;
 			if(seed < 0) seed += im1;
@@ -52,19 +51,21 @@ struct point {
 	inline point operator* (const double &op){ return point(x * op, y * op, z * op); }
 	inline point operator+=(const point &op) { x += op.x, y += op.y, z += op.z; return *this; }
 	inline point operator-=(const point &op) { x -= op.x, y -= op.y, z -= op.z; return *this; }
+	inline bool operator==(const point &op) { return (x == op.x && y == op.y && z == op.z); }
 
 	inline double sum()  { return (x + y + z); }
 	inline double prod() { return (x * y * z); }
 	inline int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
 	inline void print(FILE *fp = stdout)  { fprintf(fp, "%.16lf %0.16lf %0.16lf\n", x, y, z); }
 	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
-		x = ran()*mul.x - dec.x; y = ran()*mul.y - dec.y; z = ran()*mul.z - dec.z;
+		x = ran(); y = ran(); z = ran();
+		*this = (*this)*mul - dec;
 		return *this;
 	}
 	inline void next(point len, int inc) {
 		x += inc;
-		if(x == len.x + 1) y += inc, x = 1;
-		if(y == len.y + 1) z += inc, y = 1;
+		if(x > len.x) y += inc, x = 1;
+		if(y > len.y) z += inc, y = 1;
 	}
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
