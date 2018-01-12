@@ -1,17 +1,17 @@
 #include "parameters.hpp"
 
-point crossmul(point a, point b) {
+inline point crossmul(point a, point b) {
 	return point(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
 }
 
-point stochastic_reflection(point rf, point rs) {
+inline point stochastic_reflection(point rf, point rs) {
 	double m_beta = mass_fl/kbt, random_e = pow(1 - ran(), 2), val, v[4], den, x[4], z = 2;
 	point un, ut, t;
 	den = sqrt((rs*rs).sum());
 	val = sqrt(-log(random_e)/m_beta);
 
 	un = (rs*val)/den;
-	t = img(t.random()*len - rf, len);
+	t = img(t.random(rf, len), len);
 	ut = crossmul(un, t);
 	ut = ut/sqrt((ut*ut).sum());
 

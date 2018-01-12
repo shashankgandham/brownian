@@ -10,6 +10,7 @@ void initialize() {
 	cell_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
 	nbr 		= (int **)calloc(7005,sizeof(int *));
 	up_nbr 		= (int **)calloc(7005,sizeof(int *));
+    iv = (int *)calloc(ntab + 2, sizeof(int));
 
 	for(int i = 0; i < 8; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
@@ -43,16 +44,17 @@ void initialize_colloid() {
 			temp = abs(img(t - pos_colloid[j], len));
 			check = ((temp*temp).sum() < space_limit)? 0: check;
 		}
-		if(check) pos_colloid[++counter] = t;
+		if(check)
+			pos_colloid[++counter] = t;
 	}
 	for(int j = 1; j <= no_of_colloid; j++) {
-		vel_colloid[j] = vel_colloid[j].random(0.5)*vscale_colloid;
+		vel_colloid[j] = vel_colloid[j].random(point(0.5, 0.5, 0.5))*vscale_colloid;
 		avr_vel += vel_colloid[j];
 	}
 	avr_vel = avr_vel/no_of_colloid;
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vel_colloid[j] = vel_colloid[j] - avr_vel;
-		ang_vel_colloid[j] = ang_vel_colloid[j].random(0.5)*ang_vscale_colloid;
+		ang_vel_colloid[j] = (t.random(point(0.5, 0.5, 0.5)))*ang_vscale_colloid;
 	}
 }
 
@@ -67,10 +69,11 @@ void initialize_fluid() {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
-		if(check) pos_fl[++counter] = t;
+		if(check)
+			pos_fl[++counter] = t;
 	}
 	for(int j = 1; j <= no_of_fluid; j++) {
-		vel_fl[j] = vel_fl[j].random(0.5)*vscale_fluid;
+		vel_fl[j] = vel_fl[j].random(point(0.5, 0.5, 0.5))*vscale_fluid;
 		avr_vel += vel_fl[j];
 	}
 	avr_vel = avr_vel/no_of_fluid;
