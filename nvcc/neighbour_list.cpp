@@ -44,7 +44,6 @@ void neighbour_list_md() {
 
 void neighbour_list_mpcd() {
 	int box_no, mm, cbox;
-	point temp;
 	memset(fluid_no, 0, sizeof(int)*(len.prod() + 2));
 	for(int	i = 1; i <= no_of_fluid; i++) {
 		box_no = 1 + pos_fl[i].cell(len);

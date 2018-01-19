@@ -11,6 +11,7 @@ program colloid
 	call neighbour_list_md
 	call compute_force_md
 	call tumble
+    call exit(0)
     write(*,*) "After Tumble"
     do nn = 1, niter
 		write(*,*) nn
