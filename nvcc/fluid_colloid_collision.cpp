@@ -37,7 +37,7 @@ void fluid_colloid_collision() {
 				rs = img(pos_fl[l] - pos_colloid[j], len);
 				u  = stochastic_reflection(pos_fl[l], rs);
 				vel_fl[l] = u + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
-				vc += (dump_vel_fl[l] - vel_fl[l]);
+                vc += (dump_vel_fl[l] - vel_fl[l]);
 				u = (dump_vel_fl[l] - vel_fl[l]);
 				omega += crossmul(rs, (dump_vel_fl[l] - vel_fl[l]));
 				pos_fl[l] = mod(pos_fl[l] + vel_fl[l]*dt*0.5, len);

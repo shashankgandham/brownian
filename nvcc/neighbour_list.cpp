@@ -1,18 +1,27 @@
 #include "parameters.hpp"
 
+inline point cmod(point a, point b) {  
+    if(a.x <= 0) a.x += b.x;
+    if(a.y <  0) a.y += b.y;
+    if(a.z <  0) a.z += b.z;
+    if(a.x >  b.x) a.x -= b.x;
+    if(a.y >= b.y) a.y -= b.y;
+    if(a.z >= b.z) a.z -= b.z;
+    return a;
+}
 void create_box() {
 	int tbox, box;
 	point temp, iter = point(1, 0, 0);
-	for(int i = 1; i <= len.prod(); i++, iter.next(len, 1)) {
+	for(int i = 1; i <= len.prod(); i++, iter.next(len, point(1, 1, 1), point(1, 0, 0))) {
 		nbox = 0, box = iter.cell(len);
-		for(int z = 0; z <= 6; z++) {
-			for(int y = 0; y <= 6; y++) {
-				for(int x = 0; x <= 6; x++) {
-					temp = mod(iter - point(3 - x, 3- y, 3 - z), len);
-					temp.x = (!temp.x)? len.x: temp.x, temp.y = (!temp.y)? len.y: temp.y;
-					temp.z = (!temp.z)? len.z: temp.z;
+		for(int z = -3; z <= 3; z++) {
+			for(int y = -3; y <= 3; y++) {
+				for(int x = -3; x <= 3; x++) {
+					temp = cmod(iter + point(x, y, z), len);
 					tbox = temp.cell(len);
-					if(tbox != box) box_neigh[++nbox][box] = tbox;
+					if(tbox != box) {
+                        box_neigh[++nbox][box] = tbox;
+                    }
 				}
 			}
 		}

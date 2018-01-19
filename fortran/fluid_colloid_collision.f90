@@ -53,11 +53,11 @@ subroutine fluid_colloid_collision
 				cx = ang_vel_colloid(3*j-1)*rsz-ang_vel_colloid(3*j)*rsy
 				cy = ang_vel_colloid(3*j)*rsx -ang_vel_colloid(3*j-2)*rsz
 				cz = ang_vel_colloid(3*j-2)*rsy-ang_vel_colloid(3*j-1)*rsx
-           		vel_fl(3*lll-2)=u1+vel_colloid(3*j-2)+ cx!ang_vel_colloid(3*j-1)*rsz-ang_vel_colloid(3*j)*rsy
-           		vel_fl(3*lll-1)=u2+vel_colloid(3*j-1)+ cy!ang_vel_colloid(3*j)*rsx-ang_vel_colloid(3*j-2)*rsz
-           		vel_fl(3*lll)=u3+vel_colloid(3*j)+cz!ang_vel_colloid(3*j-2)*rsz-ang_vel_colloid(3*j-1)*rsx
-
-          		v1=dump_vel_fl(3*lll-2)-vel_fl(3*lll-2)
+           		vel_fl(3*lll-2)=u1+vel_colloid(3*j-2)+cx
+           		vel_fl(3*lll-1)=u2+vel_colloid(3*j-1)+cy
+           		vel_fl(3*lll)=u3+vel_colloid(3*j)+cz
+                
+                v1=dump_vel_fl(3*lll-2)-vel_fl(3*lll-2)
           		v2=dump_vel_fl(3*lll-1)-vel_fl(3*lll-1)
           		v3=dump_vel_fl(3*lll)-vel_fl(3*lll)
 
@@ -78,7 +78,6 @@ subroutine fluid_colloid_collision
             	pos_fl(3*lll) = pos_fl(3*lll) - llz*anint((pos_fl(3*lll)-llzby2)*inv_llz)
 			endif
 		enddo
-
 		vel_colloid(3*j-2)=vel_colloid(3*j-2)+vc1*mass_fl/mass_colloid
 		vel_colloid(3*j-1)=vel_colloid(3*j-1)+vc2*mass_fl/mass_colloid
 		vel_colloid(3*j)=vel_colloid(3*j)+vc3*mass_fl/mass_colloid
