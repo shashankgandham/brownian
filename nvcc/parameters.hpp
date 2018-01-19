@@ -62,14 +62,14 @@ struct point {
 		*this = (*this)*mul - dec;
 		return *this;
 	}
-	inline void next(point len, int inc) {
-		x += inc;
-		if(x > len.x) y += inc, x = 1;
-		if(y > len.y) z += inc, y = 1;
+	inline void next(point len, point inc = point(1, 1, 1), point start = point(0, 0, 0)) {
+		x += inc.x;
+		if(x > len.x) y += inc.y, x = start.x;
+		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
-inline point round(point a) { return ((point(round(a.x), round(a.y), round(a.z)))); }
-inline point mod(point a, point b) { return ((a - b*(round((a - b/2)/b)))); }
-inline point img(point a, point b) { return ((a - b*round(a/b))); }
+inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
+inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
+inline point img(point a, point b)  { return a - b*round(a/b); }

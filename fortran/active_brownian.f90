@@ -12,7 +12,7 @@ program colloid
 	call compute_force_md
 	call tumble
     write(*,*) "After Tumble"
-	do nn = 1, niter
+    do nn = 1, niter
 		write(*,*) nn
 		call rotation_mpcd
 		call run
@@ -25,7 +25,7 @@ program colloid
 			call neighbour_list_mpcd
 			if(mod(qq,10).eq.0.and.nn>10000) call updown_velocity
 		    call fluid_colloid_collision
-			call update_activity_direction
+            call update_activity_direction
 			call compute_force_md
 			call update_velocity_colloid
 		enddo

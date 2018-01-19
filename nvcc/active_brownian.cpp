@@ -19,7 +19,7 @@ int main() {
 	tumble();
 	printf("After Tumble\n");
 	for(int nn = 1; nn <= niter; nn++) {
-       	printf("%d\n", nn);
+        printf("%d\n", nn);
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
@@ -30,11 +30,10 @@ int main() {
 			neighbour_list_mpcd();
 			if(!(l%10) && nn > 10000) updown_velocity();
 			fluid_colloid_collision();
-			update_activity_direction();
+            update_activity_direction();
 			compute_force_md();
 			update_velocity_colloid();
 		}
-
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;
 		for(int i = 1; i <= no_of_colloid; i++) {
 			ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();
@@ -49,6 +48,7 @@ int main() {
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-	}
+        exit(0);
+    }
 	return 0;
 }
