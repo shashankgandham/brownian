@@ -5,23 +5,21 @@ inline point crossmul(point a, point b) {
 }
 
 inline point stochastic_reflection(point rf, point rs) {
-	double m_beta = mass_fl/kbt, random_e = pow(1 - ran(), 2), val, v[4], den, x[4], z = 2;
-	point un, ut, t;
-	den = sqrt((rs*rs).sum());
+	double m_beta = mass_fl/kbt, random_e = pow(1 - ran(), 2), val, v[4], x[4], z = 2;
+	point un, ut, t, n;
+	n = rs/sqrt((rs*rs).sum());
 	val = sqrt(-log(random_e)/m_beta);
 
-	un = (rs*val)/den;
+	un = n*val;
 	t = img(t.random(rf, len), len);
 	ut = crossmul(un, t);
 	ut = ut/sqrt((ut*ut).sum());
-
 	while(z > 1) {
 		x[1] = 2.0 * ran() - 1, x[2] = 2.0 * ran() - 1;
 		z = x[1]*x[1] + x[2]*x[2];
 	}
 	z = sqrt((-2.0*log(z))/z);
 	v[1] = x[1]*z*sqrt(kbt/mass_fl); v[2] = x[2]*z*sqrt(kbt/mass_fl);
-
 	return ut*v[1] + un;
 }
 
@@ -40,6 +38,7 @@ void fluid_colloid_collision() {
 				u  = stochastic_reflection(pos_fl[l], rs);
 				vel_fl[l] = u + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
 				vc += (dump_vel_fl[l] - vel_fl[l]);
+				u = (dump_vel_fl[l] - vel_fl[l]);
 				omega += crossmul(rs, (dump_vel_fl[l] - vel_fl[l]));
 				pos_fl[l] = mod(pos_fl[l] + vel_fl[l]*dt*0.5, len);
 			}
