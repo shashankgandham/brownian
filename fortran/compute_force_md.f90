@@ -6,7 +6,6 @@ subroutine compute_force_md
     double precision :: ffx,ffy,ffz, mag_f,pot1, r2
     potential_colloid =0.0d0
     f=0.0d0
-
 	do i=1,no_of_colloid
 		do j=1,n_neighbour(i)
 			m = neighbour(j,i)
