@@ -17,6 +17,7 @@ int main() {
 	neighbour_list_md();
 	compute_force_md();
 	tumble();
+    exit(0);
 	printf("After Tumble\n");
 	for(int nn = 1; nn <= niter; nn++) {
         printf("%d\n", nn);
@@ -48,7 +49,6 @@ int main() {
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-        exit(0);
     }
 	return 0;
 }
