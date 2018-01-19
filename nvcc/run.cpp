@@ -4,7 +4,7 @@ void tumble(){
 	for (int i = 1; i <= no_of_colloid; i++) {
 		ra[i] = img(pos_colloid[i] - ra[i].random(point(0, 0, 0), len), len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
-	}
+    }
 }
 
 void run() {
