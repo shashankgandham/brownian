@@ -56,7 +56,7 @@ struct point {
 	inline double sum()  { return (x + y + z); }
 	inline double prod() { return (x * y * z); }
 	inline int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
-	inline void print(FILE *fp = stdout)  { fprintf(fp, "%.16lf %0.16lf %0.16lf\n", x, y, z); }
+	inline void print(FILE *fp = stdout)  { fprintf(fp, "%36.32lf %35.32lf %35.32lf\n", x, y, z); }
 	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
 		x = ran(); y = ran(); z = ran();
 		*this = (*this)*mul - dec;
@@ -70,7 +70,6 @@ struct point {
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
-inline point abs(point a)   { return ((point(abs(a.x), abs(a.y), abs(a.z)) )); }
 inline point round(point a) { return ((point(round(a.x), round(a.y), round(a.z)))); }
 inline point mod(point a, point b) { return ((a - b*(round((a - b/2)/b)))); }
 inline point img(point a, point b) { return ((a - b*round(a/b))); }

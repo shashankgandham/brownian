@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
 point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30);
-int n = 10, niter = 21000, file = 0, nbin = 300, maxpart = 100, no_of_colloid = 1, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *fluid_no, *iv, seed = 77777;
+int n = 10, niter = 21000, file = 0, nbin = 300, maxpart = 100, no_of_colloid = 10, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *fluid_no, *iv, seed = 77777;
 int no_of_fluid = len.prod()*10, *no_neigh, *neigh_fl[10005], *neighbour[256], *n_neighbour, *box_neigh[512], **box_part, **cell_part, ntab = 32;
 double kbt = 1, kbt1 = 1, ndt = 0.1, dv = 0.1, mass_fl = 1.0, mass_colloid = 654.1, sig_colloid = 5.0, eps = 1.0, v0 = 0.04;
 double dt = ndt/(double)n, sigma = 0.80*sig_colloid, I_colloid = 0.1*mass_colloid*sigma*sigma, potential_colloid;
@@ -19,7 +19,7 @@ int main() {
 	tumble();
 	printf("After Tumble\n");
 	for(int nn = 1; nn <= niter; nn++) {
-		printf("%d\n", nn);
+       	printf("%d\n", nn);
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
@@ -28,13 +28,13 @@ int main() {
 			neighbour_list_md();
 			update_pos_mpcd();
 			neighbour_list_mpcd();
-			if(!(l%10) && nn > 10000)
-				updown_velocity();
+			if(!(l%10) && nn > 10000) updown_velocity();
 			fluid_colloid_collision();
 			update_activity_direction();
 			compute_force_md();
 			update_velocity_colloid();
 		}
+
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;
 		for(int i = 1; i <= no_of_colloid; i++) {
 			ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();

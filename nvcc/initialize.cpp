@@ -37,13 +37,14 @@ void initialize_colloid() {
 		if(nofp < no_of_colloid) pos_colloid[nofp] = iter;
 		else break;
 	}
+    int tempx = 0;
 	while(counter < no_of_colloid) {
 		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
-			temp = abs(img(t - pos_colloid[j], len));
-			check = ((temp*temp).sum() < space_limit)? 0: check;
-		}
+			temp = img(t - pos_colloid[j], len);
+			check = (sqrt((temp*temp).sum()) < space_limit)? 0: check;
+        }
 		if(check)
 			pos_colloid[++counter] = t;
 	}
