@@ -62,7 +62,7 @@ struct point {
 		*this = (*this)*mul - dec;
 		return *this;
 	}
-	inline void next(point len, point inc = point(1, 1, 1), point start = point(1,1,1)) {
+	inline void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
 		x += inc.x;
 		if(x > len.x) y += inc.y, x = start.x;
 		if(y > len.y) z += inc.z, y = start.y;

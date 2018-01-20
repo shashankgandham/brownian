@@ -44,7 +44,7 @@ void rotation_mpcd() {
 				k = cell_part[j][i];
 				del_v = vel_fl[k] - cell_vel[i];
 				vel_fl[k] = cell_vel[i] + del_v*scale_fac_mpcd;
-            }
+			}
 		}
 	}
 }

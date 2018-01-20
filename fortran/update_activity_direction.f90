@@ -30,5 +30,6 @@ subroutine update_activity_direction
         ra(3*i-2)=m11*raa(3*i-2)+m12*raa(3*i-1)+m13*raa(3*i)
         ra(3*i-1)=m21*raa(3*i-2)+m22*raa(3*i-1)+m23*raa(3*i)
         ra(3*i)=m31*raa(3*i-2)+m32*raa(3*i-1)+m33*raa(3*i)
+
     enddo  
 end subroutine update_activity_direction
