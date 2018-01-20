@@ -16,6 +16,7 @@ subroutine neighbour_list_mpcd
         fluid_no(box_no) = fluid_no(box_no) + 1
         j = fluid_no(box_no)
         box_part(j,box_no) = i
+
     enddo
     do j=1,no_of_colloid
         no_neigh(j)=0
@@ -29,6 +30,7 @@ subroutine neighbour_list_mpcd
                 ii=box_part(i,mm)
                 no_neigh(j)=no_neigh(j)+1
                 neigh_fl(no_neigh(j),j)=ii
+                
             enddo
         enddo
     enddo

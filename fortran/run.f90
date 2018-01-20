@@ -58,6 +58,8 @@ subroutine run
            vel_fl(3*mm-2)=vel_fl(3*mm-2)-dumx
 		   vel_fl(3*mm-1)=vel_fl(3*mm-1)-dumy
 		   vel_fl(3*mm)=vel_fl(3*mm)-dumz
+		    
+              
         enddo
 	enddo
 end subroutine run

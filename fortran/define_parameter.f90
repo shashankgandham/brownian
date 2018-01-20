@@ -5,8 +5,8 @@ module all_parameters
 	double precision,parameter:: dt=ndt/dfloat(n),pi=3.14159265d0
 
 	integer,parameter:: thermostat=1,step_thermo=2
-	integer,parameter:: lx=30,ly=30,lz=30,dt2=dt*dt
-    double precision,parameter:: llx=dfloat(lx), lly=dfloat(ly)
+	integer,parameter:: lx=30,ly=30,lz=30
+    double precision,parameter:: llx=dfloat(lx), lly=dfloat(ly), dt2=dt*dt
 	double precision,parameter:: llz=dfloat(lz), llxby2=llx/2.0d0
 	double precision,parameter:: llyby2=lly/2.0d0, llzby2=llz/2.0d0
     double precision,parameter:: inv_llx=1.0d0/llx,inv_lly=1.0d0/lly
