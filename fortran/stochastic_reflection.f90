@@ -50,7 +50,6 @@
        uty=v1*uty
        utz=v1*utz
 
-!      write(1212,*) utx*unx+uty*uny+utz*unz
       u1=unx+utx !x component of fluid velocity after fluid colloid collision
       u2=uny+uty
       u3=unz+utz

@@ -20,5 +20,5 @@ subroutine update_pos_md
 		if (pos_colloid(3*i-2).lt.0.0d0 )   pos_colloid(3*i-2) = pos_colloid(3*i-2) +llx
         if (pos_colloid(3*i-1).lt.0.0d0 )   pos_colloid(3*i-1) = pos_colloid(3*i-1) +lly
        	if (pos_colloid(3*i).lt.0.0d0 )   pos_colloid(3*i) = pos_colloid(3*i) +llz
-	enddo
+    enddo
 end subroutine update_pos_md

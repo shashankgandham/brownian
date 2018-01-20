@@ -45,5 +45,5 @@ void fluid_colloid_collision() {
 		}
 		vel_colloid[j] 	   += vc*mass_fl/mass_colloid;
 		ang_vel_colloid[j] += omega*mass_fl/I_colloid;
-	}
+    }
 }

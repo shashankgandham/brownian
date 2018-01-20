@@ -18,7 +18,7 @@ subroutine run
 		dumy=vel_colloid(3*i-1)
 		dumz=vel_colloid(3*i)
                 
-                delx=ra(3*i-2)*v0
+        delx=ra(3*i-2)*v0
 		dely=ra(3*i-1)*v0
 		delz=ra(3*i)*v0
 
@@ -35,8 +35,8 @@ subroutine run
 			vector_z=pos_fl(3*jj)-pos_colloid(3*i)
 
 			vector_x =vector_x - llx*anint(vector_x*inv_llx)
-                        vector_y =vector_y - lly*anint(vector_y*inv_lly)
-                        vector_z =vector_z - llz*anint(vector_z*inv_llz)
+            vector_y =vector_y - lly*anint(vector_y*inv_lly)
+            vector_z =vector_z - llz*anint(vector_z*inv_llz)
 
 			vector=vector_x*vector_x+vector_y*vector_y+vector_z*vector_z
 			vector_x = vector_x*vel_colloid(3*i-2)
@@ -45,7 +45,7 @@ subroutine run
 			dot      = vector_x+vector_y+vector_z
 
         	if(vector.le.(sigma*0.50d0+0.5)**2.and.dot.le.0.0d0) then
-         	        cnt(i)=cnt(i)+1
+         	    cnt(i)=cnt(i)+1
          		nbr(cnt(i),i)=jj
 	        endif
         enddo
@@ -54,10 +54,10 @@ subroutine run
 		   mm=nbr(ii,i)
 		   xx=vel_fl(3*mm-2)
 		   temp = mass_colloid/(mass_fl*dfloat(cnt(i)))
-                   dumx = delx*temp; dumy = dely*temp; dumz = delz*temp
-                   vel_fl(3*mm-2)=vel_fl(3*mm-2)-dumx
+           dumx = delx*temp; dumy = dely*temp; dumz = delz*temp
+           vel_fl(3*mm-2)=vel_fl(3*mm-2)-dumx
 		   vel_fl(3*mm-1)=vel_fl(3*mm-1)-dumy
 		   vel_fl(3*mm)=vel_fl(3*mm)-dumz
-		enddo
+        enddo
 	enddo
 end subroutine run

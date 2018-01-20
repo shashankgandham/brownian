@@ -27,7 +27,7 @@ subroutine compute_force_md
                 ffx = mag_f*x12/r; ffy = mag_f*y12/r; ffz = mag_f*z12/r
                 f(3*i-2)=f(3*i-2) + ffx; f(3*i-1) = f(3*i-1) + ffy; f(3*i) = f(3*i) + ffz
                 f(3*m-2)=f(3*m-2) - ffx; f(3*m-1) = f(3*m-1) - ffy; f(3*m) = f(3*m) - ffz
-        	endif
+            endif
 		enddo
 	enddo
 end subroutine compute_force_md

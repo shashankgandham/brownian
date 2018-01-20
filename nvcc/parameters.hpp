@@ -4,7 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <climits>
-extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed;
+extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed, nn;
 extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
 
@@ -62,7 +62,7 @@ struct point {
 		*this = (*this)*mul - dec;
 		return *this;
 	}
-	inline void next(point len, point inc = point(1, 1, 1), point start = point(0, 0, 0)) {
+	inline void next(point len, point inc = point(1, 1, 1), point start = point(1,1,1)) {
 		x += inc.x;
 		if(x > len.x) y += inc.y, x = start.x;
 		if(y > len.y) z += inc.z, y = start.y;
