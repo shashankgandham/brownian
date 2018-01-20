@@ -89,7 +89,7 @@ subroutine rotation_mpcd      !rotation step for all fluid particles
             		vel_fl(3*k-2) = cell_velx(i) + del_vx1(k)*scale_fac_mpcd
             		vel_fl(3*k-1) = cell_vely(i) + del_vy1(k)*scale_fac_mpcd
             		vel_fl(3*k)   = cell_velz(i) + del_vz1(k)*scale_fac_mpcd
-         		end do
+                end do
         	endif
 		end do
 	end if

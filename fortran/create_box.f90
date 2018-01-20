@@ -23,7 +23,7 @@ subroutine create_box
                     	   if(temp /= box ) then
                     	     nbox = nbox +1
                    			 box_neigh(nbox,box) = temp
-                   			endif
+                           endif
                    		enddo
                		enddo
           		enddo

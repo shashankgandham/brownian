@@ -46,7 +46,6 @@
        velx2=0.0d0
        vely2=0.0d0
        velz2=0.0d0
-!      write(*,*) cnt(i),up_cnt(i)
 
       if (cnt(i)>0.and.up_cnt(i)>0) then
        do ii=1,cnt(i)
@@ -78,7 +77,6 @@
         vely2=vely2/dfloat(cnt(i))
         velz2=velz2/dfloat(cnt(i))
 
-       write(172,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2 
        
        up_velx2=up_velx2-vel_colloid(3*i-2) !relative avg vel along colloid velocity
        up_vely2=up_vely2-vel_colloid(3*i-1) 
@@ -88,7 +86,6 @@
         vely2=vely2-vel_colloid(3*i-1)
         velz2=velz2-vel_colloid(3*i)
 
-       write(173,fmt='(9g25.15)') qq,velx2,up_velx2,vely2,up_vely2,velz2,up_velz2
       endif
       enddo
        end subroutine 

@@ -49,14 +49,16 @@ subroutine fluid_colloid_collision
 
 
             	call stochastic_reflection    !for stick boundary condition
-
+                
 				cx = ang_vel_colloid(3*j-1)*rsz-ang_vel_colloid(3*j)*rsy
 				cy = ang_vel_colloid(3*j)*rsx -ang_vel_colloid(3*j-2)*rsz
 				cz = ang_vel_colloid(3*j-2)*rsy-ang_vel_colloid(3*j-1)*rsx
            		vel_fl(3*lll-2)=u1+vel_colloid(3*j-2)+cx
            		vel_fl(3*lll-1)=u2+vel_colloid(3*j-1)+cy
            		vel_fl(3*lll)=u3+vel_colloid(3*j)+cz
-                
+       !         if(nn==94) then
+        !       write(*, fmt='(3F36.32)') vel_fl(3*lll-2), vel_fl(3*lll-1), vel_fl(3*lll)
+        !      endif
                 v1=dump_vel_fl(3*lll-2)-vel_fl(3*lll-2)
           		v2=dump_vel_fl(3*lll-1)-vel_fl(3*lll-1)
           		v3=dump_vel_fl(3*lll)-vel_fl(3*lll)
@@ -88,5 +90,5 @@ subroutine fluid_colloid_collision
         ang_vel_colloid(3*j-2)=ang_vel_colloid(3*j-2)+cx
         ang_vel_colloid(3*j-1)=ang_vel_colloid(3*j-1)+cy
         ang_vel_colloid(3*j)=ang_vel_colloid(3*j)+cz
-	enddo
+    enddo
 end subroutine fluid_colloid_collision

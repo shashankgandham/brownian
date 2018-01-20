@@ -11,25 +11,26 @@ program colloid
 	call neighbour_list_md
 	call compute_force_md
 	call tumble
-    call exit(0)
     write(*,*) "After Tumble"
     do nn = 1, niter
 		write(*,*) nn
 		call rotation_mpcd
 		call run
-        do l=1,n
+         do l=1,n
 			qq=(nn-1)*10+l
 			old_force=f
 			call update_pos_md
 			call neighbour_list_md
 			call update_pos_mpcd  
 			call neighbour_list_mpcd
+    
 			if(mod(qq,10).eq.0.and.nn>10000) call updown_velocity
 		    call fluid_colloid_collision
             call update_activity_direction
-			call compute_force_md
-			call update_velocity_colloid
-		enddo
+	        call compute_force_md
+		    call update_velocity_colloid
+
+       	enddo
         ke_colloid=0.0d0;ke_fluid=0.0d0;ang_ke_colloid=0.0d0
 
 		do   i=1,no_of_colloid
@@ -65,5 +66,17 @@ program colloid
 		mom_x=mom1_x+mom2_x
 		mom_y=mom1_y+mom2_y
 		mom_z=mom1_z+mom2_z
+        if(nn == 100) then
+        do i=1,no_of_colloid
+                write(*, fmt='(3F36.32)') pos_colloid(3*i-2), pos_colloid(3*i-1), pos_colloid(3*i)
+                write(*, fmt='(3F36.32)') vel_colloid(3*i-2), vel_colloid(3*i-1), vel_colloid(3*i)
+               write(*, fmt='(3F36.32)') ang_vel_colloid(3*i-2), ang_vel_colloid(3*i-1), ang_vel_colloid(3*i)
+        enddo
+        write(*,*)
+        do i=1, no_of_fluid
+            write(*, fmt='(3F36.32)') pos_fl(3*i-2), pos_fl(3*i-1), pos_fl(3*i)
+            write(*, fmt='(3F36.32)') vel_fl(3*i-2), vel_fl(3*i-1), vel_fl(3*i)
+        enddo
+    endif
 	enddo
 end program colloid
