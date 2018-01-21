@@ -33,8 +33,7 @@ int main() {
             update_activity_direction();
             compute_force_md();
             update_velocity_colloid();
-	    if(nn == 209 && l == 8) exit(0);
-	}
+        }
         ke_colloid = ke_fluid = ang_ke_colloid = 0;
         for(int i = 1; i <= no_of_colloid; i++) {
             ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();
@@ -49,19 +48,6 @@ int main() {
         ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
         energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
         ke_fluid = 0.5*ke_fluid*mass_fl;
-        if(nn == 209) {
-         for(int i = 1; i <= no_of_colloid; i++) {
-              pos_colloid[i].print();
-              vel_colloid[i].print();
-              ang_vel_colloid[i].print();
-          }
-         printf("\n");
-         for(int i = 1; i <= no_of_fluid; i++) {
-            pos_fl[i].print();
-            vel_fl[i].print();
-         }
-	exit(0);
-       }
     }
     return 0;
 }

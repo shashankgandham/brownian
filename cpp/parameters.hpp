@@ -4,7 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <climits>
-extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed;
+extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed, nn;
 extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
 
@@ -56,21 +56,20 @@ struct point {
 	inline double sum()  { return (x + y + z); }
 	inline double prod() { return (x * y * z); }
 	inline int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
-	inline void print(FILE *fp = stdout)  { fprintf(fp, "%.16lf %0.16lf %0.16lf\n", x, y, z); }
+	inline void print(FILE *fp = stdout)  { fprintf(fp, "%36.32lf %35.32lf %35.32lf\n", x, y, z); }
 	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
 		x = ran(); y = ran(); z = ran();
 		*this = (*this)*mul - dec;
 		return *this;
 	}
-	inline void next(point len, int inc) {
-		x += inc;
-		if(x > len.x) y += inc, x = 1;
-		if(y > len.y) z += inc, y = 1;
+	inline void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
+		x += inc.x;
+		if(x > len.x) y += inc.y, x = start.x;
+		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
-inline point abs(point a)   { return ((point(abs(a.x), abs(a.y), abs(a.z)) )); }
-inline point round(point a) { return ((point(round(a.x), round(a.y), round(a.z)))); }
-inline point mod(point a, point b) { return ((a - b*(round((a - b/2)/b)))); }
-inline point img(point a, point b) { return ((a - b*round(a/b))); }
+inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
+inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
+inline point img(point a, point b)  { return a - b*round(a/b); }

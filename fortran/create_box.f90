@@ -24,7 +24,6 @@ subroutine create_box
                          if(temp /= box ) then
                     	     nbox = nbox +1
                    			 box_neigh(nbox,box) = temp
-                         !if (l > 25) write(*,*) temp, nbox, box
                            endif
                    		enddo
                		enddo
@@ -32,5 +31,4 @@ subroutine create_box
     	   	enddo
 		enddo
 	enddo
-!  call exit(0)
 end subroutine create_box

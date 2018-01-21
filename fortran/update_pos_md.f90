@@ -5,8 +5,6 @@ subroutine update_pos_md
 	double precision :: ddt
 
 	ddt = (0.5d0*dt2)/mass_colloid
-	!write(*, fmt='(3F36.32)') dt2, ddt
-	!call exit(0)
 	do i=1,no_of_colloid
 		dx=vel_colloid(3*i-2)*dt + f(3*i-2)*ddt
 		dy=vel_colloid(3*i-1)*dt + f(3*i-1)*ddt
@@ -23,6 +21,5 @@ subroutine update_pos_md
 		if (pos_colloid(3*i-2).lt.0.0d0 )   pos_colloid(3*i-2) = pos_colloid(3*i-2) +llx
         if (pos_colloid(3*i-1).lt.0.0d0 )   pos_colloid(3*i-1) = pos_colloid(3*i-1) +lly
        	if (pos_colloid(3*i).lt.0.0d0 )   pos_colloid(3*i) = pos_colloid(3*i) +llz
-       	
     enddo
 end subroutine update_pos_md

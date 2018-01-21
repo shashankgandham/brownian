@@ -29,8 +29,7 @@ program colloid
             call update_activity_direction
 	        call compute_force_md
 		    call update_velocity_colloid
-		if (l == 8 .and. nn == 209) call exit(0)
-       	enddo
+        enddo
        	
         ke_colloid=0.0d0;ke_fluid=0.0d0;ang_ke_colloid=0.0d0
 
@@ -67,20 +66,5 @@ program colloid
 		mom_x=mom1_x+mom2_x
 		mom_y=mom1_y+mom2_y
 		mom_z=mom1_z+mom2_z
-        if(nn == 209)    then
-      	call exit(0) 
-        do i=1,no_of_colloid
-                write(*, fmt='(3F36.32)') pos_colloid(3*i-2), pos_colloid(3*i-1), pos_colloid(3*i)
-                write(*, fmt='(3F36.32)') vel_colloid(3*i-2), vel_colloid(3*i-1), vel_colloid(3*i)
-               write(*, fmt='(3F36.32)') ang_vel_colloid(3*i-2), ang_vel_colloid(3*i-1), ang_vel_colloid(3*i)
-        enddo
-        write(*,*)
-        do i=1, no_of_fluid
-            write(*, fmt='(3F36.32)') pos_fl(3*i-2), pos_fl(3*i-1), pos_fl(3*i)
-            write(*, fmt='(3F36.32)') vel_fl(3*i-2), vel_fl(3*i-1), vel_fl(3*i)
-        enddo
-         	call exit(0)
-
-        endif
 	enddo
 end program colloid

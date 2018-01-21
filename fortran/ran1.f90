@@ -6,7 +6,7 @@
 ! __________________________________________________________________
 !
       INTEGER :: IDUM
-      REAL*8 :: ran1
+      double precision :: ran1
       integer,parameter :: IM1=2147483563,IM2=2147483399
       integer,parameter :: IMM1=IM1-1,IA1=40014,IA2=40692,IQ1=53668,IQ2=52774,IR1=12211,IR2=3791, NTAB=32
         integer,parameter :: NDIV=1+IMM1/NTAB
