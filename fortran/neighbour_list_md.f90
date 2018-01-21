@@ -22,7 +22,6 @@ subroutine neighbour_list_md
             if(r2.lt.neigh_cutoff2) then
                 n_neighbour(i)=n_neighbour(i)+1
                 neighbour(n_neighbour(i),i)=j
-                !write (*,*)  neighbour(n_neighbour(i), i), n_neighbour(i), i
            endif
         enddo
     enddo
