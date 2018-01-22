@@ -1,30 +1,24 @@
 #include "parameters.hpp"
 
 void initialize() {
-	point **ppointers[]  = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
+	size_t devPitch;
+	cudaError_t s1, s2, s3, s4, s5, s6, s7;
+	point **ppointers[]  = {&pos_fl, &vel_fl, &dump_vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
 	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
-	int isize[]          = {len.prod(), no_of_colloid };
-	int psize[]          = {no_of_fluid, no_of_colloid};
-
-	box_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
-	cell_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
-	nbr 		= (int **)calloc(7005,sizeof(int *));
-	up_nbr 		= (int **)calloc(7005,sizeof(int *));
-    iv = (int *)calloc(ntab + 2, sizeof(int));
-
-	for(int i = 0; i < 8; i++) {
+	int isize[]          = {(int)len.prod(), no_of_colloid};
+ 	int psize[]          = {no_of_fluid, no_of_colloid};
+	s1 = cudaMallocPitch(&box_part,  &devPitch, sizeof(int)*(len.prod() + 2), maxpart + 2);	
+	s2 = cudaMallocPitch(&cell_part, &devPitch, sizeof(int)*(len.prod() + 2), maxpart + 2);
+	s3 = cudaMallocPitch(&box_neigh, &devPitch, sizeof(int)*(len.prod() + 2), 512);
+	s4 = cudaMallocPitch(&nbr,       &devPitch, sizeof(int)*(no_of_colloid + 2), 7002);
+	s5 = cudaMallocPitch(&up_nbr,    &devPitch, sizeof(int)*(no_of_colloid + 2), 7002);
+	s6 = cudaMallocPitch(&neighbour, &devPitch, sizeof(int)*(no_of_colloid + 2), 256);
+	s7 = cudaMallocPitch(&neigh_fl,  &devPitch, sizeof(int)*(no_of_colloid + 2), 10002);
+	cell_vel = (point *)malloc((len.prod() + 1)*sizeof(point));
+	iv = (int *)calloc(ntab + 2, sizeof(int));
+	for(int i = 0; i < 9; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
-				  *ppointers[i] = (point *)calloc(psize[i>1] + 2, sizeof(point));
-
-	}
-	for(int i = 0; i <= 10000; i++) {
-		if(i <= 500)      box_neigh[i] = (int *)calloc(sizeof(int),(len.prod()    + 2));
-		if(i <= maxpart)  box_part[i]  = (int *)calloc(sizeof(int),(len.prod()    + 2));
-		if(i <= maxpart)  cell_part[i] = (int *)calloc(sizeof(int),(len.prod()    + 2));
-		if(i <= 200)      neighbour[i] = (int *)calloc(sizeof(int),(no_of_colloid + 2));
-		if(i <= 7000)     nbr[i]       = (int *)calloc(sizeof(int),(no_of_colloid + 2));
-		if(i <= 7000)     up_nbr[i]    = (int *)calloc(sizeof(int),(no_of_colloid + 2));
-						  neigh_fl[i]  = (int *)calloc(sizeof(int),(no_of_colloid + 2));
+				  *ppointers[i] = (point *)calloc(psize[i>2] + 2, sizeof(point));
 	}
 }
 

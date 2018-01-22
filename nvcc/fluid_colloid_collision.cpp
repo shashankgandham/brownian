@@ -24,8 +24,8 @@ inline point stochastic_reflection(point rf, point rs) {
 }
 
 void fluid_colloid_collision() {
-	point rr, rs, dump_vel_fl[no_of_fluid + 1], u, omega, vc;
-	std::copy(vel_fl, vel_fl + no_of_fluid + 1, dump_vel_fl);
+	point rr, rs, u, omega, vc;
+	cudaMemcpy(dump_vel_fl, vel_fl, sizeof(point)*(no_of_fluid + 1), cudaMemcpyHostToHost);
 
 	for (int j = 1; j <= no_of_colloid; j++) {
 		vc = omega = point(0, 0, 0);
