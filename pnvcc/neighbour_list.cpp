@@ -1,9 +1,12 @@
 #include "parameters.hpp"
 
 inline point cmod(point a, point b) {  
-    if(a.x <=  0) a.x += b.x; if(a.y <=  0) a.y += b.y;
-    if(a.z <=  0) a.z += b.z; if(a.x > b.x) a.x -= b.x;
-    if(a.y > b.y) a.y -= b.y; if(a.z > b.z) a.z -= b.z;
+    if(a.x <= 0) a.x += b.x;
+    if(a.y <=  0) a.y += b.y;
+    if(a.z <=  0) a.z += b.z;
+    if(a.x >  b.x) a.x -= b.x;
+    if(a.y > b.y) a.y -= b.y;
+    if(a.z > b.z) a.z -= b.z;
     return a;
 }
 void create_box() {
