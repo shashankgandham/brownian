@@ -1,5 +1,4 @@
-#include "parameters.hpp"
-
+#include "parameters.cuh"
 inline point cmod(point a, point b) {  
     if(a.x <= 0) a.x += b.x;
     if(a.y <=  0) a.y += b.y;

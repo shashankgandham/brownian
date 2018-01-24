@@ -1,10 +1,15 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
 
 point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30);
 int n = 10, niter = 21000, file = 0, nbin = 300, maxpart = 100, no_of_colloid = 10, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *fluid_no, *iv, seed = 77777;
 int no_of_fluid = len.prod()*10, *no_neigh, *neigh_fl[10005], *neighbour[256], *n_neighbour, *box_neigh[512], **box_part, **cell_part, ntab = 32, nn;
 double kbt = 1, kbt1 = 1, ndt = 0.1, dv = 0.1, mass_fl = 1.0, mass_colloid = 654.1, sig_colloid = 5.0, eps = 1.0, v0 = 0.04;
 double dt = ndt/(double)n, sigma = 0.80*sig_colloid, I_colloid = 0.1*mass_colloid*sigma*sigma, potential_colloid;
+
+__global__ void cuda_fluid(int *x, int *y){
+  	y[blockIdx.x] = x[blockIdx.x] + y[blockIdx.x]; 
+}
+
 
 int main() {
     double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
@@ -18,7 +23,7 @@ int main() {
     compute_force_md();
     tumble();
     printf(" After Tumble\n");
-    for(nn = 1; nn <= niter; nn++) {
+    for(nn = 1; nn <= 1; nn++) {
         printf("%12d\n", nn);
         rotation_mpcd();
         run();
@@ -49,5 +54,28 @@ int main() {
         energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
         ke_fluid = 0.5*ke_fluid*mass_fl;
     }
+
+    int *x, *y, a = 5, *d_x, *d_y, i;
+    x = (int *)calloc(no_of_colloid,sizeof(int));
+    y = (int *)calloc(no_of_colloid,sizeof(int));
+    for (i = 0; i < no_of_colloid; i++){
+    	x[i] = 1; y[i] = 2;
+    }
+
+	cudaMalloc(&d_x, no_of_colloid*sizeof(int)); 
+  	cudaMalloc(&d_y, no_of_colloid*sizeof(int));
+    cudaMemcpy(d_x, x, no_of_colloid*sizeof(int), cudaMemcpyHostToDevice);
+  	cudaMemcpy(d_y, y, no_of_colloid*sizeof(int), cudaMemcpyHostToDevice);
+ 
+    cuda_fluid<<<no_of_colloid,1>>>(d_x, d_y);
+
+	cudaMemcpy(y, d_y, no_of_colloid*sizeof(int), cudaMemcpyDeviceToHost);
+	for (i = 0; i < no_of_colloid; i++)
+		printf("y: %d\n", y[i]);
+
+	free(x); free(y);
+	cudaFree(d_x); cudaFree(d_y);	
+
+
     return 0;
 }
