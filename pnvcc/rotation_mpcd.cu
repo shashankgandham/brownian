@@ -1,4 +1,5 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
+
 
 void rotation_mpcd() {
 	int k, cell_no;

@@ -1,4 +1,4 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
 
 double mag_f, r_cutoff = pow(2, 1.0/6.0)*sig_colloid, r;
 double fc = 4.0*eps*(12.0*(pow(sig_colloid,12)/pow(r_cutoff,13)) - 6.0*(pow(sig_colloid, 6)/pow(r_cutoff, 7)));

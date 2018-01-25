@@ -1,4 +1,4 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
 
 void tumble(){
 	for (int i = 1; i <= no_of_colloid; i++) {

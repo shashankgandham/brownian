@@ -1,4 +1,5 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
+#include "cuda.h"
 
 void initialize() {
 	point **ppointers[]  = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
@@ -6,11 +7,12 @@ void initialize() {
 	int isize[]          = {len.prod(), no_of_colloid };
 	int psize[]          = {no_of_fluid, no_of_colloid};
 
-	box_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
-	cell_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
+	//calloc((int**)&box_part, )
+	box_part 	= (int **)calloc((maxpart + 2), sizeof(int *));
+	cell_part 	= (int **)calloc((maxpart + 2), sizeof(int *));
 	nbr 		= (int **)calloc(7005,sizeof(int *));
 	up_nbr 		= (int **)calloc(7005,sizeof(int *));
-    iv = (int *)calloc(ntab + 2, sizeof(int));
+    iv = (int *)calloc((ntab + 2), sizeof(int));
 
 	for(int i = 0; i < 8; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
