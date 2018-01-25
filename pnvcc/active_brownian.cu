@@ -18,7 +18,8 @@ int main() {
     compute_force_md();
     tumble();
     printf(" After Tumble\n");
-    for(nn = 1; nn <= niter; nn++) {
+    //for(nn = 1; nn <= niter; nn++) {
+    for (nn = 1; nn <= 1; nn++){}    
         printf("%12d\n", nn);
         rotation_mpcd();
         run();

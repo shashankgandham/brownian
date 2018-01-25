@@ -24,7 +24,7 @@ module all_parameters
     double precision,parameter:: vscale_fluid=dsqrt(12.0d0*kbt/mass_fl)
     double precision          ::scale_fac_mpcd
         
-    integer,parameter           ::no_of_colloid=10
+    integer,parameter           ::no_of_colloid=1
     double precision,parameter  ::mass_colloid=654.10d0,vscale_colloid=dsqrt(12.0d0*kbT1/mass_colloid)
     double precision,parameter  ::sig_colloid=5.0d0,r_cutoff=2.0**(1.0d0/6.0d0)*sig_colloid
     double precision,parameter  ::eps=1.0d0,space_limit=1.3d0*sig_colloid
