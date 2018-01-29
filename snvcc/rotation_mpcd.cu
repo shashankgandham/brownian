@@ -3,8 +3,8 @@
 void rotation_mpcd() {
 	int k, cell_no;
 	double r[4], ir[4], theta, phi, rho, var, scale_fac_mpcd, ct, st, ict;
-	point cell_vel[(int)len.prod() + 1], del_v, rr, rot[4];
-
+	point *cell_vel, del_v, rr, rot[4];
+	cell_vel = (point *)malloc((len.prod() + 2)*sizeof(point));
 	memset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
 	rr.random(point(0.5, 0.5, 0.5));
 	for(int i = 1; i <= no_of_fluid; i++) {

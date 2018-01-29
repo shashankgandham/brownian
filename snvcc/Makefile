@@ -1,30 +1,29 @@
-COMPILER = g++
+COMPILER = nvcc
 EXECUTABLE = a.out
 FLAGS = -O3 -pg
 # Object Files for build
 OBJS = .fluid_colloid_collision.o .initialize.o .neighbour_list.o .update.o .rotation_mpcd.o .run.o
 
-$(EXECUTABLE) : active_brownian.cpp parameters.hpp $(OBJS)
-	$(COMPILER) $(FLAGS) -o $(EXECUTABLE) parameters.hpp active_brownian.cpp $(OBJS)
+$(EXECUTABLE) : active_brownian.cu parameters.hpp $(OBJS)
 
 # Object dependencies and compilation
-.fluid_colloid_collision.o : fluid_colloid_collision.cpp
-	 $(COMPILER) $(FLAGS) -c fluid_colloid_collision.cpp -o .fluid_colloid_collision.o
+.fluid_colloid_collision.o : fluid_colloid_collision.cu
+	 $(COMPILER) $(FLAGS) -c fluid_colloid_collision.cu -o .fluid_colloid_collision.o
 
-.initialize.o : initialize.cpp
-	$(COMPILER) $(FLAGS) -c initialize.cpp -o .initialize.o
+.initialize.o : initialize.cu
+	$(COMPILER) $(FLAGS) -c initialize.cu -o .initialize.o
 
-.neighbour_list.o : neighbour_list.cpp
-	$(COMPILER) $(FLAGS) -c neighbour_list.cpp -o .neighbour_list.o
+.neighbour_list.o : neighbour_list.cu
+	$(COMPILER) $(FLAGS) -c neighbour_list.cu -o .neighbour_list.o
 
-.update.o : update.cpp
-	 $(COMPILER) $(FLAGS) -c update.cpp -o .update.o
+.update.o : update.cu
+	 $(COMPILER) $(FLAGS) -c update.cu -o .update.o
 
-.rotation_mpcd.o : rotation_mpcd.cpp
-	 $(COMPILER) $(FLAGS) -c rotation_mpcd.cpp -o .rotation_mpcd.o
+.rotation_mpcd.o : rotation_mpcd.cu
+	 $(COMPILER) $(FLAGS) -c rotation_mpcd.cu -o .rotation_mpcd.o
 
-.run.o : run.cpp
-	$(COMPILER) $(FLAGS) -c run.cpp -o .run.o
+.run.o : run.cu
+	$(COMPILER) $(FLAGS) -c run.cu -o .run.o
 
 clean :
 	rm -f .*.o *.txt
