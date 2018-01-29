@@ -9,6 +9,7 @@ void tumble(){
 
 void run() {
 	point vector, del;
+	double temp;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;
 		cnt[i] = up_cnt[i] = 0;
@@ -18,7 +19,8 @@ void run() {
 				nbr[++cnt[i]][i] = neigh_fl[j][i];
 		}
 		for(int j = 1; j <= cnt[i]; j++) {
-			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*(mass_colloid/(mass_fl*cnt[i]));
+			temp = mass_colloid/(mass_fl*cnt[i]);
+			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*temp;
 		}
 	}
 }

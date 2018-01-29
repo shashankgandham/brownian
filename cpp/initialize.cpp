@@ -3,7 +3,7 @@
 void initialize() {
 	point **ppointers[]  = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
 	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
-	int isize[]          = {len.prod(), no_of_colloid };
+	int isize[]          = {(int)len.prod(), no_of_colloid };
 	int psize[]          = {no_of_fluid, no_of_colloid};
 
 	box_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
@@ -29,15 +29,14 @@ void initialize() {
 }
 
 void initialize_colloid() {
-	int counter = 0, check, nofp = 0, x = len.x, y = len.y, z = len.z;
+	int counter = 0, check, nofp = 0;
 	double space_limit = 1.3*sig_colloid, ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
 	point avr_vel = point(0, 0, 0), t, temp, iter = point(4, 4, 4), lim = len - point(1, 1, 1);
 
 	for(int i = 0; i <= lim.prod(); i += 5, iter.next(lim, point(5, 5, 5), point(4, 4, 4)), nofp++) {
-		if(nofp < no_of_colloid) pos_colloid[nofp] = iter;
+		if(nofp < no_of_colloid) pos_colloid[++nofp] = iter;
 		else break;
 	}
-    int tempx = 0;
 	while(counter < no_of_colloid) {
 		t = t.random(point(0, 0, 0), len);
 		check = 1;

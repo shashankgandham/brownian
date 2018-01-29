@@ -15,7 +15,6 @@ void compute_force_md() {
 	point temp, ff;
 	potential_colloid = 0;
     memset(f, 0, sizeof(int)*(no_of_colloid + 2));
-    for(int i = 0; i <= 10; i++) f[i] = 0;
     double t1, t2;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
@@ -42,27 +41,23 @@ void update_activity_direction() {
 		m[2] =  point(sb.x*sb.y*cb.z + cb.x*sb.z, -sb.x*sb.y*sb.z + cb.x*cb.z, -sb.x*cb.y);
 		m[3] =  point(-cb.x*sb.y*cb.z + sb.x*sb.z, cb.x*sb.y*sb.z + sb.x*cb.z, cb.x*cb.y);
 		ra[i] = point((m[1]*ra[i]).sum(), (m[2]*ra[i]).sum(), (m[3]*ra[i]).sum());
+	
     }
 }
 
 void update_pos_md() {
 	double dt2 = dt*dt, ddt = 0.5*dt2/mass_colloid;
-	for(int i = 1; i <= no_of_colloid; i++) {
-		pos_colloid[i] +=  vel_colloid[i]*dt + f[i]*ddt;
-		pos_colloid[i]  =  mod(pos_colloid[i], len);
-    }
+	for(int i = 1; i <= no_of_colloid; i++) 
+		pos_colloid[i] = mod(pos_colloid[i] + vel_colloid[i]*dt + f[i]*ddt, len);
 }
 
 void update_pos_mpcd() {
-	for (int i = 1; i <= no_of_fluid; i++)
+	for (int i = 1; i <= no_of_fluid; i++) 
 		pos_fl[i] = mod(pos_fl[i] + vel_fl[i]*dt, len);
 }
 
-__global__ void update_velocity_colloid(point *vel_colloid, point *old_force, point *f, double mass_colloid, double dt) {
-	int i = threadIdx.x;
-	double dtb2 = dt/(mass_colloid*2);
-	vel_colloid[i] = (old_force[i] + f[i])*dtb2;
-}
 void update_velocity_colloid() {
-	update_velocity_colloid<<<1, no_of_colloid>>>(vel_colloid, old_force, f, mass_colloid, dt);
+    double dtb2 = dt/(mass_colloid*2);
+	for (int i = 1; i <= no_of_colloid; i++)
+		vel_colloid[i] += (old_force[i] + f[i])*dtb2;
 }

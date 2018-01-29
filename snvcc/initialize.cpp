@@ -34,7 +34,7 @@ void initialize_colloid() {
 	point avr_vel = point(0, 0, 0), t, temp, iter = point(4, 4, 4), lim = len - point(1, 1, 1);
 
 	for(int i = 0; i <= lim.prod(); i += 5, iter.next(lim, point(5, 5, 5), point(4, 4, 4)), nofp++) {
-		if(nofp < no_of_colloid) pos_colloid[nofp] = iter;
+		if(nofp < no_of_colloid) pos_colloid[++nofp] = iter;
 		else break;
 	}
 	while(counter < no_of_colloid) {
