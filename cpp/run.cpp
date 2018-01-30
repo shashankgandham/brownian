@@ -20,7 +20,7 @@ void run() {
 		}
 		for(int j = 1; j <= cnt[i]; j++) {
 			temp = mass_colloid/(mass_fl*cnt[i]);
-			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*(mass_colloid/(mass_fl*cnt[i]));
+			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*temp;
 		}
 	}
 }

@@ -1,12 +1,9 @@
 #include "parameters.hpp"
 
 inline point cmod(point a, point b) {  
-    if(a.x <= 0) a.x += b.x;
-    if(a.y <=  0) a.y += b.y;
-    if(a.z <=  0) a.z += b.z;
-    if(a.x >  b.x) a.x -= b.x;
-    if(a.y > b.y) a.y -= b.y;
-    if(a.z > b.z) a.z -= b.z;
+    if(a.x <=  0) a.x += b.x;  if(a.y <=  0) a.y += b.y;
+    if(a.z <=  0) a.z += b.z; if(a.x > b.x) a.x -= b.x;
+    if(a.y > b.y) a.y -= b.y; if(a.z > b.z) a.z -= b.z;
     return a;
 }
 void create_box() {
@@ -17,8 +14,7 @@ void create_box() {
         jiter = iter - point(3, 3, 3);
         for(int j = 1; j <= 343; j++) {
             tbox = (cmod(jiter, len) - point(0, 1, 1)).cell(len);
-            if(tbox != box) 
-                box_neigh[++nbox][box] = tbox;
+            if(tbox != box) box_neigh[++nbox][box] = tbox;
             jiter.next(iter + point(3, 3, 3), point(1, 1, 1), iter - point(3, 3, 3));
         }
     }

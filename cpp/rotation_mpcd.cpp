@@ -30,7 +30,6 @@ void rotation_mpcd() {
 			}
 		}
 	}
-	int m = 0;
 	for(int i = 1; i <= len.prod(); i++) {
 		var = 0.0;
 		if(fluid_no[i] > 1) {
