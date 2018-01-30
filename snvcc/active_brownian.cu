@@ -1,4 +1,4 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
 
 int main() {
     double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
