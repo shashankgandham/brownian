@@ -32,13 +32,16 @@ int main() {
             update_pos_md();
             neighbour_list_md();
             update_pos_mpcd();
+            exit(0);
+            
             neighbour_list_mpcd();
+            
             if(!(l%10) && nn > 10000) updown_velocity();
             fluid_colloid_collision();
             update_activity_direction();
             compute_force_md();
             update_velocity_colloid();
-            exit(0);
+
         }
         ke_colloid = ke_fluid = ang_ke_colloid = 0;
         for(int i = 1; i <= no_of_colloid; i++) {
