@@ -30,7 +30,6 @@ int main() {
         for(int l = 1; l <= n; l++) {
             std::copy(f, f + no_of_colloid + 2, old_force);
             update_pos_md();
-            exit(0);
             neighbour_list_md();
             update_pos_mpcd();
             neighbour_list_mpcd();
@@ -39,6 +38,7 @@ int main() {
             update_activity_direction();
             compute_force_md();
             update_velocity_colloid();
+            exit(0);
         }
         ke_colloid = ke_fluid = ang_ke_colloid = 0;
         for(int i = 1; i <= no_of_colloid; i++) {

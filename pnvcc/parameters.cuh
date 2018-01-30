@@ -13,6 +13,7 @@ void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), 
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
 void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
 
+
 inline double ran() {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
 	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789;
@@ -57,7 +58,7 @@ struct point {
 	CUDA_CALLABLE_MEMBER double sum()  { return (x + y + z); }
 	CUDA_CALLABLE_MEMBER double prod() { return (x * y * z); }
 	CUDA_CALLABLE_MEMBER int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
-	CUDA_CALLABLE_MEMBER void print(FILE *fp = stdout)  { fprintf(fp, "%36.32lf %35.32lf %35.32lf\n", x, y, z); }
+	CUDA_CALLABLE_MEMBER void print()  { printf("%36.32lf %35.32lf %35.32lf\n", x, y, z); }
 	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
 		x = ran(); y = ran(); z = ran();
 		*this = (*this)*mul - dec;
