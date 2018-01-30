@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <climits>
+#define CUDA_CALLABLE_MEMBER __host__ __device__
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed, nn;
 extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
@@ -11,6 +12,7 @@ extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv,
 void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
 void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
+
 
 inline double ran() {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
@@ -42,27 +44,27 @@ inline double ran() {
 
 struct point {
 	double x, y, z;
-	inline point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
-	inline point operator+ (const point &op) { return point(x + op.x, y + op.y, z + op.z); }
-	inline point operator- (const point &op) { return point(x - op.x, y - op.y, z - op.z); }
-	inline point operator/ (const double &op){ return point(x / op,   y / op,   z / op);   }
-	inline point operator/ (const point &op) { return point(x / op.x, y / op.y, z / op.z); }
-	inline point operator* (const point &op) { return point(x * op.x, y * op.y, z * op.z); }
-	inline point operator* (const double &op){ return point(x * op, y * op, z * op); }
-	inline point operator+=(const point &op) { x += op.x, y += op.y, z += op.z; return *this; }
-	inline point operator-=(const point &op) { x -= op.x, y -= op.y, z -= op.z; return *this; }
-	inline bool operator==(const point &op) { return (x == op.x && y == op.y && z == op.z); }
+	CUDA_CALLABLE_MEMBER point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
+	CUDA_CALLABLE_MEMBER point operator+ (const point &op) { return point(x + op.x, y + op.y, z + op.z); }
+	CUDA_CALLABLE_MEMBER point operator- (const point &op) { return point(x - op.x, y - op.y, z - op.z); }
+	CUDA_CALLABLE_MEMBER point operator/ (const double &op){ return point(x / op,   y / op,   z / op);   }
+	CUDA_CALLABLE_MEMBER point operator/ (const point &op) { return point(x / op.x, y / op.y, z / op.z); }
+	CUDA_CALLABLE_MEMBER point operator* (const point &op) { return point(x * op.x, y * op.y, z * op.z); }
+	CUDA_CALLABLE_MEMBER point operator* (const double &op){ return point(x * op, y * op, z * op); }
+	CUDA_CALLABLE_MEMBER point operator+=(const point &op) { x += op.x, y += op.y, z += op.z; return *this; }
+	CUDA_CALLABLE_MEMBER point operator-=(const point &op) { x -= op.x, y -= op.y, z -= op.z; return *this; }
+	CUDA_CALLABLE_MEMBER bool operator==(const point &op) { return (x == op.x && y == op.y && z == op.z); }
 
-	inline double sum()  { return (x + y + z); }
-	inline double prod() { return (x * y * z); }
-	inline int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
-	inline void print(FILE *fp = stdout)  { fprintf(fp, "%36.32lf %35.32lf %35.32lf\n", x, y, z); }
+	CUDA_CALLABLE_MEMBER double sum()  { return (x + y + z); }
+	CUDA_CALLABLE_MEMBER double prod() { return (x * y * z); }
+	CUDA_CALLABLE_MEMBER int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
+	CUDA_CALLABLE_MEMBER void print()  { printf("%36.32lf %35.32lf %35.32lf\n", x, y, z); }
 	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
 		x = ran(); y = ran(); z = ran();
 		*this = (*this)*mul - dec;
 		return *this;
 	}
-	inline void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
+	CUDA_CALLABLE_MEMBER void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
 		x += inc.x;
 		if(x > len.x) y += inc.y, x = start.x;
 		if(y > len.y) z += inc.z, y = start.y;
