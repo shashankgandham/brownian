@@ -30,6 +30,7 @@ int main() {
         for(int l = 1; l <= n; l++) {
             std::copy(f, f + no_of_colloid + 2, old_force);
             update_pos_md();
+            exit(0);
             neighbour_list_md();
             update_pos_mpcd();
             neighbour_list_mpcd();
@@ -70,9 +71,7 @@ int main() {
     cuda_fluid<<<no_of_colloid,1>>>(d_x, d_y);
 
 	cudaMemcpy(y, d_y, no_of_colloid*sizeof(int), cudaMemcpyDeviceToHost);
-	for (i = 0; i < no_of_colloid; i++)
-		printf("y: %d\n", y[i]);
-
+	
 	free(x); free(y);
 	cudaFree(d_x); cudaFree(d_y);	
 

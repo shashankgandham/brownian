@@ -46,12 +46,36 @@ void update_activity_direction() {
     }
 }
 
+__global__ void cuda_update(point *cuda_pos, point *cuda_vel, point *cuda_f, double dt, double mass_colloid){
+	double dt2 = dt * dt, ddt = 0.5*dt2/mass_colloid;
+	cuda_pos[blockIdx.x] += cuda_vel[blockIdx.x]*dt + cuda_f[blockIdx.x]*ddt; 
+
+}
+
 void update_pos_md() {
-	double dt2 = dt*dt, ddt = 0.5*dt2/mass_colloid;
+	//pos_colloid[no_of_colloid].print();
+	/*double dt2 = dt*dt, ddt = 0.5*dt2/mass_colloid;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		pos_colloid[i] +=  vel_colloid[i]*dt + f[i]*ddt;
 		pos_colloid[i]  =  mod(pos_colloid[i], len);
+    	pos_colloid[i].print();
+    }*/
+
+    point *cuda_pos, *cuda_vel, *cuda_f;
+    cudaMalloc(&cuda_pos, (no_of_colloid + 2)*sizeof(point));
+    cudaMalloc(&cuda_vel, (no_of_colloid + 2)*sizeof(point));
+    cudaMalloc(&cuda_f, (no_of_colloid + 2)*sizeof(point)); 
+  	cudaMemcpy(cuda_pos, pos_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+  	cudaMemcpy(cuda_vel, vel_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+  	cudaMemcpy(cuda_f, f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);  	
+  	
+  	cuda_update<<<no_of_colloid + 1,1>>>(cuda_pos,cuda_vel,cuda_f,dt,mass_colloid);
+  	cudaMemcpy(pos_colloid, cuda_pos, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
+  	cudaFree(cuda_pos); cudaFree(cuda_vel); cudaFree(cuda_f);	
+  	for(int i = 1; i <= no_of_colloid; i++) {
+		pos_colloid[i].print();
     }
+
 }
 
 void update_pos_mpcd() {
