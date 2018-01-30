@@ -6,14 +6,7 @@
 #include <algorithm>
 #include <climits>
 
-extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed, nn;
-extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
-extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
-
-void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
-void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
-void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
-
+extern int seed, *iv;
 inline double ran() {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
 	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789;
@@ -70,8 +63,15 @@ struct point {
 		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
-extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
-
 inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
 inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
 inline point img(point a, point b)  { return a - b*round(a/b); }
+
+extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
+extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, ntab, nn;
+extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
+extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
+
+void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
+void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
+void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
