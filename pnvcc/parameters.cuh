@@ -13,7 +13,6 @@ void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), 
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
 void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
 
-
 inline double ran() {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
 	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789;

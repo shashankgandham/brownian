@@ -5,6 +5,7 @@
 #include <cassert>
 #include <algorithm>
 #include <climits>
+#define CUDA_CALLABLE_MEMBER __host__ __device__
 
 extern int seed, *iv;
 inline double ran() {
@@ -37,35 +38,39 @@ inline double ran() {
 
 struct point {
 	double x, y, z;
-	inline point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
-	inline point operator+ (const point &op) { return point(x + op.x, y + op.y, z + op.z); }
-	inline point operator- (const point &op) { return point(x - op.x, y - op.y, z - op.z); }
-	inline point operator/ (const double &op){ return point(x / op,   y / op,   z / op);   }
-	inline point operator/ (const point &op) { return point(x / op.x, y / op.y, z / op.z); }
-	inline point operator* (const point &op) { return point(x * op.x, y * op.y, z * op.z); }
-	inline point operator* (const double &op){ return point(x * op, y * op, z * op); }
-	inline point operator+=(const point &op) { x += op.x, y += op.y, z += op.z; return *this; }
-	inline point operator-=(const point &op) { x -= op.x, y -= op.y, z -= op.z; return *this; }
-	inline bool operator==(const point &op) { return (x == op.x && y == op.y && z == op.z); }
+	CUDA_CALLABLE_MEMBER point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
+	CUDA_CALLABLE_MEMBER point operator+ (const point &op) { return point(x + op.x, y + op.y, z + op.z); }
+	CUDA_CALLABLE_MEMBER point operator- (const point &op) { return point(x - op.x, y - op.y, z - op.z); }
+	CUDA_CALLABLE_MEMBER point operator/ (const double &op){ return point(x / op,   y / op,   z / op);   }
+	CUDA_CALLABLE_MEMBER point operator/ (const point &op) { return point(x / op.x, y / op.y, z / op.z); }
+	CUDA_CALLABLE_MEMBER point operator* (const point &op) { return point(x * op.x, y * op.y, z * op.z); }
+	CUDA_CALLABLE_MEMBER point operator* (const double &op){ return point(x * op, y * op, z * op); }
+	CUDA_CALLABLE_MEMBER point operator+=(const point &op) { x += op.x, y += op.y, z += op.z; return *this; }
+	CUDA_CALLABLE_MEMBER point operator-=(const point &op) { x -= op.x, y -= op.y, z -= op.z; return *this; }
+	CUDA_CALLABLE_MEMBER bool operator==(const point &op) { return (x == op.x && y == op.y && z == op.z); }
 
-	inline double sum()  { return (x + y + z); }
-	inline double prod() { return (x * y * z); }
-	inline int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
-	inline void print(FILE *fp = stdout)  { fprintf(fp, "%36.32lf %35.32lf %35.32lf\n", x, y, z); }
+	CUDA_CALLABLE_MEMBER double sum()  { return (x + y + z); }
+	CUDA_CALLABLE_MEMBER double prod() { return (x * y * z); }
+	CUDA_CALLABLE_MEMBER int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
+	CUDA_CALLABLE_MEMBER void print()  { printf("%36.32lf %35.32lf %35.32lf\n", x, y, z); }
 	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
 		x = ran(); y = ran(); z = ran();
 		*this = (*this)*mul - dec;
 		return *this;
 	}
-	inline void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
+	CUDA_CALLABLE_MEMBER void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
 		x += inc.x;
 		if(x > len.x) y += inc.y, x = start.x;
 		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
-inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
+inline point round(point a) { return point(round(a.x), round(a.y), round(a.z)); }
 inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
 inline point img(point a, point b)  { return a - b*round(a/b); }
+
+inline __device__ void d_round(point *c, point a) { *c = point((int)(a.x + 0.5), (int)(a.y + 0.5), (int)(a.z + 0.5));}
+inline __device__ void d_mod(point *c, point a, point b) { d_round(c, (a - b/2)/b); *c = a - b*(*c);} 
+inline __device__ void d_img(point *c, point a, point b) {d_round(c, a/b); *c = a - b*(*c);}
 
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, ntab, nn;
