@@ -76,11 +76,6 @@ void update_pos_md() {
   	d_update_pos_md<<<no_of_colloid + 1, 1>>>(d_pos, d_vel, d_f, dt, mass_colloid, len);
   	cudaMemcpy(pos_colloid, d_pos, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
   	cudaFree(d_pos), cudaFree(d_vel), cudaFree(d_f);
-	for(int i = 1; i <=10; i++)
-		pos_colloid[i].print();
-	printf("\n");
-	exit(0);
-
 }
 
 void update_pos_mpcd() {

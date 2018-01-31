@@ -28,7 +28,6 @@ int main() {
             compute_force_md();
             update_velocity_colloid();
         }
-		exit(0);
         ke_colloid = ke_fluid = ang_ke_colloid = 0;
         for(int i = 1; i <= no_of_colloid; i++) {
             ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();
