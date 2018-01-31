@@ -4,7 +4,7 @@ double mag_f, r_cutoff = pow(2, 1.0/6.0)*sig_colloid, r;
 double fc = 4.0*eps*(12.0*(pow(sig_colloid,12)/pow(r_cutoff,13)) - 6.0*(pow(sig_colloid, 6)/pow(r_cutoff, 7)));
 double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 double sig_colloid12 = pow(sig_colloid, 12), sig_colloid6 = pow(sig_colloid, 6);
-double dt2 = dt*dt, ddt = 0.5*dt2/mass_colloid, dtb2 = dt/(mass_colloid*2);
+double dtb2 = dt/(mass_colloid*2);
 
 double power(double x, int r) {
     double ans = 1;
@@ -41,7 +41,8 @@ __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, d
 	m[3] =  point(-cb.x*sb.y*cb.z + sb.x*sb.z, cb.x*sb.y*sb.z + sb.x*cb.z, cb.x*cb.y);
 	ra[blockIdx.x] = point((m[1]*ra[blockIdx.x]).sum(), (m[2]*ra[blockIdx.x]).sum(), (m[3]*ra[blockIdx.x]).sum());
 }
-__global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, double dt, double ddt, point len) {
+__global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, double dt, double mass_colloid, point len) {
+	double dt2= dt*dt, ddt = 0.5*dt2/mass_colloid;
 	d_mod(&pos_colloid[blockIdx.x], pos_colloid[blockIdx.x] + vel_colloid[blockIdx.x]*dt + f[blockIdx.x]*ddt, len);
 }
 __global__ void d_update_pos_mpcd(point *pos_fl, point *vel_fl, double dt, point len) {
@@ -62,9 +63,9 @@ void update_activity_direction() {
   	cudaMemcpy(ra, d_ra, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
   	cudaFree(d_ang_vel), cudaFree(d_ra);	
 }
-
 void update_pos_md() {
 	point *d_vel, *d_pos, *d_f;
+
     cudaMalloc(&d_vel, (no_of_colloid + 2)*sizeof(point));
     cudaMalloc(&d_pos, (no_of_colloid + 2)*sizeof(point));
     cudaMalloc(&d_f,   (no_of_colloid + 2)*sizeof(point)); 
@@ -72,9 +73,14 @@ void update_pos_md() {
   	cudaMemcpy(d_vel, vel_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
   	cudaMemcpy(d_f, 			f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);  	
   	
-  	d_update_pos_md<<<no_of_colloid + 1, 1>>>(d_pos, d_vel, d_f, dt, ddt, len);
+  	d_update_pos_md<<<no_of_colloid + 1, 1>>>(d_pos, d_vel, d_f, dt, mass_colloid, len);
   	cudaMemcpy(pos_colloid, d_pos, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
   	cudaFree(d_pos), cudaFree(d_vel), cudaFree(d_f);
+	for(int i = 1; i <=10; i++)
+		pos_colloid[i].print();
+	printf("\n");
+	exit(0);
+
 }
 
 void update_pos_mpcd() {
