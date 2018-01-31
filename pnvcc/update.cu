@@ -14,8 +14,7 @@ double power(double x, int r) {
 void compute_force_md() {
 	point temp, ff;
 	potential_colloid = 0;
-    memset(f, 0, sizeof(int)*(no_of_colloid + 2));
-    for(int i = 0; i <= 10; i++) f[i] = 0;
+    for(int i = 0; i <= no_of_colloid; i++) f[i] = 0;
     double t1, t2, t3, rp;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
@@ -73,8 +72,6 @@ void update_activity_direction() {
   	cudaMemcpy(ra, d_ra, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
   	cudaFree(d_ra); cudaFree(d_ang_vel);
 
-  	for (int i = 1; i <= no_of_colloid; i++)
-  		ra[i].print();
   	*/
 }
 
@@ -106,13 +103,11 @@ void update_pos_md() {
 
 }
 
-__global__ void d_update_mpcd(int n, point *d_pos, point *d_vel, double dt, point len){
+__global__ void d_update_mpcd(int n, point *d_pos, point *d_vel, float dt, point len){
 	point temp;
 	for (int i = 1; i <= n; i++) {
 		temp = d_vel[i]*dt;
 		d_pos[i] = d_pos[i] + temp;
-	//	printf("%d ", i);
-	//	d_pos[i].print();
 	}	
 }
 
@@ -121,12 +116,10 @@ void update_pos_mpcd() {
 	point temp;
 	for (int i = 1; i <= no_of_fluid; i++) {
 		temp = vel_fl[i]*dt;
-		pos_fl[i] = pos_fl[i] + temp;
-		pos_fl[i].print();
+		pos_fl[i] = mod(pos_fl[i] + temp, len);
 	}
 	/*
 	point *d_pos, *d_vel;
-	
 		
     cudaMalloc(&d_pos, (no_of_fluid + 2)*sizeof(point));
     cudaMalloc(&d_vel, (no_of_fluid + 2)*sizeof(point));
@@ -139,7 +132,7 @@ void update_pos_mpcd() {
   	cudaMemcpy(pos_fl, d_pos, (no_of_fluid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
   	cudaFree(d_pos); cudaFree(d_vel); 
   	
-    for (int i = 1; i <= no_of_fluid; i++){
+     for (int i = 1; i <= no_of_fluid; i++){
   		pos_fl[i].print();
   	}
   	*/
@@ -152,11 +145,12 @@ __global__ void d_update_vel_colloid(point *d_vel, point *d_old_force, point *d_
 //PARALLELIZED
 void update_velocity_colloid() {
     double dtb2 = dt/(mass_colloid*2);
-	/*for (int i = 1; i <= no_of_colloid; i++) {
+	for (int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += (old_force[i] + f[i])*dtb2;
-		vel_colloid[i].print();		
-    }*/
+	//	vel_colloid[i].print();		
+    }
 
+    /*
     point *d_vel, *d_old_force, *d_f;
     cudaMalloc(&d_vel, (no_of_colloid + 2)*sizeof(point));
     cudaMalloc(&d_old_force, (no_of_colloid + 2)*sizeof(point));
@@ -169,5 +163,6 @@ void update_velocity_colloid() {
 
   	cudaMemcpy(vel_colloid, d_vel, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
   	cudaFree(d_old_force); cudaFree(d_vel); cudaFree(d_f);
+  	*/
 
 }
