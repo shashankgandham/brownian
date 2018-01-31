@@ -42,7 +42,6 @@ void neighbour_list_mpcd() {
     memset(fluid_no, 0, sizeof(int)*(len.prod() + 2));
     for(int	i = 1; i <= no_of_fluid; i++) {
         box_no = 1 + pos_fl[i].cell(len);
-        printf("%d\n", box_no);
         box_part[++fluid_no[box_no]][box_no] = i;
     }
     for(int j = 1; j <= no_of_colloid; j++) {
