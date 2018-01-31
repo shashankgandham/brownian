@@ -34,7 +34,27 @@ void neighbour_list_md() {
     double neigh_cutoff = 3.0*sig_colloid;
     point temp;
     memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
+	for(int i = 1; i < no_of_colloid; i++) {
+        for(int j = i + 1; j <= no_of_colloid; j++) {
+            temp = img(pos_colloid[i] - pos_colloid[j], len);
+            if((temp*temp).sum() < pow(neigh_cutoff,2)) {
+                neighbour[++n_neighbour[i]][i] = j;
+            }
+        }
+    }
 
+/*	int *d_n_neighbour, **d_neighbour;
+    cudaMalloc(&d_vel, (no_of_colloid + 2)*sizeof(point));
+    cudaMalloc(&d_pos, (no_of_colloid + 2)*sizeof(point));
+    cudaMalloc(&d_f,   (no_of_colloid + 2)*sizeof(point)); 
+  	cudaMemcpy(d_pos, pos_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+  	cudaMemcpy(d_vel, vel_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+  	cudaMemcpy(d_f, 			f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);  	
+  	
+  	d_neighbour_list_md<<<no_of_colloid + 1, 1>>>(d_neighbour, d_n_neighbour, d_pos_colloid, no_of_colloid, sig_colloid, len);
+  	cudaMemcpy(pos_colloid, d_pos, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
+  	cudaFree(d_pos), cudaFree(d_vel), cudaFree(d_f);
+*/
 }
 
 void neighbour_list_mpcd() {

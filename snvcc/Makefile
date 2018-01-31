@@ -4,8 +4,8 @@ FLAGS = -O3 -pg
 # Object Files for build
 OBJS = .fluid_colloid_collision.o .initialize.o .neighbour_list.o .update.o .rotation_mpcd.o .run.o
 
-$(EXECUTABLE) : active_brownian.cpp $(OBJS)
-	$(COMPILER) $(FLAGS) -o $(EXECUTABLE) active_brownian.cpp $(OBJS)
+$(EXECUTABLE) : active_brownian.cu $(OBJS)
+	$(COMPILER) $(FLAGS) -o $(EXECUTABLE) active_brownian.cu $(OBJS)
 
 # Object dependencies and compilation
 .fluid_colloid_collision.o : fluid_colloid_collision.cu
