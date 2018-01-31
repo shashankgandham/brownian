@@ -104,28 +104,25 @@ void update_pos_md() {
 }
 
 
-__global__ void d_update_mpcd(int n, point *d_pos, point *d_vel, double dt, point len){
+__global__ void d_update_mpcd(point *d_pos, point *d_vel, double dt, point len){
 	d_mod(&d_pos[blockIdx.x], d_pos[blockIdx.x] += d_vel[blockIdx.x]*dt, len);	
 }
 
 void update_pos_mpcd() {
 	/*for (int i = 1; i <= no_of_fluid; i++) {
-		//pos_fl[i].print();
 		pos_fl[i] = mod(pos_fl[i] += vel_fl[i] * dt, len);
 		pos_fl[i].print();
 	}
 	*/
 	point *d_pos, *d_vel;
 	
-	for (int i = 1; i <= no_of_fluid; i++)
-    	pos_fl[i].print(); 
-
+	
     cudaMalloc(&d_pos, (no_of_fluid + 2)*sizeof(point));
     cudaMalloc(&d_vel, (no_of_fluid + 2)*sizeof(point));
     cudaMemcpy(d_pos, pos_fl, (no_of_fluid + 2)*sizeof(point), cudaMemcpyHostToDevice);
   	cudaMemcpy(d_vel, vel_fl, (no_of_fluid + 2)*sizeof(point), cudaMemcpyHostToDevice);
   	
-  	d_update_mpcd<<<no_of_fluid,1>>>(no_of_fluid, d_pos,d_vel,dt,len);
+  	d_update_mpcd<<<(no_of_fluid +1)/4096,4096>>>(d_pos,d_vel,dt,len);
   	cudaDeviceSynchronize();
 
   	cudaMemcpy(pos_fl, d_pos, (no_of_fluid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
