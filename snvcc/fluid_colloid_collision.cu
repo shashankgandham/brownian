@@ -1,4 +1,4 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
 
 inline point crossmul(point a, point b) {
 	return point(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);

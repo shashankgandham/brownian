@@ -1,4 +1,4 @@
-#include "parameters.hpp"
+#include "parameters.cuh"
 
 inline point cmod(point a, point b) {  
     if(a.x <=  0) a.x += b.x;  if(a.y <=  0) a.y += b.y;
@@ -19,19 +19,22 @@ void create_box() {
         }
     }
 }
-
+__global__ void d_neighbour_list_md(int **neighbour, int *n_neighbour, point *pos_colloid, int no_of_colloid, double sig_colloid, point len) {
+    double neigh_cutoff = 3.0*sig_colloid;
+    point temp;
+    memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
+    int i = blockIdx.x, j = blockIdx.x + blockIdx.y;
+    if(j <= no_of_colloid) {
+      d_img(&temp, pos_colloid[i] - pos_colloid[j], len);  
+      if((temp*temp).sum() < pow(neigh_cutoff,2)) 
+        neighbour[++n_neighbour[i]][i] = j;
+    }  
+}
 void neighbour_list_md() {
     double neigh_cutoff = 3.0*sig_colloid;
     point temp;
     memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
-    for(int i = 1; i < no_of_colloid; i++) {
-        for(int j = i + 1; j <= no_of_colloid; j++) {
-            temp = img(pos_colloid[i] - pos_colloid[j], len);
-            if((temp*temp).sum() < pow(neigh_cutoff,2)) {
-                neighbour[++n_neighbour[i]][i] = j;
-            }
-        }
-    }
+
 }
 
 void neighbour_list_mpcd() {
