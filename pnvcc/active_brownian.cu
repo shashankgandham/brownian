@@ -7,10 +7,6 @@ double kbt = 1, kbt1 = 1, ndt = 0.1, dv = 0.1, mass_fl = 1.0, mass_colloid = 654
 double sigma = 0.80*sig_colloid, I_colloid = 0.1*mass_colloid*sigma*sigma, potential_colloid;
 double dt = ndt/(double)n;
 
-__global__ void cuda_fluid(int *x, int *y){
-  	y[blockIdx.x] = x[blockIdx.x] + y[blockIdx.x]; 
-}
-
 
 int main() {
     double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
@@ -34,7 +30,6 @@ int main() {
             update_pos_md();
             neighbour_list_md();
             update_pos_mpcd();
-            exit(0);
             neighbour_list_mpcd();
             
             if(!(l%10) && nn > 10000) updown_velocity();
@@ -42,7 +37,7 @@ int main() {
             update_activity_direction();
             compute_force_md();
             update_velocity_colloid();
-
+            
         }
         ke_colloid = ke_fluid = ang_ke_colloid = 0;
         for(int i = 1; i <= no_of_colloid; i++) {
@@ -60,25 +55,7 @@ int main() {
         ke_fluid = 0.5*ke_fluid*mass_fl;
     }
 
-    int *x, *y, a = 5, *d_x, *d_y, i;
-    x = (int *)calloc(no_of_colloid,sizeof(int));
-    y = (int *)calloc(no_of_colloid,sizeof(int));
-    for (i = 0; i < no_of_colloid; i++){
-    	x[i] = 1; y[i] = 2;
-    }
-
-	cudaMalloc(&d_x, no_of_colloid*sizeof(int)); 
-  	cudaMalloc(&d_y, no_of_colloid*sizeof(int));
-    cudaMemcpy(d_x, x, no_of_colloid*sizeof(int), cudaMemcpyHostToDevice);
-  	cudaMemcpy(d_y, y, no_of_colloid*sizeof(int), cudaMemcpyHostToDevice);
- 
-    cuda_fluid<<<no_of_colloid,1>>>(d_x, d_y);
-
-	cudaMemcpy(y, d_y, no_of_colloid*sizeof(int), cudaMemcpyDeviceToHost);
-	
-	free(x); free(y);
-	cudaFree(d_x); cudaFree(d_y);	
-
+    
 
     return 0;
 }

@@ -1,6 +1,6 @@
 COMPILER = nvcc
 EXECUTABLE = a.out
-FLAGS = -O3 -pg -g
+FLAGS = -O3
 # Object Files for build
 OBJS = .fluid_colloid_collision.o .initialize.o .neighbour_list.o .update.o .rotation_mpcd.o .run.o
 

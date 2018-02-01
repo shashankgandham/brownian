@@ -1,10 +1,33 @@
 #include "parameters.cuh"
 
-void tumble(){
+__global__ void d_tumble(int no_of_colloid, point *d_ra, point *d_pos, point len){
 	for (int i = 1; i <= no_of_colloid; i++) {
+		//d_img(&d_pos[i],d_pos[i] - d_ra[i].random(point(0, 0, 0), len), len);
+		//d_ra[i] = d_ra[i]/sqrt((d_ra[i]*d_ra[i]).sum());
+		point c;
+		d_random(&c, point(0, 0, 0), len, seed ,iv);
+    }
+}
+
+void tumble(){
+	/*for (int i = 1; i <= no_of_colloid; i++) {
 		ra[i] = img(pos_colloid[i] - ra[i].random(point(0, 0, 0), len), len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
-    }
+		ra[i].print();
+    }*/
+    
+    point *d_ra, *d_pos;
+    cudaMalloc(&d_ra, (no_of_colloid + 2)*sizeof(point));
+    cudaMalloc(&d_pos, (no_of_colloid + 2)*sizeof(point));
+    cudaMemcpy(d_ra, ra, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+  	cudaMemcpy(d_pos, pos_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+  	
+  	d_tumble<<<1,1>>>(no_of_colloid, d_ra, d_pos, len);
+
+  	cudaMemcpy(ra, d_ra, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
+  	cudaFree(d_ra); cudaFree(d_pos); 
+  	for (int i = 1; i <= no_of_colloid; i++)
+  		ra[i].print();
 }
 
 void run() {

@@ -72,6 +72,36 @@ struct point {
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
+
+inline __device__ void d_ran(double *ans, int seed, int iv) {
+	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
+	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789;
+	double eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1;
+	if(seed <= 0) {
+		seed = std::max(-seed,1);
+		idum = seed;
+		for(j = ntab + 8; j >= 1; j--) {
+			k = seed/iq1;
+			seed = ia1*(seed - k*iq1) - k*ir1;
+			if(seed < 0) seed += im1;
+			if(j <= ntab) iv[j] = seed;
+		}
+		iy = iv[1];
+	}
+	k = seed/iq1;
+	seed = ia1*(seed - k*iq1) - k*ir1;
+	if(seed < 0) seed += im1;
+	k = idum/iq2;
+	idum = ia2*(idum - k*iq2) - k*ir2;
+	if(idum < 0) idum = idum + im2;
+	j = 1 + iy/ndiv;
+	iy = iv[j] - idum;
+	iv[j] = seed;
+	if(iy < 1) iy = iy + imm;
+	*ans = rnmx;
+	if (am*iy < rnmx) *ans = am*iy;
+}
+
 inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
 inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
 inline point img(point a, point b)  { return a - b*round(a/b); }
@@ -80,3 +110,10 @@ inline __device__ void d_round(point *c, point a) { *c = point((int)(a.x + 0.5),
 inline __device__ void d_mod(point *c, point a, point b) { d_round(c, (a - b/2)/b); *c = a - b*(*c);} 
 inline __device__ void d_img(point *c, point a, point b) {d_round(c, a/b); *c = a - b*(*c);}
 
+inline __device__ void d_random(point *c, point dec = point(0, 0 ,0), point mul = point(1, 1, 1), int seed, int *iv) {
+		double x, y, z;
+		int d_seed = seed, d_iv = iv;
+		d_ran(&x, seed, &iv); d_ran(&y, seed, &iv); d_ran(&z, seed, &iv);
+		*c = point(x, y, z);
+		*c = (*c)*mul - dec;
+	}
