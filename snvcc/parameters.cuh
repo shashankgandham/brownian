@@ -68,7 +68,7 @@ inline point round(point a) { return point(round(a.x), round(a.y), round(a.z)); 
 inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
 inline point img(point a, point b)  { return a - b*round(a/b); }
 
-inline __device__ void d_round(point *c, point a) { *c = point((int)(a.x + 0.5), (int)(a.y + 0.5), (int)(a.z + 0.5));}
+inline __device__ void d_round(point *c, point a) { *c = point(round(a.x), round(a.y), round(a.z));}
 inline __device__ void d_mod(point *c, point a, point b) { d_round(c, (a - b/2)/b); *c = a - b*(*c);} 
 inline __device__ void d_img(point *c, point a, point b) {d_round(c, a/b); *c = a - b*(*c);}
 
