@@ -2,15 +2,7 @@
 
 double dtb2 = dt/(mass_colloid*2);
 
-__device__ double power(double x, int r) {
-	double ans = 1;
-	for(int i = 1; i <=r; i++)
-		ans *= x;
-	return ans;
-}
-
-//PARALLELIZED
-__global__ void d_compute_force_md(point *f, int *n_neighbour, int *neighbour[], int *pos_colloid, double sig_colloid, double eps, double *potential_colloid, point len) {
+__global__ void d_compute_force_md(point *f, int *n_neighbour, int *neighbour[], point *pos_colloid, double sig_colloid, double eps, point *potential_colloid, point len) {
 	double mag_f, r_cutoff, fc, ufc, sig_colloid12, sig_colloid6, r;
 	r_cutoff = power(2, 1.0/6.0)*sig_colloid, r, fc = 4.0*eps*(12.0*(power(sig_colloid,12)/power(r_cutoff,13)) - 6.0*(power(sig_colloid, 6)/power(r_cutoff, 7)));
 	ufc = 4.0*eps*(power(sig_colloid/r_cutoff, 12) - power(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
@@ -22,7 +14,7 @@ __global__ void d_compute_force_md(point *f, int *n_neighbour, int *neighbour[],
 		d_img(&temp, pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
 		r = sqrt((temp*temp).sum());
 		if(r < r_cutoff) {
-			potential_colloid += 4*eps*(power(sig_colloid/r, 12) - power(sig_colloid/r, 6)) - ufc + fc*r;
+			*potential_colloid += 4*eps*(power(sig_colloid/r, 12) - power(sig_colloid/r, 6)) - ufc + fc*r;
 			t1 = sig_colloid12/power(r,13), t2 = sig_colloid6/power(r, 7);
 			mag_f = 4.0*eps*(12.0*t1 - 6.0*t2) - fc;
 			ff = (temp*mag_f)/r;
@@ -57,19 +49,30 @@ __global__ void d_update_vel_colloid(point *d_vel, point *d_old_force, point *d_
 }
 
 void compute_force_md() {
-	point *d_pos_colloid; size_t Pitch;
-	int *d_n_neighbour, **d_neighbour;
+	point *d_pos_colloid, *d_f, *d_potential_colloid;
+	int *d_n_neighbour, **d_neighbour, *h_neighbour[256];
 	potential_colloid = 0;
 	memset(f, 0, sizeof(int)*(no_of_colloid + 2));
-	cudaMalloc(&d_pos_colloid, (no_of_colloid + 2)*sizeof(point));
-	cudaMalloc(&d_n_neighbour, (no_of_colloid + 2)*sizeof(int)); 
-	cudaMallocPitch(&d_neighbour, &Pitch, (no_of_colloid + 2)*sizeof(int)); 
-	cudaMemcpy(d_ang_vel, ang_vel_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_ra, ra, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);  	
-	d_compute_force_md<<<no_of_colloid, 1>>>(d_f, d_n_neighbour, d_neighbour, d_pos_colloid, sig_colloid, eps, d_potential_colloid, len);
-	cudaMemcpy(ra, d_ra, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
-	cudaFree(d_ang_vel), cudaFree(d_ra);
 
+	cudaMalloc(&d_potential_colloid, sizeof(point));
+	cudaMalloc(&d_pos_colloid, (no_of_colloid + 2)*sizeof(point));
+	cudaMalloc(&d_f, (no_of_colloid + 2)*sizeof(point));
+	cudaMalloc(&d_n_neighbour, (no_of_colloid + 2)*sizeof(int)); 
+	cudaMalloc(&d_neighbour, 256*sizeof(int *));
+	for(int i = 0; i <= 200; i++) {
+		cudaMalloc(&h_neighbour[i], (no_of_colloid + 2)*sizeof(int));
+		cudaMemcpy(h_neighbour[i], neighbour[i], (no_of_colloid + 2)*sizeof(int), cudaMemcpyHostToDevice);
+	}
+	cudaMemcpy(d_neighbour, h_neighbour, 256*sizeof(int *), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_potential_colloid, &potential_colloid, sizeof(point), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_f, f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_n_neighbour, n_neighbour, (no_of_colloid + 2)*sizeof(int), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_pos_colloid, pos_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);  	
+	d_compute_force_md<<<no_of_colloid, 1>>>(d_f, d_n_neighbour, d_neighbour, d_pos_colloid, sig_colloid, eps, d_potential_colloid, len);
+	cudaMemcpy(f, d_f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
+	cudaFree(d_f), cudaFree(d_pos_colloid), cudaFree(d_n_neighbour), cudaFree(d_potential_colloid);
+	for(int i = 0; i <= 200; i++) cudaFree(h_neighbour[i]);
+	cudaFree(d_neighbour);
 }
 
 void update_activity_direction() {

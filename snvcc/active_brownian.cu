@@ -42,10 +42,7 @@ int main() {
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-		for(int i = 1; i <= 10; i++)
-			pos_colloid[i].print();
-		printf("\n");
-		if(nn == 100) exit(0);
+		assert(energy_colloid == (potential_colloid + ke_colloid + ang_ke_colloid));
 	}
 	return 0;
 }

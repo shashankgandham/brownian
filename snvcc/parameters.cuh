@@ -5,15 +5,17 @@
 #include <cassert>
 #include <algorithm>
 #include <climits>
+#define max(a, b) (a>b?a:b)
+#define min(a, b) (a<b?a:b)
 #define CUDA_CALLABLE_MEMBER __host__ __device__
 
-extern int seed, *iv;
-inline double ran() {
-	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, iy, j, k;
-	static int imm = im1 - 1, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv = 1 + imm/ntab, idum = 123456789;
-	double eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1;
+inline CUDA_CALLABLE_MEMBER double ran() {
+	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774;
+	static int imm, ir1 = 12211, ir2 = 3791, ndiv, idum = 123456789, seed = 77777, iy, j, k, ntab = 32;
+	double eps, rnmx, am; eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1; ndiv = 1 + imm/ntab; imm = im1 - 1;
+	int *iv = (int *)malloc(ntab*sizeof(int));
 	if(seed <= 0) {
-		seed = std::max(-seed,1);
+		seed = max(-seed,1);
 		idum = seed;
 		for(j = ntab + 8; j >= 1; j--) {
 			k = seed/iq1;
@@ -33,7 +35,7 @@ inline double ran() {
 	iy = iv[j] - idum;
 	iv[j] = seed;
 	if(iy < 1) iy = iy + imm;
-	return std::min(am*iy, rnmx);
+	return min(am*iy, rnmx);
 }
 
 struct point {
@@ -53,7 +55,7 @@ struct point {
 	CUDA_CALLABLE_MEMBER double prod() { return (x * y * z); }
 	CUDA_CALLABLE_MEMBER int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
 	CUDA_CALLABLE_MEMBER void print()  { printf("%36.32lf %35.32lf %35.32lf\n", x, y, z); }
-	inline point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
+	CUDA_CALLABLE_MEMBER point random(point dec = point(0, 0 ,0), point mul = point(1, 1, 1)) {
 		x = ran(); y = ran(); z = ran();
 		*this = (*this)*mul - dec;
 		return *this;
@@ -64,14 +66,10 @@ struct point {
 		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
-inline point round(point a) { return point(round(a.x), round(a.y), round(a.z)); }
-inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
-inline point img(point a, point b)  { return a - b*round(a/b); }
-
-inline __device__ void d_round(point *c, point a) { *c = point(round(a.x), round(a.y), round(a.z));}
-inline __device__ void d_mod(point *c, point a, point b) { d_round(c, (a - b/2)/b); *c = a - b*(*c);} 
-inline __device__ void d_img(point *c, point a, point b) {d_round(c, a/b); *c = a - b*(*c);}
-
+inline CUDA_CALLABLE_MEMBER void d_round(point *c, point a) { *c = point(round(a.x), round(a.y), round(a.z));}
+inline CUDA_CALLABLE_MEMBER void d_mod(point *c, point a, point b) { d_round(c, (a - b/2)/b); *c = a - b*(*c);} 
+inline CUDA_CALLABLE_MEMBER void d_img(point *c, point a, point b) {d_round(c, a/b); *c = a - b*(*c);}
+inline CUDA_CALLABLE_MEMBER double power(double x, int r) { double ans = 1; for(int i = 1; i <=r; i++) ans *= x; return ans; }
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, ntab, nn;
 extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
