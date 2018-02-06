@@ -113,7 +113,7 @@ __global__ void d_update_mpcd(point *d_pos, point *d_vel, double dt, point len){
 //ERROR
 void update_pos_mpcd() {
 	/*for (int i = 1; i <= no_of_fluid; i++) {
-		pos_fl[i] = mod(pos_fl[i] += vel_fl[i] * dt, len);
+		d_mod(&pos_fl[i], pos_fl[i] += vel_fl[i] * dt, len);
 		pos_fl[i].print();
 	}
 	*/
