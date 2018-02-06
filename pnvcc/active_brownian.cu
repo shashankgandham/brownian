@@ -14,11 +14,11 @@ int main() {
     initialize();
     initialize_colloid();
     initialize_fluid();
-    create_box();
+	create_box();
     neighbour_list_mpcd();
     neighbour_list_md();
     compute_force_md();
-    tumble();
+	tumble();
     printf(" After Tumble\n");
     //for(nn = 1; nn <= niter; nn++) {
     for(nn = 1; nn <= 1; nn++) {

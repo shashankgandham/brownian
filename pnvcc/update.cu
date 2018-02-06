@@ -6,12 +6,12 @@ double fc = 4.0*eps*(12.0*(pow(sig_colloid,12)/pow(r_cutoff,13)) - 6.0*(pow(sig_
 double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 double sig_colloid12 = pow(sig_colloid, 12), sig_colloid6 = pow(sig_colloid, 6);
 
-double power(double x, int r) {
+/*double power(double x, int r) {
     double ans = 1;
     for(int i = 1; i <=r; i++)
         ans *= x;
     return ans;
-}
+}*/
 void compute_force_md() {
 	point temp, ff;
 	potential_colloid = 0;

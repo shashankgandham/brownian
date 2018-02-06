@@ -4,14 +4,14 @@
 void rotation_mpcd() {
 	int k, cell_no;
 	double r[4], ir[4], theta, phi, rho, var, scale_fac_mpcd, ct, st, ict;
-	point cell_vel[(int)len.prod() + 1], del_v, rr, rot[4];
+	point cell_vel[(int)len.prod() + 1], del_v, rr, rot[4], temp;
 
 	memset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
 	rr.random(point(0.5, 0.5, 0.5));
 	for(int i = 1; i <= no_of_fluid; i++) {
 		//cell_no = 1 + mod(pos_fl[i] + rr, len).cell(len);
-		d_mod(&cell_no, pos_fl[i] + rr, len).cell(len);
-		cell_no = cell_no + 1;
+		d_mod(&temp, pos_fl[i] + rr, len);
+		cell_no = temp.cell(len) + 1;
 		cell_part[++fluid_no[cell_no]][cell_no] = i;
 	}
 	memset(cell_vel, 0, sizeof cell_vel);
