@@ -29,7 +29,7 @@ void neighbour_list_md() {
     memset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));
     for(int i = 1; i < no_of_colloid; i++) {
         for(int j = i + 1; j <= no_of_colloid; j++) {
-            temp = img(pos_colloid[i] - pos_colloid[j], len);
+            d_img(&temp, pos_colloid[i] - pos_colloid[j], len);
             if((temp*temp).sum() < pow(neigh_cutoff,2)) {
                 neighbour[++n_neighbour[i]][i] = j;
             }

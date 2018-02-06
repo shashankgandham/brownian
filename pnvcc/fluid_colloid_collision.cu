@@ -11,7 +11,7 @@ inline point stochastic_reflection(point rf, point rs) {
 	val = sqrt(-log(random_e)/m_beta);
 
 	un = n*val;
-	t = img(t.random(rf, len), len);
+	d_img(&t, t.random(rf, len), len);
 	ut = crossmul(un, t);
 	ut = ut/sqrt((ut*ut).sum());
 	while(z > 1) {
@@ -32,16 +32,16 @@ void fluid_colloid_collision() {
 		vc = omega = point(0, 0, 0);
 		for (int i = 1; i <= no_neigh[j]; i++) {
 			int l = neigh_fl[i][j];
-			rr = img(pos_colloid[j] - pos_fl[l], len);
+			d_img(&rr, pos_colloid[j] - pos_fl[l], len);
 			if((rr*rr).sum() <= pow(sigma, 2)*0.25) {
-				pos_fl[l] = mod(pos_fl[l] - vel_fl[l]*dt*0.5, len);
-				rs = img(pos_fl[l] - pos_colloid[j], len);
+				d_mod(&pos_fl[l], pos_fl[l] - vel_fl[l]*dt*0.5, len);
+				d_img(&rs, pos_fl[l] - pos_colloid[j], len);
 				u  = stochastic_reflection(pos_fl[l], rs);
 				vel_fl[l] = u + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
 				vc += (dump_vel_fl[l] - vel_fl[l]);
 				u = (dump_vel_fl[l] - vel_fl[l]);
 				omega += crossmul(rs, (dump_vel_fl[l] - vel_fl[l]));
-				pos_fl[l] = mod(pos_fl[l] + vel_fl[l]*dt*0.5, len);
+				d_mod(&pos_fl[l], pos_fl[l] + vel_fl[l]*dt*0.5, len);
 			}
 		}
 		vel_colloid[j] 	   += vc*mass_fl/mass_colloid;

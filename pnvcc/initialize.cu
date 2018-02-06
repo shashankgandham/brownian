@@ -12,7 +12,6 @@ void initialize() {
 	cell_part 	= (int **)calloc((maxpart + 2), sizeof(int *));
 	nbr 		= (int **)calloc(7005,sizeof(int *));
 	up_nbr 		= (int **)calloc(7005,sizeof(int *));
-    iv = (int *)calloc((ntab + 2), sizeof(int));
 
 	for(int i = 0; i < 8; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
@@ -44,7 +43,7 @@ void initialize_colloid() {
 		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
-			temp = img(t - pos_colloid[j], len);
+			d_img(&temp, t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < space_limit)? 0: check;
         }
 		if(check)
@@ -69,7 +68,7 @@ void initialize_fluid() {
 		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= no_of_colloid; j++) {
-			temp = img(t - pos_colloid[j], len);
+			d_img(&temp, t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
 		if(check)

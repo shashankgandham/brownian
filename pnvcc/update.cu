@@ -19,7 +19,7 @@ void compute_force_md() {
     double t1, t2, t3, rp;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
-			temp = img(pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
+			d_img(&temp, pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
 			r = sqrt((temp*temp).sum());
 			if(r < r_cutoff) {
 				potential_colloid += 4*eps*(pow(sig_colloid/r, 12) - pow(sig_colloid/r, 6)) - ufc + fc*r;

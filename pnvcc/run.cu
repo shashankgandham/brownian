@@ -2,10 +2,8 @@
 
 __global__ void d_tumble(int no_of_colloid, point *d_ra, point *d_pos, point len){
 	for (int i = 1; i <= no_of_colloid; i++) {
-		//d_img(&d_pos[i],d_pos[i] - d_ra[i].random(point(0, 0, 0), len), len);
-		//d_ra[i] = d_ra[i]/sqrt((d_ra[i]*d_ra[i]).sum());
-		point c;
-		d_random(&c, point(0, 0, 0), len, seed ,iv);
+		d_img(&d_pos[i],d_pos[i] - d_ra[i].random(point(0, 0, 0), len), len);
+		d_ra[i] = d_ra[i]/sqrt((d_ra[i]*d_ra[i]).sum());
     }
 }
 
