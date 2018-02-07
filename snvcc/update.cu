@@ -2,7 +2,7 @@
 
 double dtb2 = dt/(mass_colloid*2);
 
-__global__ void d_compute_force_md(point *f, int *n_neighbour, int *neighbour[], point *pos_colloid, double sig_colloid, double eps, point *potential_colloid, point len, int no_of_colloid) {
+__global__ void d_compute_force_md(point *f, int *n_neighbour, int *neighbour[], point *pos_colloid, double sig_colloid, double eps, double *potential_colloid, point len, int no_of_colloid) {
 	double mag_f, r_cutoff, fc, ufc, sig_colloid12, sig_colloid6, r;
 	r_cutoff = power(2, 1.0/6.0)*sig_colloid, r, fc = 4.0*eps*(12.0*(power(sig_colloid,12)/power(r_cutoff,13)) - 6.0*(power(sig_colloid, 6)/power(r_cutoff, 7)));
 	ufc = 4.0*eps*(power(sig_colloid/r_cutoff, 12) - power(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
@@ -49,11 +49,12 @@ __global__ void d_update_vel_colloid(point *d_vel, point *d_old_force, point *d_
 }
 
 void compute_force_md() {
-	point *d_pos_colloid, *d_f, *d_potential_colloid;
+	point *d_pos_colloid, *d_f;
+	double *d_potential_colloid;
 	int *d_n_neighbour, **d_neighbour, *h_neighbour[256];
 	potential_colloid = 0;
 	memset(f, 0, sizeof(int)*(no_of_colloid + 2));
-	cudaMalloc(&d_potential_colloid, sizeof(point));
+	cudaMalloc(&d_potential_colloid, sizeof(double));
 	cudaMalloc(&d_pos_colloid, (no_of_colloid + 2)*sizeof(point));
 	cudaMalloc(&d_f, (no_of_colloid + 2)*sizeof(point));
 	cudaMalloc(&d_n_neighbour, (no_of_colloid + 2)*sizeof(int)); 
@@ -63,12 +64,13 @@ void compute_force_md() {
 		cudaMemcpy(h_neighbour[i], neighbour[i], (no_of_colloid + 2)*sizeof(int), cudaMemcpyHostToDevice);
 	}
 	cudaMemcpy(d_neighbour, h_neighbour, 256*sizeof(int *), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_potential_colloid, &potential_colloid, sizeof(point), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_potential_colloid, potential_colloid, sizeof(double), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_f, f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_n_neighbour, n_neighbour, (no_of_colloid + 2)*sizeof(int), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_pos_colloid, pos_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyHostToDevice);  	
 	d_compute_force_md<<<1, 1>>>(d_f, d_n_neighbour, d_neighbour, d_pos_colloid, sig_colloid, eps, d_potential_colloid, len, no_of_colloid);
 	cudaMemcpy(f, d_f, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
+	cudaMemcpy(potential_colloid, d_potential_colloid, sizeof(double), cudaMemcpyHostToDevice);
 	cudaFree(d_f), cudaFree(d_pos_colloid), cudaFree(d_n_neighbour), cudaFree(d_potential_colloid);
 	for(int i = 0; i <= 200; i++) cudaFree(h_neighbour[i]);
 	cudaFree(d_neighbour);
