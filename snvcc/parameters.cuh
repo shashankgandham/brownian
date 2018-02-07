@@ -65,9 +65,9 @@ struct point {
 		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
-inline CUDA_CALLABLE_MEMBER void d_round(point *c, point a) { *c = point(round(a.x), round(a.y), round(a.z));}
-inline CUDA_CALLABLE_MEMBER void d_mod(point *c, point a, point b) { d_round(c, (a - b/2)/b); *c = a - b*(*c);} 
-inline CUDA_CALLABLE_MEMBER void d_img(point *c, point a, point b) {d_round(c, a/b); *c = a - b*(*c);}
+inline CUDA_CALLABLE_MEMBER point round(point a) { return point(round(a.x), round(a.y), round(a.z));}
+inline CUDA_CALLABLE_MEMBER point mod(point a, point b) { return a - b*round((a - b/2)/b);} 
+inline CUDA_CALLABLE_MEMBER point img(point a, point b) { return a - b*round(a/b);}
 inline CUDA_CALLABLE_MEMBER double power(double x, int r) { double ans = 1; for(int i = 1; i <=r; i++) ans *= x; return ans; }
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, ntab, nn;

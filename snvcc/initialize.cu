@@ -45,7 +45,7 @@ __global__ void d_initialize_colloid(point *pos_colloid, point *vel_colloid, poi
 		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
-			d_img(&temp, t - pos_colloid[j], len);
+			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < space_limit)? 0: check;
         }
 		if(check)
@@ -83,7 +83,7 @@ __global__ void d_initialize_fluid(point *pos_fl, point *vel_fl, point *pos_coll
 		t = t.random(point(0, 0, 0), len);
 		check = 1;
 		for(int j = 1; j <= no_of_colloid; j++) {
-			d_img(&temp, t - pos_colloid[j], len);
+			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
 		if(check)
