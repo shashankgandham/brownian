@@ -2,9 +2,17 @@
 
 void tumble(){
 	for (int i = 1; i <= no_of_colloid; i++) {
-		ra[i] = img(pos_colloid[i] - ra[i].random(point(0, 0, 0), len), len);
+	printf("\n");
+		point temp = ra[i].random(point(0, 0, 0), len);
+		temp.print();
+		pos_colloid[i].print();
+		temp = pos_colloid[i] - temp;
+		temp.print();
+		ra[i] = d_img(temp, len);
+//		ra[i].print();
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
-    }
+    	}
+	exit(0);
 }
 
 void run() {

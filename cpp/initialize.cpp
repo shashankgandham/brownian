@@ -2,7 +2,7 @@
 
 point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30);
 int n = 10, niter = 21000, file = 0, nbin = 300, maxpart = 100, no_of_colloid = 10, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *fluid_no, *iv, seed = 77777;
-int no_of_fluid = len.prod()*10, *no_neigh, *neigh_fl[10005], *neighbour[256], *n_neighbour, *box_neigh[512], **box_part, **cell_part, ntab = 32, nn;
+int no_of_fluid = len.prod()*10, *no_neigh, *neigh_fl[10005], *neighbour[256], *n_neighbour, *box_neigh[512], **box_part, **cell_part, ntab = 32, nn, ran_c = 0;
 double kbt = 1, kbt1 = 1, ndt = 0.1, dv = 0.1, mass_fl = 1.0, mass_colloid = 654.1, sig_colloid = 5.0, eps = 1.0, v0 = 0.04;
 double dt = ndt/(double)n, sigma = 0.80*sig_colloid, I_colloid = 0.1*mass_colloid*sigma*sigma, potential_colloid;
 
@@ -16,7 +16,7 @@ void initialize() {
 	cell_part 	= (int **)calloc((maxpart + 2),sizeof(int *));
 	nbr 		= (int **)calloc(7005,sizeof(int *));
 	up_nbr 		= (int **)calloc(7005,sizeof(int *));
-    iv = (int *)calloc(ntab + 2, sizeof(int));
+    	iv = (int *)calloc(ntab + 2, sizeof(int));
 
 	for(int i = 0; i < 8; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
@@ -49,7 +49,7 @@ void initialize_colloid() {
 		for(int j = 1; j <= counter; j++) {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < space_limit)? 0: check;
-        }
+        	}
 		if(check)
 			pos_colloid[++counter] = t;
 	}

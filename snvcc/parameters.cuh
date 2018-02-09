@@ -9,10 +9,12 @@
 #define min(a, b) (a<b?a:b)
 #define CUDA_CALLABLE_MEMBER __host__ __device__
 
+
 inline CUDA_CALLABLE_MEMBER double ran() {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774;
 	static int imm, ir1 = 12211, ir2 = 3791, ndiv, idum = 123456789, seed = 77777, iy, j, k, ntab = 32, iv[32];
 	double eps, rnmx, am; eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1; ndiv = 1 + imm/ntab; imm = im1 - 1;
+//	printf("%d\n", seed);
 	if(seed <= 0) {
 		seed = max(-seed,1);
 		idum = seed;

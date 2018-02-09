@@ -1,5 +1,5 @@
 #include "parameters.cuh"
-
+#include <cuda_profiler_api.h>
 int main() {
 	double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
 	point mom = point(0, 0, 0);
@@ -28,6 +28,7 @@ int main() {
 			compute_force_md();
 			update_velocity_colloid();
 		}
+		cudaDeviceSynchronize();
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;
 		for(int i = 1; i <= no_of_colloid; i++) {
 			ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();
@@ -42,7 +43,7 @@ int main() {
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-		assert(energy_colloid != (potential_colloid + ke_colloid + ang_ke_colloid));
+		
 	}
 	return 0;
 }

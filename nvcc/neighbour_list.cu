@@ -51,7 +51,7 @@ __global__ void d_neighbour_list_mpcd(int **box_part, int *fluid_no, int **box_n
 
 void neighbour_list_md() {
     cudaMemset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));  
-  	d_neighbour_list_md<<<1, 1>>>(neighbour, n_neighbour, pos_colloid, no_of_colloid, sig_colloid, len);
+    d_neighbour_list_md<<<1, 1>>>(neighbour, n_neighbour, pos_colloid, no_of_colloid, sig_colloid, len);
 }
 
 void neighbour_list_mpcd() {

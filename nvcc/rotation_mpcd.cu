@@ -3,13 +3,13 @@
 __device__ double d_asin(double x) { return asin(x); }
 
 __global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, int *fluid_no, int **cell_part, int no_of_fluid, 
-						point len, double kbt, double mass_fl) {
+						point len, double kbt, double mass_fl, int *iv, int *seed, int *idum, int *iy) {
 	int k, cell_no;
 	double r[4], ir[4], theta, phi, rho, var, scale_fac_mpcd, ct, st, ict;
 	point *cell_vel, del_v, rr, rot[4], temp;
 	cell_vel = (point *)malloc((len.prod() + 2)*sizeof(point));
 	memset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
-	rr.random(point(0.5, 0.5, 0.5));
+	rr = rr.random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5);
 	for(int i = 1; i <= no_of_fluid; i++) {
 		temp = mod(pos_fl[i] + rr, len);
 		cell_no = 1 + temp.cell(len);
@@ -20,7 +20,7 @@ __global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, int *fluid_no, int
 		if (fluid_no[i] > 1) {
 			for(int j = 1; j <= fluid_no[i]; j++)
 				cell_vel[i] += vel_fl[cell_part[j][i]]/fluid_no[i];
-			rho = 2*ran() - 1, phi = 4.0*d_asin(1.0)*ran(), theta = 2*d_asin(1)*(130/180.0);
+			rho = 2*ran(iv, seed, idum, iy) - 1, phi = 4.0*d_asin(1.0)*ran(iv, seed, idum, iy), theta = 2*d_asin(1)*(130/180.0);
 			r[1] = cos(phi)*sqrt(1 - rho*rho), r[2] = sin(phi)*sqrt(1 - rho*rho), r[3] = rho;
 			ct = cos(theta), st = sin(theta), ict = 1 - cos(theta);
 			ir[1] = ict*r[1], ir[2] = ict*r[2], ir[3] = ict*r[3];
@@ -53,5 +53,5 @@ __global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, int *fluid_no, int
 }
 
 void rotation_mpcd() {
-	d_rotation_mpcd<<<1, 1>>> (vel_fl, pos_fl, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl);
+	d_rotation_mpcd<<<1, 1>>> (vel_fl, pos_fl, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, iv, seed, idum, iy);
 }

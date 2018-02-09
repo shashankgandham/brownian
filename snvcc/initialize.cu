@@ -31,8 +31,7 @@ void initialize() {
 						  neigh_fl[i]  = (int *)calloc(sizeof(int),(no_of_colloid + 2));
 	}
 }
-__global__ void d_initialize_colloid(point *pos_colloid, point *vel_colloid, point *ang_vel_colloid, double sig_colloid, double kbt1, 
-									double I_colloid, double mass_colloid, int no_of_colloid, point len) {
+__global__ void d_initialize_colloid(point *pos_colloid, point *vel_colloid, point *ang_vel_colloid, double sig_colloid, double kbt1, double I_colloid, double mass_colloid, int no_of_colloid, point len) {
 	int counter = 0, check, nofp = 0;
 	double space_limit = 1.3*sig_colloid, ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
 	point avr_vel = point(0, 0, 0), t, temp, iter = point(4, 4, 4), lim = len - point(1, 1, 1);
@@ -47,7 +46,7 @@ __global__ void d_initialize_colloid(point *pos_colloid, point *vel_colloid, poi
 		for(int j = 1; j <= counter; j++) {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < space_limit)? 0: check;
-        }
+        	}
 		if(check)
 			pos_colloid[++counter] = t;
 	}
@@ -72,10 +71,11 @@ void initialize_colloid() {
 	cudaMemcpy(ang_vel_colloid, d_ang_vel_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
 	cudaMemcpy(pos_colloid, d_pos_colloid, (no_of_colloid + 2)*sizeof(point), cudaMemcpyDeviceToHost);
 	cudaFree(d_ang_vel_colloid), cudaFree(d_vel_colloid), cudaFree(d_pos_colloid);
+	exit(0);
 }
 
-__global__ void d_initialize_fluid(point *pos_fl, point *vel_fl, point *pos_colloid, double kbt, double mass_fl, 
-								double sigma, int no_of_fluid, int no_of_colloid, point len) {
+__global__ void d_initialize_fluid(point *pos_fl, point *vel_fl, point *pos_colloid, double kbt, double mass_fl, double sigma, int no_of_fluid, int no_of_colloid, point len) {
+
 	int counter = 0, check;
 	double vscale_fluid = sqrt(12.0*kbt/mass_fl);
 	point avr_vel = point(0, 0, 0), t, temp;
