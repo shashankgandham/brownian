@@ -43,7 +43,7 @@ int main() {
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-		
+		energy_colloid = energy_colloid;	
 	}
 	return 0;
 }

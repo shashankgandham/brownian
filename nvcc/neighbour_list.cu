@@ -1,15 +1,28 @@
 #include "parameters.cuh"
 
-inline point cmod(point a, point b) {
+inline __device__ __host__ point cmod(point a, point b) {
     if(a.x <=  0) a.x += b.x;  if(a.y <=  0) a.y += b.y;
     if(a.z <=  0) a.z += b.z; if(a.x > b.x) a.x -= b.x;
     if(a.y > b.y) a.y -= b.y; if(a.z > b.z) a.z -= b.z;
     return a;
 }
-void create_box() {
-    int tbox, box;
-    point jiter, iter = point(1, 1, 1), temp;
-    for(int i = 1; i <= len.prod(); i++, iter.next(len)) {
+
+inline __device__ __host__ point xyz(int cell, point len) {
+	int x = len.x, y = len.y, px, py, pz;
+	px = (cell%(x*y))%x;
+	if(!px) px = 30; cell -= px;
+	py = (cell%(x*y))/x;
+	if(!py) py = 30; cell -= py;
+	pz = cell/(x*y);
+	return point(px, py, pz);
+}
+
+__global__ void d_create_box(int **box_neigh, point len) {
+    int tbox, box, diff = len.y*len.z + len.x, nbox;
+    point jiter, temp, iter;
+	int i = blockIdx.x*blockDim.x + threadIdx.x;
+	if(i <= len.prod()) {
+		iter = xyz(i + diff, len);
         nbox = 0, box = (iter - point(0, 1, 1)).cell(len);
         jiter = iter - point(3, 3, 3);
         for(int j = 1; j <= 343; j++) {
@@ -19,6 +32,27 @@ void create_box() {
         }
     }
 }
+
+void create_box() {
+	int thr = 256, blk = (len.prod() + thr - 1)/thr;
+	nbox = 342;
+	d_create_box<<<blk, thr>>>(box_neigh, len);
+	cudaDeviceSynchronize();
+	int tbox, box, diff = len.y*len.z + len.x, nbox;
+    point jiter, temp, iter;
+	for(int i = 1; i <= len.prod(); i++) {
+		iter = xyz(i + diff, len);
+        nbox = 0, box = (iter - point(0, 1, 1)).cell(len);
+        jiter = iter - point(3, 3, 3);
+        for(int j = 1; j <= 343; j++) {
+            tbox = (cmod(jiter, len) - point(0, 1, 1)).cell(len);
+            if(tbox != box) nbox++ ;
+            jiter.next(iter + point(3, 3, 3), point(1, 1, 1), iter - point(3, 3, 3));
+        }
+    }
+
+}
+
 __global__ void d_neighbour_list_md(int **neighbour, int *n_neighbour, point *pos_colloid, int no_of_colloid, double sig_colloid, point len) {
     double neigh_cutoff = 3.0*sig_colloid;
     point temp;

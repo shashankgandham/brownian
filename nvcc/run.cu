@@ -4,14 +4,9 @@
 
 __global__ void d_tumble(point *ra, point *pos_colloid, point len, int no_of_colloid, int *iv, int *seed, int *idum, int *iy){
 	for (int i = 1; i <= no_of_colloid; i++) {
-		printf("\n");
 		point temp = ra[i].random(iv, seed, idum, iy)*len;
-		temp.print();
-		pos_colloid[i].print();
 		temp = pos_colloid[i] - temp;
-		temp.print();
-		ra[i] = d_img(temp, len);
-		//ra[i].print();
+		ra[i] = img(temp, len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
 	}
 }
@@ -20,7 +15,6 @@ void tumble() {
 	d_tumble<<<1, 1>>>(ra, pos_colloid, len, no_of_colloid, iv, seed, idum, iy);
 	cudaDeviceSynchronize();
 	cudaProfilerStop();
-	exit(0);
 }
 
 __global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *pos_colloid, point len, 

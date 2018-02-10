@@ -12,22 +12,22 @@ void initialize() {
 	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
 	int isize[]          = {(int)len.prod(), no_of_colloid };
 	int psize[]          = {no_of_fluid, no_of_colloid};
-	 cudaMallocManaged(&box_part,  (maxpart + 2)*sizeof(int *));
-	 cudaMallocManaged(&cell_part, (maxpart + 2)*sizeof(int *));
-	 cudaMallocManaged(&nbr, 7005*sizeof(int *));
-	 cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
-	 cudaMallocManaged(&box_neigh, sizeof(int *)*512);
-	 cudaMallocManaged(&neighbour, sizeof(int)*256);
-	 cudaMallocManaged(&neigh_fl,  sizeof(int)*10005);
-	 cudaMallocManaged(&iv, sizeof(int)*64);
-	 cudaMallocManaged(&seed, sizeof(int));
-	 cudaMallocManaged(&idum, sizeof(int));
-	 cudaMallocManaged(&iy, sizeof(int));
+	cudaMallocManaged(&box_part,  (maxpart + 2)*sizeof(int *));
+	cudaMallocManaged(&cell_part, (maxpart + 2)*sizeof(int *));
+	cudaMallocManaged(&nbr, 7005*sizeof(int *));
+	cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
+	cudaMallocManaged(&box_neigh, sizeof(int *)*512);
+	cudaMallocManaged(&neighbour, sizeof(int)*256);
+	cudaMallocManaged(&neigh_fl,  sizeof(int)*10005);
+	cudaMallocManaged(&iv, sizeof(int)*64);
+	cudaMallocManaged(&seed, sizeof(int));
+	cudaMallocManaged(&idum, sizeof(int));
+	cudaMallocManaged(&iy, sizeof(int));
 	*seed = 77777, *idum = 123456789, *iy = 0;
 	for(int i = 0; i < 64; i++) iv[i] = 0;
 	for(int i = 0; i < 8; i++) {
 		if(i < 5)  cudaMallocManaged(ipointers[i], (isize[i>0] + 2)*sizeof(int));
-			   cudaMallocManaged(ppointers[i], (psize[i>1] + 2)*sizeof(point));
+		cudaMallocManaged(ppointers[i], (psize[i>1] + 2)*sizeof(point));
 	}
 	for(int i = 0; i <= 10000; i++) {
 		if(i <= 500)       cudaMallocManaged(&box_neigh[i], sizeof(int)*(len.prod()    + 2));
@@ -36,7 +36,7 @@ void initialize() {
 		if(i <= 200)       cudaMallocManaged(&neighbour[i], sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&nbr[i],       sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&up_nbr[i],    sizeof(int)*(no_of_colloid + 2));
-				   cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(no_of_colloid + 2));
+		cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(no_of_colloid + 2));
 	}
 }
 void initialize_colloid() {
@@ -55,7 +55,7 @@ void initialize_colloid() {
 		for(int j = 1; j <= counter; j++) {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < space_limit)? 0: check;
-        	}
+		}
 		if(check)
 			pos_colloid[++counter] = t;
 	}
