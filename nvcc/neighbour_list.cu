@@ -53,6 +53,12 @@ __global__ void d_neighbour_list_md(int **neighbour, int *n_neighbour, point *po
 		}
 	}
 }
+void neighbour_list_md() {
+	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
+	cudaMemset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));  
+	d_neighbour_list_md<<<blk, thr>>>(neighbour, n_neighbour, pos_colloid, no_of_colloid, sig_colloid, len);
+}
+
 __global__ void boxpart_sync(int **box_part, int *fluid_no, point len) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= len.prod())
@@ -82,11 +88,6 @@ __global__ void d_neighbour_list_mpcd(int **box_part, int *fluid_no, int **box_n
 	}
 }
 
-void neighbour_list_md() {
-	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
-	cudaMemset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));  
-	d_neighbour_list_md<<<blk, thr>>>(neighbour, n_neighbour, pos_colloid, no_of_colloid, sig_colloid, len);
-}
 
 void neighbour_list_mpcd() {
 	int thr = 512, blk = (no_of_fluid + thr - 1)/thr;

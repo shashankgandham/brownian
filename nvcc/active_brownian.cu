@@ -1,5 +1,4 @@
 #include "parameters.cuh"
-#include <cuda_profiler_api.h>
 int main() {
 	double ke_colloid, ke_fluid, ang_ke_colloid, energy_colloid;
 	point mom = point(0, 0, 0);
@@ -9,17 +8,19 @@ int main() {
 	create_box();
 	neighbour_list_mpcd();
 	neighbour_list_md();
-	exit(0);
 	compute_force_md();
 	tumble();
+	cudaDeviceSynchronize();
 	printf(" After Tumble\n");
 	for(nn = 1; nn <= niter; nn++) {
 		printf("%12d\n", nn);
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
+			cudaDeviceSynchronize();
 			std::copy(f, f + no_of_colloid + 2, old_force);
 			update_pos_md();
+			exit(0);
 			neighbour_list_md();
 			update_pos_mpcd();
 			neighbour_list_mpcd();
@@ -29,7 +30,6 @@ int main() {
 			compute_force_md();
 			update_velocity_colloid();
 		}
-		cudaDeviceSynchronize();
 		ke_colloid = ke_fluid = ang_ke_colloid = 0;
 		for(int i = 1; i <= no_of_colloid; i++) {
 			ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();

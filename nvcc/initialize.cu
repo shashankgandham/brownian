@@ -1,6 +1,6 @@
 #include "parameters.cuh"
 #include <cstring>
-point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30);
+point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30), *cell_vel;
 int n = 10, niter = 21000, file = 0, nbin = 300, maxpart = 100, no_of_colloid = 10, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *fluid_no, *iv, *seed, *iy;
 int no_of_fluid = len.prod()*10, *no_neigh, **neigh_fl, **neighbour, *n_neighbour, **box_neigh, **box_part, **cell_part, nn, ran_c = 0, *idum;
 
@@ -13,7 +13,8 @@ void initialize() {
 	int isize[]          = {(int)len.prod(), no_of_colloid };
 	int psize[]          = {no_of_fluid, no_of_colloid};
 	cudaMallocManaged(&box_part,  (len.prod() + 2)*sizeof(int *));
-	cudaMallocManaged(&cell_part, (maxpart + 2)*sizeof(int *));
+	cudaMallocManaged(&cell_part, (len.prod() + 2)*sizeof(int *));
+	cudaMalloc(&cell_vel, (len.prod() + 2)*sizeof(point));
 	cudaMallocManaged(&nbr, 7005*sizeof(int *));
 	cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
 	cudaMallocManaged(&box_neigh, sizeof(int *)*512);
@@ -31,12 +32,12 @@ void initialize() {
 	}
 	for(int i = 0; i <= len.prod(); i++) {
 		if(i <= 500)       cudaMallocManaged(&box_neigh[i], sizeof(int)*(len.prod()    + 2));
-		if(i <= maxpart)   cudaMallocManaged(&cell_part[i], sizeof(int)*(len.prod()    + 2));
 		if(i <= 200)       cudaMallocManaged(&neighbour[i], sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&nbr[i],       sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&up_nbr[i],    sizeof(int)*(no_of_colloid + 2));
 		if(i <= 10000)	   cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(no_of_colloid + 2));
 						   cudaMallocManaged(&box_part[i],  sizeof(int)*(maxpart    + 2));
+						   cudaMallocManaged(&cell_part[i], sizeof(int)*(maxpart    + 2));
 	}
 }
 void initialize_colloid() {
@@ -50,7 +51,6 @@ void initialize_colloid() {
 	}
 	while(counter < no_of_colloid) {
 		t = t.random(iv, seed, idum, iy)*len;
-		ran_c += 3;
 		check = 1;
 		for(int j = 1; j <= counter; j++) {
 			temp = img(t - pos_colloid[j], len);
@@ -61,13 +61,11 @@ void initialize_colloid() {
 	}
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vel_colloid[j] = (vel_colloid[j].random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5))*vscale_colloid;
-		ran_c += 3;
 		avr_vel += vel_colloid[j];
 	}
 	avr_vel = avr_vel/no_of_colloid;
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vel_colloid[j] = vel_colloid[j] - avr_vel;
-		ran_c += 3;
 		ang_vel_colloid[j] = (t.random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5))*ang_vscale_colloid;
 	}
 }
@@ -78,18 +76,17 @@ void initialize_fluid() {
 	point avr_vel = point(0, 0, 0), t, temp;
 	while(counter < no_of_fluid) {
 		t = t.random(iv, seed, idum, iy)*len;
-		ran_c += 3;
 		check = 1;
 		for(int j = 1; j <= no_of_colloid; j++) {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
-		if(check)
+		if(check) {
 			pos_fl[++counter] = t;
+		}
 	}
 	for(int j = 1; j <= no_of_fluid; j++) {
 		vel_fl[j] = (vel_fl[j].random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5))*vscale_fluid;
-		ran_c += 3;
 		avr_vel += vel_fl[j];
 	}
 	avr_vel = avr_vel/no_of_fluid;

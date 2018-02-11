@@ -6,9 +6,10 @@
 #include <cassert>
 #include <algorithm>
 #include <climits>
+#include <cuda_profiler_api.h>
 #define CUDA_CALLABLE_MEMBER __host__ __device__
 
-inline CUDA_CALLABLE_MEMBER double ran(int *iv, int *seed, int *idum, int *iy) {
+inline CUDA_CALLABLE_MEMBER double ran(int *iv, int *seed, int *idum, int *iy, int debug = 0) {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, j, k;
 	static int imm, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv;
 	double eps, rnmx, am; eps = 1.2e-7, rnmx = 1 - eps, am = 1.0/im1; imm = im1 - 1, ndiv = 1 + imm/ntab;
@@ -33,6 +34,9 @@ inline CUDA_CALLABLE_MEMBER double ran(int *iv, int *seed, int *idum, int *iy) {
 	*iy = iv[j] - *idum;
 	iv[j] = *seed;
 	if(*iy < 1) *iy = *iy + imm;
+	if(debug) {
+		printf("%d %d %d\n", *seed, *idum, *iy);
+	}
 	return min(am*(*iy), rnmx);
 
 }
@@ -54,8 +58,8 @@ struct point {
 	CUDA_CALLABLE_MEMBER double prod() { return (x * y * z); }
 	CUDA_CALLABLE_MEMBER int cell(point len) { return int(x) + len.x*int(y) + len.x*len.y*int(z); }
 	CUDA_CALLABLE_MEMBER void print()  { printf("%36.32lf %35.32lf %35.32lf\n", x, y, z); }
-	CUDA_CALLABLE_MEMBER point random(int *iv, int *seed, int *idum, int *iy) {
-		x = ran(iv, seed, idum, iy); y = ran(iv, seed, idum, iy); z = ran(iv, seed, idum, iy);
+	CUDA_CALLABLE_MEMBER point random(int *iv, int *seed, int *idum, int *iy, int debug = 0){
+		x = ran(iv, seed, idum, iy, debug); y = ran(iv, seed, idum, iy, debug); z = ran(iv, seed, idum, iy, debug);
 		return *this;
 	}
 	CUDA_CALLABLE_MEMBER void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
@@ -64,13 +68,12 @@ struct point {
 		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
-inline CUDA_CALLABLE_MEMBER point round(point a) { return point((int)(a.x + 0.5), (int)(a.y + 0.5), (int)(a.z + 0.5));}
+inline CUDA_CALLABLE_MEMBER point round(point a) { return point(round(a.x), round(a.y), round(a.z));}
 inline CUDA_CALLABLE_MEMBER point mod(point a, point b) { return a - b*round((a - b/2)/b);} 
-inline CUDA_CALLABLE_MEMBER point img(point a, point b) { point c = a/b; c = round(a/b); return a - b*c;}
-inline CUDA_CALLABLE_MEMBER point d_img(point a, point b) { point c = a/b; c = round(a/b); a.print(), b.print(), c.print(); return a - b*c;}
+inline CUDA_CALLABLE_MEMBER point img(point a, point b) { return a - b*round(a/b);}
 inline CUDA_CALLABLE_MEMBER double power(double x, int r) { double ans = 1; for(int i = 1; i <=r; i++) ans *= x; return ans; }
 
-extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
+extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *cell_vel;
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, nn, *iv, *seed, *iy;
 extern int **neighbour, *n_neighbour, *no_neigh, **neigh_fl, **box_neigh, **box_part, *fluid_no, **cell_part, ran_c, *idum;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;

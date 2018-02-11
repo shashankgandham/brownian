@@ -1,7 +1,6 @@
 #include "parameters.cuh"
 #include <cuda_profiler_api.h>
 
-
 __global__ void d_tumble(point *ra, point *pos_colloid, point len, int no_of_colloid, int *iv, int *seed, int *idum, int *iy){
 	for (int i = 1; i <= no_of_colloid; i++) {
 		point temp = ra[i].random(iv, seed, idum, iy)*len;
@@ -14,7 +13,6 @@ __global__ void d_tumble(point *ra, point *pos_colloid, point len, int no_of_col
 void tumble() {
 	d_tumble<<<1, 1>>>(ra, pos_colloid, len, no_of_colloid, iv, seed, idum, iy);
 	cudaDeviceSynchronize();
-	cudaProfilerStop();
 }
 
 __global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *pos_colloid, point len, 
@@ -22,7 +20,8 @@ __global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_f
 		double v0, double mass_colloid, double sigma) {
 	point vector, del;
 	double temp;
-	for(int i = 1; i <= no_of_colloid; i++) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	if(i <= no_of_colloid) {
 		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;
 		cnt[i] = up_cnt[i] = 0;
 		for(int j = 1; j <= no_neigh[i]; j++) {
@@ -38,7 +37,8 @@ __global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_f
 }
 
 void run() {
-	d_run<<<1, 1>>>(ra, vel_colloid, vel_fl, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, 
+	int thr = 256, blk = (no_of_colloid + thr -1)/thr;
+	d_run<<<blk, thr>>>(ra, vel_colloid, vel_fl, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, 
 			cnt, up_cnt, no_of_colloid, mass_fl, v0, mass_colloid, sigma);
 }
 void updown_velocity() {
