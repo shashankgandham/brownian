@@ -12,7 +12,7 @@ void initialize() {
 	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
 	int isize[]          = {(int)len.prod(), no_of_colloid };
 	int psize[]          = {no_of_fluid, no_of_colloid};
-	cudaMallocManaged(&box_part,  (maxpart + 2)*sizeof(int *));
+	cudaMallocManaged(&box_part,  (len.prod() + 2)*sizeof(int *));
 	cudaMallocManaged(&cell_part, (maxpart + 2)*sizeof(int *));
 	cudaMallocManaged(&nbr, 7005*sizeof(int *));
 	cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
@@ -29,14 +29,14 @@ void initialize() {
 		if(i < 5)  cudaMallocManaged(ipointers[i], (isize[i>0] + 2)*sizeof(int));
 		cudaMallocManaged(ppointers[i], (psize[i>1] + 2)*sizeof(point));
 	}
-	for(int i = 0; i <= 10000; i++) {
+	for(int i = 0; i <= len.prod(); i++) {
 		if(i <= 500)       cudaMallocManaged(&box_neigh[i], sizeof(int)*(len.prod()    + 2));
-		if(i <= maxpart)   cudaMallocManaged(&box_part[i],  sizeof(int)*(len.prod()    + 2));
 		if(i <= maxpart)   cudaMallocManaged(&cell_part[i], sizeof(int)*(len.prod()    + 2));
 		if(i <= 200)       cudaMallocManaged(&neighbour[i], sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&nbr[i],       sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&up_nbr[i],    sizeof(int)*(no_of_colloid + 2));
-		cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(no_of_colloid + 2));
+		if(i <= 10000)	   cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(no_of_colloid + 2));
+						   cudaMallocManaged(&box_part[i],  sizeof(int)*(maxpart    + 2));
 	}
 }
 void initialize_colloid() {

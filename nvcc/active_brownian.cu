@@ -9,6 +9,7 @@ int main() {
 	create_box();
 	neighbour_list_mpcd();
 	neighbour_list_md();
+	exit(0);
 	compute_force_md();
 	tumble();
 	printf(" After Tumble\n");
