@@ -2,17 +2,11 @@
 
 void tumble(){
 	for (int i = 1; i <= no_of_colloid; i++) {
-	printf("\n");
 		point temp = ra[i].random(point(0, 0, 0), len);
-		temp.print();
-		pos_colloid[i].print();
 		temp = pos_colloid[i] - temp;
-		temp.print();
-		ra[i] = d_img(temp, len);
-//		ra[i].print();
+		ra[i] = img(temp, len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
-    	}
-	exit(0);
+	}
 }
 
 void run() {
@@ -39,7 +33,7 @@ void updown_velocity(){
 		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
 		for (int j = 1; j <= no_neigh[i]; j++) {
 			vector = img(pos_fl[neigh_fl[j][i]] - pos_colloid[i], len);
-			
+
 			if((vector*vector).sum() <= pow((sigma*0.5 + 0.5), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
 				nbr[++cnt[i]][i] = neigh_fl[j][i];
 

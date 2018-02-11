@@ -70,7 +70,7 @@ struct point {
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
-inline point round(point a) { return point((int)(a.x + 0.5), (int)(a.y + 0.5), (int)(a.z + 0.5)); }
-inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
-inline point img(point a, point b) { point c = a/b; c = round(c); return a - b*c;}
+inline point round(point a) { return point(round(a.x), round(a.y), round(a.z)); }
+inline point mod(point a, point b)  { return a - b*round((a - b/2)/b); }
+inline point img(point a, point b) { return a - b*round(a/b);}
 inline point d_img(point a, point b) { point c = a/b; c = round(c); a.print(), b.print(), c.print(); return a - b*c;}

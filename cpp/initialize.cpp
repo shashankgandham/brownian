@@ -75,8 +75,9 @@ void initialize_fluid() {
 			temp = img(t - pos_colloid[j], len);
 			check = (sqrt((temp*temp).sum()) < sigma*0.5)? 0: check;
 		}
-		if(check)
+		if(check) {
 			pos_fl[++counter] = t;
+		}
 	}
 	for(int j = 1; j <= no_of_fluid; j++) {
 		vel_fl[j] = vel_fl[j].random(point(0.5, 0.5, 0.5))*vscale_fluid;
