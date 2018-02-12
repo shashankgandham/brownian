@@ -97,5 +97,4 @@ void neighbour_list_mpcd() {
 	boxpart_sync<<<blk, thr>>>(box_part, fluid_no, len);
 	blk = (no_of_colloid + thr - 1)/thr;
 	d_neighbour_list_mpcd<<<blk, thr>>>(box_part, fluid_no, box_neigh, neigh_fl, no_neigh, pos_colloid, pos_fl, no_of_fluid, no_of_colloid, nbox, len);
-	cudaDeviceSynchronize();
 }

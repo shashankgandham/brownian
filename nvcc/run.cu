@@ -2,17 +2,14 @@
 #include <cuda_profiler_api.h>
 
 __global__ void d_tumble(point *ra, point *pos_colloid, point len, int no_of_colloid, int *iv, int *seed, int *idum, int *iy){
-	for (int i = 1; i <= no_of_colloid; i++) {
-		point temp = ra[i].random(iv, seed, idum, iy)*len;
-		temp = pos_colloid[i] - temp;
-		ra[i] = img(temp, len);
+	for(int i = 1; i <= no_of_colloid; i++) {
+		ra[i] = img(pos_colloid[i] - ra[i].random(iv, seed, idum, iy)*len, len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
 	}
 }
 
 void tumble() {
 	d_tumble<<<1, 1>>>(ra, pos_colloid, len, no_of_colloid, iv, seed, idum, iy);
-	cudaDeviceSynchronize();
 }
 
 __global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *pos_colloid, point len, 

@@ -43,6 +43,11 @@ __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, d
 		ra[i] = point((m[1]*ra[i]).sum(), (m[2]*ra[i]).sum(), (m[3]*ra[i]).sum());
 	}
 }
+
+void update_activity_direction() {
+	d_update_activity_direction<<<1, 1>>>(ang_vel_colloid, ra, dt, no_of_colloid);
+}
+
 __global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, double dt, double mass_colloid, point len, int no_of_colloid) {
 	double dt2= dt*dt, ddt = 0.5*dt2/mass_colloid;
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
@@ -54,22 +59,21 @@ void update_pos_md() {
 }
 
 __global__ void d_update_pos_mpcd(point *pos_fl, point *vel_fl, double dt, point len, int no_of_fluid) {
-	for(int i = 1; i <= no_of_fluid; i++)
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
+	if(i <= no_of_fluid) {
 		pos_fl[i] = mod(pos_fl[i] + vel_fl[i]*dt, len);
+	}
 }
-__global__ void d_update_vel_colloid(point *vel_colloid, point *old_force, point *f, double dtb2, int no_of_colloid){
-	for(int i = 1; i <= no_of_colloid; i++) 
-		vel_colloid[i] += old_force[i] + f[i]*dtb2; 
-}
-
-void update_activity_direction() {
-	d_update_activity_direction<<<1, 1>>>(ang_vel_colloid, ra, dt, no_of_colloid);
-}
-
 void update_pos_mpcd() {
-	d_update_pos_mpcd<<<1, 1>>>(pos_fl, vel_fl, dt, len, no_of_fluid);
+	int thr = 256, blk = (no_of_fluid + thr - 1)/thr;
+	d_update_pos_mpcd<<<blk, thr>>>(pos_fl, vel_fl, dt, len, no_of_fluid);
 }
 
+__global__ void d_update_vel_colloid(point *vel_colloid, point *old_force, point *f, double dtb2, int no_of_colloid) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
+	if(i <= no_of_colloid) vel_colloid[i] += old_force[i] + f[i]*dtb2; 
+}
 void update_velocity_colloid() {
-	d_update_vel_colloid<<<1, 1>>>(vel_colloid, old_force, f, dtb2, no_of_colloid);
+	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
+	d_update_vel_colloid<<<blk, thr>>>(vel_colloid, old_force, f, dtb2, no_of_colloid);
 }

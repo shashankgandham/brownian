@@ -23,9 +23,9 @@ inline __device__ point stochastic_reflection(point rf, point rs, double mass_fl
 	return ut*v[1] + un;
 }
 __global__ void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl, point *vel_colloid, 
-										point *ang_vel_colloid, point *dump_vel_fl, double mass_colloid, point I_colloid,
-										double mass_fl, double dt, point *vel_fl, point len, double sigma, int no_of_colloid,
-										double kbt, int **neigh_fl, int *iv, int *seed, int *idum, int *iy) {
+		point *ang_vel_colloid, point *dump_vel_fl, double mass_colloid, double I_colloid,
+		double mass_fl, double dt, point *vel_fl, point len, double sigma, int no_of_colloid,
+		double kbt, int **neigh_fl, int *iv, int *seed, int *idum, int *iy) {
 	point rr, rs, u, omega, vc;
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vc = omega = point(0, 0, 0);
@@ -53,5 +53,5 @@ void fluid_colloid_collision() {
 	cudaMallocManaged(&dump_vel_fl, sizeof(point)*(no_of_fluid + 2));
 	cudaMemcpy(dump_vel_fl, vel_fl, (no_of_fluid + 2)*sizeof(point), cudaMemcpyHostToDevice);
 	d_fluid_colloid_collision<<<1, 1>>> (no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, 
-	mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, iv, seed, idum, iy);
+			mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, iv, seed, idum, iy);
 }
