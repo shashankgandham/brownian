@@ -25,6 +25,8 @@ __global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, 
 
 void compute_force_md() {
 	int thr = 256, blk = (no_of_colloid + thr - 1)/thr; 
+	cudaDeviceSynchronize();
+	for(int i = 1; i <= 10; i++) f[i] = point(0, 0, 0);
 	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
 }
 __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, double dt, int no_of_colloid) {
