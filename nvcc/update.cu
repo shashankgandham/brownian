@@ -1,13 +1,12 @@
 #include "parameters.cuh"
+	
+double sig_colloid12 = pow(sig_colloid, 12), sig_colloid6 = pow(sig_colloid, 6);
+double r_cutoff = pow(2, 1.0/6.0)*sig_colloid, r, fc = 0; //4.0*eps*(12.0*(sig_colloid12/pow(r_cutoff,13)) - 6.0*(sig_colloid6/pow(r_cutoff, 7)));
+double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 
-double dtb2 = dt/(mass_colloid*2);
-__global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, point *pos_colloid, double sig_colloid, double eps, double *potential_colloid, point len, int no_of_colloid) {
-	double mag_f, r_cutoff, fc, ufc, sig_colloid12, sig_colloid6, r;
-	r_cutoff = power(2, 1.0/6.0)*sig_colloid, r, fc = 4.0*eps*(12.0*(power(sig_colloid,12)/power(r_cutoff,13)) - 6.0*(power(sig_colloid, 6)/power(r_cutoff, 7)));
-	ufc = 4.0*eps*(power(sig_colloid/r_cutoff, 12) - power(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
-	sig_colloid12 = power(sig_colloid, 12), sig_colloid6 = power(sig_colloid, 6);
+__global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, point *pos_colloid, double sig_colloid, double sig_colloid12, double sig_colloid6, double r_cutoff, double fc, double ufc, double eps, double *potential_colloid, point len, int no_of_colloid) {
 	point temp, ff;
-	double t1, t2;
+	double t1, t2, mag_f = 0, r;
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= no_of_colloid) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
@@ -26,11 +25,7 @@ __global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, 
 
 void compute_force_md() {
 	int thr = 256, blk = (no_of_colloid + thr - 1)/thr; 
-	double *d_potential_colloid;
-	cudaMalloc(&d_potential_colloid, sizeof(double));
-	cudaMemcpy(d_potential_colloid, &potential_colloid, sizeof(double), cudaMemcpyHostToDevice);	
-	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, eps, d_potential_colloid, len, no_of_colloid);
-	cudaMemcpy(&potential_colloid, d_potential_colloid, sizeof(double), cudaMemcpyDeviceToHost);	
+	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
 }
 __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, double dt, int no_of_colloid) {
 	point m[4], b, sb, cb;
@@ -48,14 +43,18 @@ void update_activity_direction() {
 	d_update_activity_direction<<<1, 1>>>(ang_vel_colloid, ra, dt, no_of_colloid);
 }
 
-__global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, double dt, double mass_colloid, point len, int no_of_colloid) {
-	double dt2= dt*dt, ddt = 0.5*dt2/mass_colloid;
+__global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, point *old_force, double dt, double ddt, double mass_colloid, point len, int no_of_colloid) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	if(i <= no_of_colloid) pos_colloid[i] = mod(pos_colloid[i] + vel_colloid[i]*dt + f[i]*ddt, len);
+	if(i <= no_of_colloid) {
+		old_force[i] = f[i];
+		pos_colloid[i] += vel_colloid[i]*dt + f[i]*ddt;
+		pos_colloid[i] = mod(pos_colloid[i], len);
+	}
 }
 void update_pos_md() {
 	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
-	d_update_pos_md<<<blk, thr>>>(pos_colloid, vel_colloid, f, dt, mass_colloid, len, no_of_colloid);
+	double dt2= dt*dt, ddt = 0.5*dt2/mass_colloid;
+	d_update_pos_md<<<blk, thr>>>(pos_colloid, vel_colloid, f, old_force, dt, ddt, mass_colloid, len, no_of_colloid);
 }
 
 __global__ void d_update_pos_mpcd(point *pos_fl, point *vel_fl, double dt, point len, int no_of_fluid) {
@@ -71,9 +70,10 @@ void update_pos_mpcd() {
 
 __global__ void d_update_vel_colloid(point *vel_colloid, point *old_force, point *f, double dtb2, int no_of_colloid) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
-	if(i <= no_of_colloid) vel_colloid[i] += old_force[i] + f[i]*dtb2; 
+	if(i <= no_of_colloid) vel_colloid[i] += (old_force[i] + f[i])*dtb2; 
 }
 void update_velocity_colloid() {
+	double dtb2 = dt/(mass_colloid*2);
 	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
 	d_update_vel_colloid<<<blk, thr>>>(vel_colloid, old_force, f, dtb2, no_of_colloid);
 }

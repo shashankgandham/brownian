@@ -12,13 +12,13 @@ void tumble() {
 	d_tumble<<<1, 1>>>(ra, pos_colloid, len, no_of_colloid, iv, seed, idum, iy);
 }
 
-__global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *pos_colloid, point len, 
+void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *pos_colloid, point len, 
 		int *no_neigh, int **nbr, int **neigh_fl, int *cnt, int *up_cnt, int no_of_colloid, double mass_fl, 
 		double v0, double mass_colloid, double sigma) {
 	point vector, del;
 	double temp;
-	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	if(i <= no_of_colloid) {
+//	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	for(int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;
 		cnt[i] = up_cnt[i] = 0;
 		for(int j = 1; j <= no_neigh[i]; j++) {
@@ -34,8 +34,9 @@ __global__ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_f
 }
 
 void run() {
-	int thr = 256, blk = (no_of_colloid + thr -1)/thr;
-	d_run<<<blk, thr>>>(ra, vel_colloid, vel_fl, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, 
+//	int thr = 256, blk = (no_of_colloid + thr -1)/thr;
+	cudaDeviceSynchronize();
+	d_run(ra, vel_colloid, vel_fl, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, 
 			cnt, up_cnt, no_of_colloid, mass_fl, v0, mass_colloid, sigma);
 }
 void updown_velocity() {
