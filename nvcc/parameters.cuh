@@ -76,7 +76,7 @@ inline CUDA_CALLABLE_MEMBER double power(double x, int r) { double ans = 1; for(
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *cell_vel, *del_v, **rot, *dump_vel_fl;
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, nn, *iv, *seed, *iy;
 extern int **neighbour, *n_neighbour, *no_neigh, **neigh_fl, **box_neigh, **box_part, *fluid_no, **cell_part, ran_c, *idum;
-extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, *potential_colloid;
+extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, *potential_colloid, *rana, *ranb;
 
 void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
