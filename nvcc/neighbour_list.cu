@@ -74,13 +74,14 @@ __global__ void neighfl_sync(int **neigh_fl, int *no_neigh, int no_of_colloid) {
 }
 
 __global__ void d_neighbour_list_mpcd(int **box_part, int *fluid_no, int **box_neigh, int **neigh_fl, int *no_neigh,
-	point *pos_colloid, point *pos_fl, int no_of_fluid, int no_of_colloid, int nbox, point len) {
+		point *pos_colloid, point *pos_fl, int no_of_fluid, int no_of_colloid, int nbox, point len) {
 	int mm, cbox;
 	int j = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	int k = blockIdx.y*blockDim.y + threadIdx.y + 1;
 	if(j <= no_of_colloid) {
 		no_neigh[j] = 0;
 		cbox = 1 + pos_colloid[j].cell(len);
-		for(int k = 1; k <= nbox; k++) {
+		if(k <= nbox) {
 			mm = box_neigh[k][cbox];
 			for(int i = 1; i <= fluid_no[mm]; i++) {
 				neigh_fl[j][atomicAdd(&no_neigh[j], 1) + 1] = box_part[mm][i];
@@ -94,8 +95,8 @@ void neighbour_list_mpcd() {
 	int thr = 512, blk = (no_of_fluid + thr - 1)/thr;
 	cudaMemset(fluid_no, 0, sizeof(int)*(len.prod() + 2));
 	d_boxpart<<<blk, thr>>>(box_part, fluid_no, no_of_fluid, pos_fl, len);
-	blk = (len.prod() + thr - 1)/thr;
-	blk = (no_of_colloid + thr - 1)/thr;
-	d_neighbour_list_mpcd<<<blk, thr>>>(box_part, fluid_no, box_neigh, neigh_fl, no_neigh, pos_colloid, pos_fl, no_of_fluid, no_of_colloid, nbox, len);
+	dim3 thrs(32, 32), blks;
+	blks = dim3((no_of_colloid + thrs.x - 1)/thrs.x, (nbox + thrs.y - 1)/thrs.y);
+	d_neighbour_list_mpcd<<<blks, thrs>>>(box_part, fluid_no, box_neigh, neigh_fl, no_neigh, pos_colloid, pos_fl, no_of_fluid, no_of_colloid, nbox, len);
 	neighfl_sync<<<blk, thr>>>(neigh_fl, no_neigh, no_of_colloid);
 }
