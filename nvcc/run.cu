@@ -30,21 +30,21 @@ __global__ void d_nbrc(point *ra, point *vel_colloid, point *pos_fl, point *pos_
 __global__ void d_velc(point *ra, point *vel_fl, int **nbr, int *cnt, int no_of_colloid, double mass_colloid, double mass_fl, double v0) {
 	point del; double temp;
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-//	int j = blockIdx.y*blockDim.y + threadIdx.y + 1;
+	int j = blockIdx.y*blockDim.y + threadIdx.y + 1;
 	if(i <= no_of_colloid) {
 		del = ra[i]*v0;
-		for(int j = 1; j <= cnt[i]; j++) {
+		if(j <= cnt[i]) {
 			temp = mass_colloid/(mass_fl*cnt[i]);
 			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*temp;
 		}
 	}
 }
 void run() {
-//	dim3 thr(32, 32), blk;
-//	blk = dim3((no_of_colloid + thr.x -1)/thr.x, (10000 + thr.y)/thr.y); // 10000 is no_neigh max value
+	dim3 thrs(32, 32), blks;
+	blks = dim3((no_of_colloid + thrs.x -1)/thrs.x, (10000 + thrs.y)/thrs.y); // 10000 is no_neigh max value
 	int thr = 256, blk = (thr + no_of_colloid -1)/thr;
 	d_nbrc<<<blk, thr>>>(ra, vel_colloid, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, cnt, no_of_colloid, v0, sigma);
-	d_velc<<<blk, thr>>>(ra, vel_fl, nbr, cnt, no_of_colloid, mass_colloid, mass_fl, v0);
+	d_velc<<<blks, thrs>>>(ra, vel_fl, nbr, cnt, no_of_colloid, mass_colloid, mass_fl, v0);
 }
 void updown_velocity() {
 	point up_vel = point(0, 0, 0), vector, vel;
