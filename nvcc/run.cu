@@ -12,32 +12,39 @@ void tumble() {
 	d_tumble<<<1, 1>>>(ra, pos_colloid, len, no_of_colloid, iv, seed, idum, iy);
 }
 
-void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *pos_colloid, point len, 
-		int *no_neigh, int **nbr, int **neigh_fl, int *cnt, int *up_cnt, int no_of_colloid, double mass_fl, 
-		double v0, double mass_colloid, double sigma) {
-	point vector, del;
-	double temp;
-//	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	for(int i = 1; i <= no_of_colloid; i++) {
-		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;
-		cnt[i] = up_cnt[i] = 0;
+__global__ void d_nbrc(point *ra, point *vel_colloid, point *pos_fl, point *pos_colloid, point len, 
+		int *no_neigh, int **nbr, int **neigh_fl, int *cnt, int no_of_colloid, double v0, double sigma) {
+	point vector;
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+//	int j = blockIdx.y*blockDim.y + threadIdx.y + 1;
+	if(i <= no_of_colloid) {
+		vel_colloid[i] += ra[i]*v0;
+		cnt[i] = 0;
 		for(int j = 1; j <= no_neigh[i]; j++) {
 			vector = img(pos_fl[neigh_fl[i][j]] - pos_colloid[i], len);
 			if((vector*vector).sum() <= power(sigma*0.5+0.5, 2) && (vector*vel_colloid[i]).sum() <= 0)
-				nbr[++cnt[i]][i] = neigh_fl[i][j];
+				nbr[atomicAdd(&cnt[i], 1) + 1][i] = neigh_fl[i][j];
 		}
+	}
+}
+__global__ void d_velc(point *ra, point *vel_fl, int **nbr, int *cnt, int no_of_colloid, double mass_colloid, double mass_fl, double v0) {
+	point del; double temp;
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+//	int j = blockIdx.y*blockDim.y + threadIdx.y + 1;
+	if(i <= no_of_colloid) {
+		del = ra[i]*v0;
 		for(int j = 1; j <= cnt[i]; j++) {
 			temp = mass_colloid/(mass_fl*cnt[i]);
 			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*temp;
 		}
 	}
 }
-
 void run() {
-//	int thr = 256, blk = (no_of_colloid + thr -1)/thr;
-	cudaDeviceSynchronize();
-	d_run(ra, vel_colloid, vel_fl, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, 
-			cnt, up_cnt, no_of_colloid, mass_fl, v0, mass_colloid, sigma);
+//	dim3 thr(32, 32), blk;
+//	blk = dim3((no_of_colloid + thr.x -1)/thr.x, (10000 + thr.y)/thr.y); // 10000 is no_neigh max value
+	int thr = 256, blk = (thr + no_of_colloid -1)/thr;
+	d_nbrc<<<blk, thr>>>(ra, vel_colloid, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, cnt, no_of_colloid, v0, sigma);
+	d_velc<<<blk, thr>>>(ra, vel_fl, nbr, cnt, no_of_colloid, mass_colloid, mass_fl, v0);
 }
 void updown_velocity() {
 	point up_vel = point(0, 0, 0), vector, vel;
