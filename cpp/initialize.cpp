@@ -11,7 +11,7 @@ void initialize() {
 	nbr 		= (int **)calloc(7005,sizeof(int *));
 	up_nbr 		= (int **)calloc(7005,sizeof(int *));
     iv = (int *)calloc(ntab + 2, sizeof(int));
-
+	neigh_fl = (int **)calloc(no_of_colloid + 2, sizeof(int *));
 	for(int i = 0; i < 8; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
 				  *ppointers[i] = (point *)calloc(psize[i>1] + 2, sizeof(point));
@@ -24,7 +24,7 @@ void initialize() {
 		if(i <= 200)      neighbour[i] = (int *)calloc(sizeof(int),(no_of_colloid + 2));
 		if(i <= 7000)     nbr[i]       = (int *)calloc(sizeof(int),(no_of_colloid + 2));
 		if(i <= 7000)     up_nbr[i]    = (int *)calloc(sizeof(int),(no_of_colloid + 2));
-						  neigh_fl[i]  = (int *)calloc(sizeof(int),(no_of_colloid + 2));
+		if(i <= no_of_colloid) neigh_fl[i]  = (int *)calloc(sizeof(int),(10000 + 2));
 	}
 }
 

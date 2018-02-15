@@ -1,6 +1,6 @@
 #include "parameters.hpp"
 
-inline point cmod(point a, point b) {  
+inline point cmod(point a, point b) {
     if(a.x <= 0) a.x += b.x;
     if(a.y <=  0) a.y += b.y;
     if(a.z <=  0) a.z += b.z;
@@ -17,7 +17,7 @@ void create_box() {
         jiter = iter - point(3, 3, 3);
         for(int j = 1; j <= 343; j++) {
             tbox = (cmod(jiter, len) - point(0, 1, 1)).cell(len);
-            if(tbox != box) 
+            if(tbox != box)
                 box_neigh[++nbox][box] = tbox;
             jiter.next(iter + point(3, 3, 3), point(1, 1, 1), iter - point(3, 3, 3));
         }
@@ -51,8 +51,9 @@ void neighbour_list_mpcd() {
         for(int k = 1; k <= nbox; k++) {
             mm = box_neigh[k][cbox];
             for(int i = 1; i <= fluid_no[mm]; i++) {
-                neigh_fl[++no_neigh[j]][j] = box_part[i][mm];
+                neigh_fl[j][++no_neigh[j]] = box_part[i][mm];
             }
         }
+		std::sort(neigh_fl[j] + 1, neigh_fl[j] + no_neigh[j] + 1);
     }
 }
