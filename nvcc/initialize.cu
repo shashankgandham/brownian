@@ -21,7 +21,7 @@ void initialize() {
 	cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
 	cudaMallocManaged(&box_neigh, sizeof(int *)*512);
 	cudaMallocManaged(&neighbour, sizeof(int)*256);
-	cudaMallocManaged(&neigh_fl,  sizeof(int)*10005);
+	cudaMallocManaged(&neigh_fl,  sizeof(int)*(no_of_colloid + 2));
 	cudaMallocManaged(&iv, sizeof(int)*64);
 	cudaMallocManaged(&seed, sizeof(int));
 	cudaMallocManaged(&idum, sizeof(int));
@@ -38,7 +38,7 @@ void initialize() {
 		if(i <= 200)       cudaMallocManaged(&neighbour[i], sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&nbr[i],       sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&up_nbr[i],    sizeof(int)*(no_of_colloid + 2));
-		if(i <= 10000)	   cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(no_of_colloid + 2));
+		if(i <= no_of_colloid)	cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(10000 + 2));
 						   cudaMallocManaged(&box_part[i],  sizeof(int)*(maxpart    + 2));
 						   cudaMallocManaged(&cell_part[i], sizeof(int)*(maxpart    + 2));
 						   cudaMallocManaged(&rot[i],		sizeof(point)*4);

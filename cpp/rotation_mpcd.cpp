@@ -12,9 +12,6 @@ void rotation_mpcd() {
 		cell_part[++fluid_no[cell_no]][cell_no] = i;
 	}
 	memset(cell_vel, 0, sizeof cell_vel);
-//	for(int i = 1; i <= no_of_fluid; i++)
-//		vel_fl[i].print();
-//	exit(0);
 	for(int i = 1; i <= len.prod(); i++) {
 		if (fluid_no[i] > 1) {
 			for(int j = 1; j <= fluid_no[i]; j++)
@@ -33,6 +30,7 @@ void rotation_mpcd() {
 			}
 		}
 	}
+	int m = 0;
 	for(int i = 1; i <= len.prod(); i++) {
 		var = 0.0;
 		if(fluid_no[i] > 1) {

@@ -15,7 +15,8 @@ void compute_force_md() {
 	point temp, ff;
 	potential_colloid = 0;
     memset(f, 0, sizeof(int)*(no_of_colloid + 2));
-    double t1, t2;
+    for(int i = 0; i <= 10; i++) f[i] = 0;
+    double t1, t2, t3, rp;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
 			temp = img(pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
@@ -47,17 +48,24 @@ void update_activity_direction() {
 
 void update_pos_md() {
 	double dt2 = dt*dt, ddt = 0.5*dt2/mass_colloid;
-	for(int i = 1; i <= no_of_colloid; i++) 
-		pos_colloid[i] = mod(pos_colloid[i] + vel_colloid[i]*dt + f[i]*ddt, len);
+	for(int i = 1; i <= no_of_colloid; i++) {
+		pos_colloid[i] +=  vel_colloid[i]*dt + f[i]*ddt;
+		pos_colloid[i]  =  mod(pos_colloid[i], len);
+    }
 }
 
 void update_pos_mpcd() {
-	for (int i = 1; i <= no_of_fluid; i++) 
+	for (int i = 1; i <= no_of_fluid; i++) {
 		pos_fl[i] = mod(pos_fl[i] + vel_fl[i]*dt, len);
+	}
 }
 
 void update_velocity_colloid() {
     double dtb2 = dt/(mass_colloid*2);
-	for (int i = 1; i <= no_of_colloid; i++)
+	for (int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += (old_force[i] + f[i])*dtb2;
+//	    if(nn == 369) vel_colloid[i].print();
+  //      if(nn == 369) old_force[i].print();
+    //    if(nn == 369) f[i].print();
+    }
 }

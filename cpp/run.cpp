@@ -2,11 +2,9 @@
 
 void tumble(){
 	for (int i = 1; i <= no_of_colloid; i++) {
-		point temp = ra[i].random(point(0, 0, 0), len);
-		temp = pos_colloid[i] - temp;
-		ra[i] = img(temp, len);
+		ra[i] = img(pos_colloid[i] - ra[i].random(point(0, 0, 0), len), len);
 		ra[i] = ra[i]/sqrt((ra[i]*ra[i]).sum());
-	}
+    }
 }
 
 void run() {
@@ -22,7 +20,7 @@ void run() {
 		}
 		for(int j = 1; j <= cnt[i]; j++) {
 			temp = mass_colloid/(mass_fl*cnt[i]);
-			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*temp;
+			vel_fl[nbr[j][i]] = vel_fl[nbr[j][i]] - del*(mass_colloid/(mass_fl*cnt[i]));
 		}
 	}
 }
@@ -33,7 +31,7 @@ void updown_velocity(){
 		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
 		for (int j = 1; j <= no_neigh[i]; j++) {
 			vector = img(pos_fl[neigh_fl[j][i]] - pos_colloid[i], len);
-
+			
 			if((vector*vector).sum() <= pow((sigma*0.5 + 0.5), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
 				nbr[++cnt[i]][i] = neigh_fl[j][i];
 

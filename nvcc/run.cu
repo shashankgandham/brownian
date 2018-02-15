@@ -22,9 +22,9 @@ void d_run(point *ra, point *vel_colloid, point *vel_fl, point *pos_fl, point *p
 		vel_colloid[i] += ra[i]*v0, del = ra[i]*v0;
 		cnt[i] = up_cnt[i] = 0;
 		for(int j = 1; j <= no_neigh[i]; j++) {
-			vector = img(pos_fl[neigh_fl[j][i]] - pos_colloid[i], len);
+			vector = img(pos_fl[neigh_fl[i][j]] - pos_colloid[i], len);
 			if((vector*vector).sum() <= power(sigma*0.5+0.5, 2) && (vector*vel_colloid[i]).sum() <= 0)
-				nbr[++cnt[i]][i] = neigh_fl[j][i];
+				nbr[++cnt[i]][i] = neigh_fl[i][j];
 		}
 		for(int j = 1; j <= cnt[i]; j++) {
 			temp = mass_colloid/(mass_fl*cnt[i]);
@@ -44,13 +44,13 @@ void updown_velocity() {
 	for (int i = 1; i <= no_of_colloid; i++){
 		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
 		for (int j = 1; j <= no_neigh[i]; j++) {
-			vector = img(pos_fl[neigh_fl[j][i]] - pos_colloid[i], len);
+			vector = img(pos_fl[neigh_fl[i][j]] - pos_colloid[i], len);
 
 			if((vector*vector).sum() <= pow((sigma*0.5 + 0.5), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
-				nbr[++cnt[i]][i] = neigh_fl[j][i];
+				nbr[++cnt[i]][i] = neigh_fl[i][j];
 
 			if((vector*vector).sum() <= pow((sigma*0.5 + 0.1), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
-				up_nbr[++up_cnt[i]][i] = neigh_fl[j][i];
+				up_nbr[++up_cnt[i]][i] = neigh_fl[i][j];
 		}
 		for (int j = 1; j <= cnt[i]; j++)
 			vel += vel_fl[nbr[j][i]];

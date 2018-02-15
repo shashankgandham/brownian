@@ -82,7 +82,7 @@ __global__ void d_neighbour_list_mpcd(int **box_part, int *fluid_no, int **box_n
 		for(int k = 1; k <= nbox; k++) {
 			mm = box_neigh[k][cbox];
 			for(int i = 1; i <= fluid_no[mm]; i++) {
-				neigh_fl[++no_neigh[j]][j] = box_part[mm][i];
+				neigh_fl[j][atomicAdd(&no_neigh[j], 1) + 1] = box_part[mm][i];
 			}
 		}
 	}

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <climits>
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed, nn;
-extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part, ran_c;
+extern int *neighbour[256], *n_neighbour, *no_neigh, *neigh_fl[10005], *box_neigh[512], **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
 
 void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
@@ -70,7 +70,6 @@ struct point {
 };
 extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
 
-inline point round(point a) { return point(round(a.x), round(a.y), round(a.z)); }
-inline point mod(point a, point b)  { return a - b*round((a - b/2)/b); }
-inline point img(point a, point b) { return a - b*round(a/b);}
-inline point d_img(point a, point b) { point c = a/b; c = round(c); a.print(), b.print(), c.print(); return a - b*c;}
+inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
+inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
+inline point img(point a, point b)  { return a - b*round(a/b); }

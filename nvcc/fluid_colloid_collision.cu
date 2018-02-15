@@ -31,7 +31,7 @@ void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl,
 	for(int j = 1; j <= no_of_colloid; j++) {
 		vc = omega = point(0, 0, 0);
 		for(int i = 1; i <= no_neigh[j]; i++) {
-			int l = neigh_fl[i][j];
+			int l = neigh_fl[j][i];
 			rr = img(pos_colloid[j] - pos_fl[l], len);
 			if((rr*rr).sum() <= pow(sigma, 2)*0.25) {
 				pos_fl[l] = mod(pos_fl[l] - vel_fl[l]*dt* 0.5, len);
