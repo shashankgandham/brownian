@@ -39,7 +39,6 @@ void d_velc(point *ra, point *vel_fl, int **nbr, int *cnt, int no_of_colloid, do
 		}
 	}
 }
-
 void run() {
 	dim3 thr(32), blk((no_of_colloid + thr.x -1)/thr.x);
 	cudaDeviceSynchronize();
