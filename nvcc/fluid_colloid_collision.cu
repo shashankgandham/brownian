@@ -24,11 +24,12 @@ inline CUDA_CALLABLE_MEMBER point stochastic_reflection(point rf, point rs, doub
 }
 
 void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl, point *vel_colloid, 
-		point *ang_vel_colloid, point *dump_vel_fl, double mass_colloid, double I_colloid,
+		point *ang_vel_colloid, point *dump_vel_fl, point **u, double mass_colloid, double I_colloid,
 		double mass_fl, double dt, point *vel_fl, point len, double sigma, int no_of_colloid,
-		double kbt, int **neigh_fl, int *iv, int *seed, int *idum, int *iy) {
-	point rr, rs, u, omega, vc;
-	for(int j = 1; j <= no_of_colloid; j++) {
+		double kbt, int **neigh_fl) {
+	point rr, rs, omega, vc;
+    int j = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	if(j <= no_of_colloid) {
 		vc = omega = point(0, 0, 0);
 		for(int i = 1; i <= no_neigh[j]; i++) {
 			int l = neigh_fl[j][i];
@@ -36,10 +37,9 @@ void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl,
 			if((rr*rr).sum() <= pow(sigma, 2)*0.25) {
 				pos_fl[l] = mod(pos_fl[l] - vel_fl[l]*dt* 0.5, len);
 				rs = img(pos_fl[l] - pos_colloid[j], len);
-				u  = stochastic_reflection(pos_fl[l], rs, mass_fl, kbt, len, iv, seed, idum, iy);
-				vel_fl[l] = u + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
+			//	u  = stochastic_reflection(pos_fl[l], rs, mass_fl, kbt, len, iv, seed, idum, iy);
+				vel_fl[l] = u[j][i] + vel_colloid[j] + crossmul(ang_vel_colloid[j], rs);
 				vc += (dump_vel_fl[l] - vel_fl[l]);
-				u = (dump_vel_fl[l] - vel_fl[l]);
 				omega += crossmul(rs, (dump_vel_fl[l] - vel_fl[l]));
 				pos_fl[l] = mod(pos_fl[l] + vel_fl[l]*dt*0.5, len);
 			}
@@ -53,9 +53,20 @@ __global__ void d_dump(point *dump_vel_fl, point *vel_fl, int no_of_fluid) {
 	if(i <= no_of_fluid) dump_vel_fl[i] = vel_fl[i];
 }
 void fluid_colloid_collision() {
+    point rr, rs;
 	int thr = 256, blk = (no_of_fluid + thr - 1)/thr;
 	d_dump<<<blk, thr>>> (dump_vel_fl, vel_fl, no_of_fluid);
 	cudaDeviceSynchronize();
-	d_fluid_colloid_collision (no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, 
-			mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, iv, seed, idum, iy);
+	for(int j = 1; j <= no_of_colloid; j++) {
+		for(int i = 1; i <= no_neigh[j]; i++) {
+			int l = neigh_fl[j][i]; rr = img(pos_colloid[j] - pos_fl[l], len);
+			if((rr*rr).sum() <= pow(sigma, 2)*0.25) {
+				rs = img(mod(pos_fl[l] - vel_fl[l]*dt* 0.5, len)- pos_colloid[j], len);
+				u[j][i]  = stochastic_reflection(pos_fl[l], rs, mass_fl, kbt, len, iv, seed, idum, iy);
+			}
+		}
+	}
+    blk = (no_of_colloid + thr -1)/thr;
+    d_fluid_colloid_collision<<<blk, thr>>> (no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, u, dump_vel_fl, 
+			mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl);
 }
