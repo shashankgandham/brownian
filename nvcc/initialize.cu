@@ -1,6 +1,6 @@
 #include "parameters.cuh"
 #include <cstring>
-point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30), *cell_vel, **rot, *dump_vel_fl;
+point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *ra, *old_force, len = point(30, 30, 30), *cell_vel, **rot, *dump_vel_fl, **u;
 int n = 10, niter = 21000, file = 0, nbin = 300, maxpart = 100, no_of_colloid = 10, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *fluid_no, *iv, *seed, *iy;
 int no_of_fluid = len.prod()*10, *no_neigh, **neigh_fl, **neighbour, *n_neighbour, **box_neigh, **box_part, **cell_part, nn, ran_c = 0, *idum;
 
@@ -20,8 +20,9 @@ void initialize() {
 	cudaMallocManaged(&nbr, 7005*sizeof(int *));
 	cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
 	cudaMallocManaged(&box_neigh, sizeof(int *)*512);
-	cudaMallocManaged(&neighbour, sizeof(int)*256);
-	cudaMallocManaged(&neigh_fl,  sizeof(int)*(no_of_colloid + 2));
+	cudaMallocManaged(&neighbour, sizeof(int *)*256);
+	cudaMallocManaged(&neigh_fl,  sizeof(int *)*(no_of_colloid + 2));
+	cudaMallocManaged(&u,  sizeof(point *)*(no_of_colloid + 2));
 	cudaMallocManaged(&iv, sizeof(int)*64);
 	cudaMallocManaged(&seed, sizeof(int));
 	cudaMallocManaged(&idum, sizeof(int));
@@ -41,7 +42,8 @@ void initialize() {
 		if(i <= 7000)      cudaMallocManaged(&nbr[i],       sizeof(int)*(no_of_colloid + 2));
 		if(i <= 7000)      cudaMallocManaged(&up_nbr[i],    sizeof(int)*(no_of_colloid + 2));
 		if(i <= no_of_colloid)	cudaMallocManaged(&neigh_fl[i],  sizeof(int)*(10000 + 2));
-						   cudaMallocManaged(&box_part[i],  sizeof(int)*(maxpart    + 2));
+		if(i <= no_of_colloid)	cudaMallocManaged(&u[i],  sizeof(point)*(10000 + 2));
+							cudaMallocManaged(&box_part[i],  sizeof(int)*(maxpart    + 2));
 						   cudaMallocManaged(&cell_part[i], sizeof(int)*(maxpart    + 2));
 						   cudaMallocManaged(&rot[i],		sizeof(point)*4);
 	}

@@ -23,7 +23,7 @@ inline CUDA_CALLABLE_MEMBER point stochastic_reflection(point rf, point rs, doub
 	return ut*v[1] + un;
 }
 
-void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl, point *vel_colloid, 
+__global__ void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl, point *vel_colloid, 
 		point *ang_vel_colloid, point *dump_vel_fl, point **u, double mass_colloid, double I_colloid,
 		double mass_fl, double dt, point *vel_fl, point len, double sigma, int no_of_colloid,
 		double kbt, int **neigh_fl) {
@@ -67,6 +67,6 @@ void fluid_colloid_collision() {
 		}
 	}
     blk = (no_of_colloid + thr -1)/thr;
-    d_fluid_colloid_collision<<<blk, thr>>> (no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, u, dump_vel_fl, 
+    d_fluid_colloid_collision<<<blk, thr>>> (no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, u,
 			mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl);
 }
