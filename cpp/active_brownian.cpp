@@ -39,9 +39,9 @@ int main() {
             ke_colloid 	   += (vel_colloid[i]*vel_colloid[i]).sum();
             ang_ke_colloid += (ang_vel_colloid[i]*ang_vel_colloid[i]).sum();
             mom 		   += (vel_colloid[i]*mass_colloid);
-			pos_colloid[i].print();
-			vel_colloid[i].print();
-			ang_vel_colloid[i].print();
+			//pos_colloid[i].print();
+			//vel_colloid[i].print();
+			//ang_vel_colloid[i].print();
         }
         for(int i = 1; i <= no_of_fluid; i++) {
             ke_fluid += (vel_fl[i]*vel_fl[i]).sum();

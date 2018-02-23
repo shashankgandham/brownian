@@ -25,7 +25,7 @@ int main() {
 			compute_force_md();
 			update_velocity_colloid();
 		}
-		cudaDeviceSynchronize();
+		//cudaDeviceSynchronize();
 		for(int i = 1; i <= no_of_colloid; i++) {
 			pos_colloid[i].print();
 			vel_colloid[i].print();

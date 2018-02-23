@@ -81,7 +81,7 @@ void rotation_mpcd() {
 	point rr;
 	int thr = 256, blk = (no_of_fluid + thr -1)/thr;
 	
-	cudaDeviceSynchronize();
+	//cudaDeviceSynchronize();
 	rr = rr.random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5);
 	cudaMemset(cell_vel, 0, (len.prod() + 2)*sizeof(point));
 	cudaMemset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
@@ -91,7 +91,7 @@ void rotation_mpcd() {
 	cellpart_sync<<<blk, thr>>> (cell_part, fluid_no, len);
 	d_cellvel<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, len);
 
-	cudaDeviceSynchronize();
+	//cudaDeviceSynchronize();
 	for(int  i = 1; i <= len.prod(); i++) {
 		if(fluid_no[i] > 1) {
 			rana[i] = ran(iv, seed, idum, iy);

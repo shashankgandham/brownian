@@ -54,6 +54,6 @@ void neighbour_list_mpcd() {
                 neigh_fl[j][++no_neigh[j]] = box_part[i][mm];
             }
         }
-		std::sort(neigh_fl[j] + 1, neigh_fl[j] + no_neigh[j] + 1);
+	//	std::sort(neigh_fl[j] + 1, neigh_fl[j] + no_neigh[j] + 1);
     }
 }

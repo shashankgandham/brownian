@@ -41,9 +41,9 @@ void d_velc(point *ra, point *vel_fl, int **nbr, int *cnt, int no_of_colloid, do
 }
 void run() {
 	dim3 thr(32), blk((no_of_colloid + thr.x -1)/thr.x);
-	cudaDeviceSynchronize();
+//	cudaDeviceSynchronize();
 	d_nbrc<<<blk, thr>>>(ra, vel_colloid, pos_fl, pos_colloid, len, no_neigh, nbr, neigh_fl, cnt, no_of_colloid, v0, sigma);
-	cudaDeviceSynchronize();
+//	cudaDeviceSynchronize();
 	d_velc(ra, vel_fl, nbr, cnt, no_of_colloid, mass_colloid, mass_fl, v0);
 }
 void updown_velocity() {

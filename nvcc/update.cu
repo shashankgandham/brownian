@@ -26,7 +26,7 @@ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, point *pos_
 
 void compute_force_md() {
 //	int thr = 256, blk = (no_of_colloid + thr - 1)/thr; 
-	cudaDeviceSynchronize();
+	//cudaDeviceSynchronize();
 	for(int i = 1; i <= no_of_colloid; i++) f[i] = point(0, 0, 0);
 	d_compute_force_md(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
 }

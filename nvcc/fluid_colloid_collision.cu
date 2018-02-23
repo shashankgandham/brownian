@@ -56,7 +56,7 @@ void fluid_colloid_collision() {
     point rr, rs;
 	int thr = 256, blk = (no_of_fluid + thr - 1)/thr;
 	d_dump<<<blk, thr>>> (dump_vel_fl, vel_fl, no_of_fluid);
-	cudaDeviceSynchronize();
+//	cudaDeviceSynchronize();
 	for(int j = 1; j <= no_of_colloid; j++) {
 		for(int i = 1; i <= no_neigh[j]; i++) {
 			int l = neigh_fl[j][i]; rr = img(pos_colloid[j] - pos_fl[l], len);
