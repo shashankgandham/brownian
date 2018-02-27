@@ -8,33 +8,25 @@ double kbt = 1, kbt1 = 1, ndt = 0.1, dv = 0.1, mass_fl = 1.0, mass_colloid = 654
 double dt = ndt/(double)n, sigma = 0.80*sig_colloid, I_colloid = 0.1*mass_colloid*sigma*sigma, *potential_colloid, *rana, *ranb;
 
 void initialize() {
-	point **ppointers[]  = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
+	point **ppointers[]  = {&pos_fl, &vel_fl, &dump_vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
 	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
-	int isize[]          = {(int)len.prod(), no_of_colloid };
+	int ***dipointers[]  = {&box_part, &cell_part, &box_neigh, &neighbour, &neigh_fl, &nbr, &up_nbr, &iv, &seed, &idum, &iy};
+	int disize[]         = {(int)len.prod(), (int)len.prod(), 512, 256, no_of_colloid, 7000, 7000};
+	int isize[]          = {(int)len.prod(), no_of_colloid, no_of_colloid, no_of_colloid, no_of_colloid, 64, 1, 1, 1};
 	int psize[]          = {no_of_fluid, no_of_colloid};
-	cudaMallocManaged(&box_part,  (len.prod() + 2)*sizeof(int *));
-	cudaMallocManaged(&cell_part, (len.prod() + 2)*sizeof(int *));
-	cudaMallocManaged(&box_neigh, sizeof(int *)*512);
-	cudaMallocManaged(&neighbour, sizeof(int *)*256);
-	cudaMallocManaged(&neigh_fl,  sizeof(int *)*(no_of_colloid + 2));
-	cudaMallocManaged(&nbr, 7005*sizeof(int *));
-	cudaMallocManaged(&up_nbr, 7005*sizeof(int *));
+	
 	cudaMallocManaged(&u,  (no_of_colloid + 2)*sizeof(point *));
 	cudaMallocManaged(&rot, (len.prod() + 2)*sizeof(point *));
 	cudaMallocManaged(&cell_vel, (len.prod() + 2)*sizeof(point));
-	cudaMallocManaged(&dump_vel_fl, (no_of_fluid + 2)*sizeof(point));
-	cudaMallocManaged(&iv, sizeof(int)*64);
-	cudaMallocManaged(&seed, sizeof(int));
-	cudaMallocManaged(&idum, sizeof(int));
-	cudaMallocManaged(&iy, sizeof(int));
 	cudaMallocManaged(&potential_colloid, sizeof(double));
 	cudaMallocManaged(&rana, sizeof(double)*(len.prod() + 2));
 	cudaMallocManaged(&ranb, sizeof(double)*(len.prod() + 2));
 	*seed = 77777, *idum = 123456789, *iy = 0;
 	for(int i = 0; i < 64; i++) iv[i] = 0;
-	for(int i = 0; i < 8; i++) {
-		if(i < 5)  cudaMallocManaged(ipointers[i], (isize[i>0] + 2)*sizeof(int));
-		cudaMallocManaged(ppointers[i], (psize[i>1] + 2)*sizeof(point));
+	for(int i = 0; i < 11; i++) {
+		cudaMallocManaged(ipointers[i],  (isize[i] + 2)*sizeof(int));
+		if(i < 7)  cudaMallocManaged(dipointers[i],(disize[i]  + 2)*sizeof(int *));
+		if(i < 9)  cudaMallocManaged(ppointers[i], (psize[i>2] + 2)*sizeof(point));
 	}
 	for(int i = 0; i <= len.prod(); i++) {
 		if(i <= 500)       cudaMallocManaged(&box_neigh[i], sizeof(int)*(len.prod()    + 2));

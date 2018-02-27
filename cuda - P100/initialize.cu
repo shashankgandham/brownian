@@ -48,6 +48,7 @@ void initialize() {
 						   cudaMallocManaged(&rot[i],		sizeof(point)*4);
 	}
 }
+
 void initialize_colloid() {
 	int counter = 0, check, nofp = 0;
 	double space_limit = 1.3*sig_colloid, ang_vscale_colloid = sqrt(12.0*kbt1/I_colloid), vscale_colloid = sqrt(12.0*kbt1/mass_colloid);
@@ -97,7 +98,6 @@ void initialize_fluid() {
 		avr_vel += vel_fl[j];
 	}
 	avr_vel = avr_vel/no_of_fluid;
-	for(int j = 1; j <= no_of_fluid; j++) {
+	for(int j = 1; j <= no_of_fluid; j++) 
 		vel_fl[j] = vel_fl[j] - avr_vel;
-	}
 }

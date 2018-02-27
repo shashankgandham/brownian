@@ -10,7 +10,7 @@
 #define CUDA_CALLABLE_MEMBER __host__ __device__
 #define _USE_MATH_DEFINES
 
-__device__ cuState_t *state;
+__device__ curandState_t *state;
 inline CUDA_CALLABLE_MEMBER double ran(int *iv, int *seed, int *idum, int *iy, int debug = 0) {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, j, k;
 	static int imm, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv;
@@ -64,10 +64,16 @@ struct point {
 		x = ran(iv, seed, idum, iy, debug); y = ran(iv, seed, idum, iy, debug); z = ran(iv, seed, idum, iy, debug);
 		return *this;
 	}
-	__device__ point rand(cuState_t *state) {
+	__device__ point rand(curandState_t *state) {
 		x = curand_uniform_double(state), y = curand_uniform_double(state), z = curand_uniform_double(state);
 		return *this;
 	}
+	__device__ point add(point addend) {
+		x = atomicAdd(&x, addend.x) + addend.x;
+		y = atomicAdd(&y, addend.x) + addend.y;
+		z = atomicAdd(&z, addend.x) + addend.z;
+		return *this;
+	} 
 	CUDA_CALLABLE_MEMBER void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
 		x += inc.x;
 		if(x > len.x) y += inc.y, x = start.x;
