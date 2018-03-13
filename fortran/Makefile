@@ -1,6 +1,6 @@
 COMPILER = gfortran
 EXECUTABLE = active_brownian
-FLAGS = -fdefault-real-8 -fdefault-double-8 -O2
+FLAGS = -fdefault-real-8 -fdefault-double-8 -pg
 # Object Files for build
 OBJS = \
 define_parameter.o \

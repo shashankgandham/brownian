@@ -1,6 +1,6 @@
 COMPILER = g++
-EXECUTABLE = a.out
-FLAGS = -O3 -pg
+EXECUTABLE = a10.out
+FLAGS = -O1 -pg
 # Object Files for build
 OBJS = .fluid_colloid_collision.o .initialize.o .neighbour_list.o .update.o .rotation_mpcd.o .run.o
 
@@ -27,4 +27,4 @@ $(EXECUTABLE) : active_brownian.cpp parameters.hpp $(OBJS)
 	$(COMPILER) $(FLAGS) -c run.cpp -o .run.o
 
 clean :
-	rm -f .*.o *.txt
+	rm -f .*.o 

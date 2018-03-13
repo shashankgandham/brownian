@@ -19,7 +19,7 @@ __global__ void  d_cellvel(point *cell_vel, point *vel_fl, int **cell_part, int 
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= len.prod() && fluid_no[i] > 1) {
 		for(int	j = 1; j <= fluid_no[i]; j++)
-				cell_vel[i] += vel_fl[cell_part[i][j]]/fluid_no[i];
+			cell_vel[i] += vel_fl[cell_part[i][j]]/fluid_no[i];
 	}
 
 }
@@ -37,15 +37,16 @@ __global__ void  d_velfl(point *cell_vel, point *vel_fl, int **cell_part, int *f
 
 }
 
-void d_rotation_mpcd(point *vel_fl, point *pos_fl, point *cell_vel, point **rot, int *fluid_no, int **cell_part, int no_of_fluid, 
-		point len, double kbt, double mass_fl, double *rana, double *ranb) {
+
+__global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, point *cell_vel, point **rot, int *fluid_no, int **cell_part, int no_of_fluid, 
+		point len, double kbt, double mass_fl, curandState_t *state) {
 	double r[4], ir[4], theta, phi, rho, ct, st, ict;
 	point del_v, temp;
-//	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	for(int i = 1; i <= len.prod(); i++) {
-//	if(i <= len.prod()) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+//	for(int i = 1; i <= len.prod(); i++) {
+	if(i <= len.prod()) {
 		if (fluid_no[i] > 1) {
-			rho = 2*rana[i] - 1, phi = 2.0*M_PI*ranb[i], theta = M_PI*(130/180.0);
+			rho = 2*curand_uniform_double(&state[i]) - 1, phi = 2.0*M_PI*curand_uniform_double(&state[i]), theta = M_PI*(130/180.0);
 			r[1] = cos(phi)*sqrt(1 - rho*rho), r[2] = sin(phi)*sqrt(1 - rho*rho), r[3] = rho;
 			ct = cos(theta), st = sin(theta), ict = 1 - cos(theta);
 			ir[1] = ict*r[1], ir[2] = ict*r[2], ir[3] = ict*r[3];
@@ -80,7 +81,6 @@ __global__ void d_rotate(int *fluid_no, int**cell_part, point *vel_fl, point *ce
 void rotation_mpcd() {
 	point rr;
 	int thr = 256, blk = (no_of_fluid + thr -1)/thr;
-	
 	cudaDeviceSynchronize();
 	rr = rr.random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5);
 	cudaMemset(cell_vel, 0, (len.prod() + 2)*sizeof(point));
@@ -88,18 +88,10 @@ void rotation_mpcd() {
 	d_cellpart<<<blk, thr>>>(cell_part, fluid_no, no_of_fluid, pos_fl, rr, len);
 	
 	blk = (len.prod() + thr - 1)/thr;
-	cellpart_sync<<<blk, thr>>> (cell_part, fluid_no, len);
+	//cellpart_sync<<<blk, thr>>> (cell_part, fluid_no, len);
 	d_cellvel<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, len);
 
-	cudaDeviceSynchronize();
-	for(int  i = 1; i <= len.prod(); i++) {
-		if(fluid_no[i] > 1) {
-			rana[i] = ran(iv, seed, idum, iy);
-			ranb[i] = ran(iv, seed, idum, iy);
-		}
-	}
- 
-	d_rotation_mpcd(vel_fl, pos_fl, cell_vel, rot, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, rana, ranb);
+	d_rotation_mpcd<<<blk, thr>>>(vel_fl, pos_fl, cell_vel, rot, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, state);
 	d_velfl<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, rot, len);
 	d_rotate<<<blk, thr>>> (fluid_no, cell_part, vel_fl, cell_vel, len, mass_fl, kbt);
 }

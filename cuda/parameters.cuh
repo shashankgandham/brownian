@@ -1,4 +1,4 @@
- #pragma once
+#pragma once
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -10,7 +10,8 @@
 #define CUDA_CALLABLE_MEMBER __host__ __device__
 #define _USE_MATH_DEFINES
 
-__device__ curandState_t *state;
+extern curandState_t *state;
+
 inline CUDA_CALLABLE_MEMBER double ran(int *iv, int *seed, int *idum, int *iy, int debug = 0) {
 	static int im1 = 2147483563, im2 = 2147483399, ia1 = 40014, ia2 = 40692, iq1 = 53668, iq2 = 52774, j, k;
 	static int imm, ir1 = 12211, ir2 = 3791, ntab = 32, ndiv;
@@ -64,16 +65,10 @@ struct point {
 		x = ran(iv, seed, idum, iy, debug); y = ran(iv, seed, idum, iy, debug); z = ran(iv, seed, idum, iy, debug);
 		return *this;
 	}
-	__device__ point rand(curandState_t *state) {
-		x = curand_uniform_double(state), y = curand_uniform_double(state), z = curand_uniform_double(state);
+	 __device__ point rand(curandState_t *state){
+		x = curand_uniform_double(state); y = curand_uniform_double(state); z = curand_uniform_double(state);
 		return *this;
 	}
-	__device__ point add(point addend) {
-		x = atomicAdd(&x, addend.x) + addend.x;
-		y = atomicAdd(&y, addend.x) + addend.y;
-		z = atomicAdd(&z, addend.x) + addend.z;
-		return *this;
-	} 
 	CUDA_CALLABLE_MEMBER void next(point len, point inc = point(1, 1, 1), point start = point(1, 1, 1)) {
 		x += inc.x;
 		if(x > len.x) y += inc.y, x = start.x;
@@ -85,11 +80,11 @@ inline CUDA_CALLABLE_MEMBER point mod(point a, point b) { return a - b*round((a 
 inline CUDA_CALLABLE_MEMBER point img(point a, point b) { return a - b*round(a/b);}
 inline CUDA_CALLABLE_MEMBER double power(double x, int r) { double ans = 1; for(int i = 1; i <=r; i++) ans *= x; return ans; }
 
-extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *cell_vel, *del_v, **rot, *dump_vel_fl, **u;
-extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, nn, *iv, *seed, *iy;
+extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *cell_vel, *del_v, **rot, *dump_vel_fl, **u, **vc, **om;
+extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, nn, *iv, *seed, *iy, **dp;
 extern int **neighbour, *n_neighbour, *no_neigh, **neigh_fl, **box_neigh, **box_part, *fluid_no, **cell_part, ran_c, *idum;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, *potential_colloid, *rana, *ranb;
 
 void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
-void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction();
+void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction(), initialize_rand();	

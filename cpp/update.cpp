@@ -6,17 +6,16 @@ double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 
 double sig_colloid12 = pow(sig_colloid, 12), sig_colloid6 = pow(sig_colloid, 6);
 
 double power(double x, int r) {
-    double ans = 1;
-    for(int i = 1; i <=r; i++)
-        ans *= x;
-    return ans;
+	double ans = 1;
+	for(int i = 1; i <=r; i++)
+		ans *= x;
+	return ans;
 }
 void compute_force_md() {
 	point temp, ff;
 	potential_colloid = 0;
-    memset(f, 0, sizeof(int)*(no_of_colloid + 2));
-    for(int i = 0; i <= 10; i++) f[i] = 0;
-    double t1, t2, t3, rp;
+	for(int i = 0; i <= no_of_colloid; i++) f[i] = 0;
+	double t1, t2, t3, rp;
 	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
 			temp = img(pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
@@ -24,10 +23,10 @@ void compute_force_md() {
 			if(r < r_cutoff) {
 				potential_colloid += 4*eps*(pow(sig_colloid/r, 12) - pow(sig_colloid/r, 6)) - ufc + fc*r;
 				t1 = sig_colloid12/power(r,13), t2 = sig_colloid6/power(r, 7);
-                mag_f = 4.0*eps*(12.0*t1 - 6.0*t2) - fc;
-                ff = (temp*mag_f)/r;
+				mag_f = 4.0*eps*(12.0*t1 - 6.0*t2) - fc;
+				ff = (temp*mag_f)/r;
 				f[i] += ff, f[neighbour[j][i]] -= ff;
-            }
+			}
 		}   
 	}
 }
@@ -42,8 +41,8 @@ void update_activity_direction() {
 		m[2] =  point(sb.x*sb.y*cb.z + cb.x*sb.z, -sb.x*sb.y*sb.z + cb.x*cb.z, -sb.x*cb.y);
 		m[3] =  point(-cb.x*sb.y*cb.z + sb.x*sb.z, cb.x*sb.y*sb.z + sb.x*cb.z, cb.x*cb.y);
 		ra[i] = point((m[1]*ra[i]).sum(), (m[2]*ra[i]).sum(), (m[3]*ra[i]).sum());
-	
-    }
+
+	}
 }
 
 void update_pos_md() {
@@ -51,7 +50,7 @@ void update_pos_md() {
 	for(int i = 1; i <= no_of_colloid; i++) {
 		pos_colloid[i] +=  vel_colloid[i]*dt + f[i]*ddt;
 		pos_colloid[i]  =  mod(pos_colloid[i], len);
-    }
+	}
 }
 
 void update_pos_mpcd() {
@@ -61,11 +60,8 @@ void update_pos_mpcd() {
 }
 
 void update_velocity_colloid() {
-    double dtb2 = dt/(mass_colloid*2);
+	double dtb2 = dt/(mass_colloid*2);
 	for (int i = 1; i <= no_of_colloid; i++) {
 		vel_colloid[i] += (old_force[i] + f[i])*dtb2;
-//	    if(nn == 369) vel_colloid[i].print();
-  //      if(nn == 369) old_force[i].print();
-    //    if(nn == 369) f[i].print();
-    }
+	}
 }

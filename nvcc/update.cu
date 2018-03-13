@@ -4,12 +4,12 @@ double sig_colloid12 = pow(sig_colloid, 12), sig_colloid6 = pow(sig_colloid, 6);
 double r_cutoff = pow(2, 1.0/6.0)*sig_colloid, r, fc = 0; //4.0*eps*(12.0*(sig_colloid12/pow(r_cutoff,13)) - 6.0*(sig_colloid6/pow(r_cutoff, 7)));
 double ufc = 4.0*eps*(pow(sig_colloid/r_cutoff, 12) - pow(sig_colloid/r_cutoff, 6)) + fc*r_cutoff;
 
-void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, point *pos_colloid, double sig_colloid, double sig_colloid12, double sig_colloid6, double r_cutoff, double fc, double ufc, double eps, double *potential_colloid, point len, int no_of_colloid) {
+__global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, point *pos_colloid, double sig_colloid, double sig_colloid12, double sig_colloid6, double r_cutoff, double fc, double ufc, double eps, double *potential_colloid, point len, int no_of_colloid) {
 	point temp, ff;
 	double t1, t2, mag_f = 0, r;
-//	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-//	if(i <= no_of_colloid) {
-	for(int i = 1; i <= no_of_colloid; i++) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	if(i <= no_of_colloid) {
+//	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
 			temp = img(pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
 			r = sqrt((temp*temp).sum());
@@ -25,10 +25,11 @@ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, point *pos_
 }
 
 void compute_force_md() {
-//	int thr = 256, blk = (no_of_colloid + thr - 1)/thr; 
-	//cudaDeviceSynchronize();
+	int thr = 256, blk = (no_of_colloid + thr - 1)/thr; 
+	cudaDeviceSynchronize();
+	*potential_colloid = 0;
 	for(int i = 1; i <= no_of_colloid; i++) f[i] = point(0, 0, 0);
-	d_compute_force_md(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
+	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
 }
 __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, double dt, int no_of_colloid) {
 	point m[4], b, sb, cb;
