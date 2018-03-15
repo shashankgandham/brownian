@@ -1,12 +1,11 @@
 #include "parameters.cuh"
-#include <thrust/sort.h>
-#include <thrust/execution_policy.h>
 
 __global__ void cellpart_sync(int **cell_part, int *fluid_no, point len) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= len.prod())
 		thrust::sort(thrust::seq, cell_part[i] + 1, cell_part[i] + fluid_no[i] + 1);
 }
+
 __global__ void d_cellpart(int **cell_part, int *fluid_no, int no_of_fluid, point *pos_fl, point rr, point len) {
 	int cell_no, i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	point temp;
@@ -15,14 +14,15 @@ __global__ void d_cellpart(int **cell_part, int *fluid_no, int no_of_fluid, poin
 		cell_part[cell_no][atomicAdd(&(fluid_no[cell_no]), 1) + 1] = i;
 	}
 }
+
 __global__ void  d_cellvel(point *cell_vel, point *vel_fl, int **cell_part, int *fluid_no, point len) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= len.prod() && fluid_no[i] > 1) {
 		for(int	j = 1; j <= fluid_no[i]; j++)
 			cell_vel[i] += vel_fl[cell_part[i][j]]/fluid_no[i];
 	}
-
 }
+
 __global__ void  d_velfl(point *cell_vel, point *vel_fl, int **cell_part, int *fluid_no, point *rot[4], point len) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	point del_v;
@@ -30,20 +30,18 @@ __global__ void  d_velfl(point *cell_vel, point *vel_fl, int **cell_part, int *f
 	if(i <= len.prod() && fluid_no[i] > 1) {
 		for(int	j = 1; j <= fluid_no[i]; j++) {
 			k = cell_part[i][j];
-				del_v = vel_fl[k] - cell_vel[i];
-				vel_fl[k] = cell_vel[i] + point((rot[i][1]*del_v).sum(), (rot[i][2]*del_v).sum(), (rot[i][3]*del_v).sum());
+			del_v = vel_fl[k] - cell_vel[i];
+			vel_fl[k] = cell_vel[i] + point((rot[i][1]*del_v).sum(), (rot[i][2]*del_v).sum(), (rot[i][3]*del_v).sum());
 		}
 	}
 
 }
-
 
 __global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, point *cell_vel, point **rot, int *fluid_no, int **cell_part, int no_of_fluid, 
 		point len, double kbt, double mass_fl, curandState_t *state) {
 	double r[4], ir[4], theta, phi, rho, ct, st, ict;
 	point del_v, temp;
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-//	for(int i = 1; i <= len.prod(); i++) {
 	if(i <= len.prod()) {
 		if (fluid_no[i] > 1) {
 			rho = 2*curand_uniform_double(&state[i]) - 1, phi = 2.0*M_PI*curand_uniform_double(&state[i]), theta = M_PI*(130/180.0);
@@ -56,6 +54,7 @@ __global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, point *cell_vel, p
 		}
 	}
 }
+
 __global__ void d_rotate(int *fluid_no, int**cell_part, point *vel_fl, point *cell_vel, point len, double mass_fl, double kbt) {
 	point del_v;
 	double var, scale_fac_mpcd;
@@ -77,20 +76,19 @@ __global__ void d_rotate(int *fluid_no, int**cell_part, point *vel_fl, point *ce
 		}
 	}
 }
-
+__global__ void set_rr(point *rr, curandState *state) {
+	*rr = (*rr).rand(&state[1]) - point(0.5, 0.5, 0.5);
+	return;
+}
 void rotation_mpcd() {
 	point rr;
 	int thr = 256, blk = (no_of_fluid + thr -1)/thr;
-	cudaDeviceSynchronize();
-	rr = rr.random(iv, seed, idum, iy) - point(0.5, 0.5, 0.5);
+	set_rr<<<1, 1>>>(&rr, state);
 	cudaMemset(cell_vel, 0, (len.prod() + 2)*sizeof(point));
 	cudaMemset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
 	d_cellpart<<<blk, thr>>>(cell_part, fluid_no, no_of_fluid, pos_fl, rr, len);
-	
 	blk = (len.prod() + thr - 1)/thr;
-	//cellpart_sync<<<blk, thr>>> (cell_part, fluid_no, len);
 	d_cellvel<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, len);
-
 	d_rotation_mpcd<<<blk, thr>>>(vel_fl, pos_fl, cell_vel, rot, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, state);
 	d_velfl<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, rot, len);
 	d_rotate<<<blk, thr>>> (fluid_no, cell_part, vel_fl, cell_vel, len, mass_fl, kbt);

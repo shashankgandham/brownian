@@ -1,16 +1,8 @@
 #include "parameters.cuh"
-#include <thrust/reduce.h>
-#include <thrust/execution_policy.h>
 
 inline CUDA_CALLABLE_MEMBER point crossmul(point a, point b) {
 	return point(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
 }
-
-struct add_point: public thrust::binary_function<point &, point &, point &> {
-	CUDA_CALLABLE_MEMBER point operator()(const point &a, const point &b) {
-		return point(a.x+b.x, a.y+b.y, a.z+b.z);
-	}
-};
 
 inline __device__ point stochastic_reflection(point rf, point rs, double mass_fl, double kbt, point len, curandState_t *state) {
 	double m_beta = mass_fl/kbt, random_e = power(1 - curand_uniform_double(state), 2), val, v[4], x[4], z = 2;
@@ -71,7 +63,7 @@ void fluid_colloid_collision() {
 	int thr = 256, blk = (no_of_fluid + thr - 1)/thr;
 	dim3 thrs = dim3(32, 32), blks = dim3((10000 + thrs.x - 1)/thrs.x, (no_of_colloid + thrs.y - 1)/thrs.y);
 	d_dump<<<blk, thr>>> (dump_vel_fl, vel_fl, no_of_fluid);
-    	blk = (no_of_colloid + thr -1)/thr;
-    	d_fluid_colloid_collision<<<blks, thrs>>>(no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, u, mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, vc, om, state);
+    blk = (no_of_colloid + thr -1)/thr;
+    d_fluid_colloid_collision<<<blks, thrs>>>(no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, u, mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, vc, om, state);
 	update_fcc<<<blk, thr>>>(vc, om, vel_colloid, ang_vel_colloid, no_neigh, no_of_colloid, mass_colloid, mass_fl, I_colloid);
 }

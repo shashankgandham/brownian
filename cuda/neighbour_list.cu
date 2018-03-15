@@ -1,6 +1,4 @@
 #include "parameters.cuh"
-#include <thrust/sort.h>
-#include <thrust/execution_policy.h>
 
 inline __device__ __host__ point cmod(point a, point b) {
 	if(a.x <=  0) a.x += b.x;  if(a.y <=  0) a.y += b.y;
@@ -67,11 +65,6 @@ __global__ void d_boxpart(int **box_part, int *fluid_no, int no_of_fluid, point 
 		box_part[box_no][atomicAdd(&(fluid_no[box_no]), 1) + 1] = i;
 	}
 }
-__global__ void neighfl_sync(int **neigh_fl, int *no_neigh, int no_of_colloid) {
-	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	if(i <= no_of_colloid)
-		thrust::sort(thrust::seq, neigh_fl[i] + 1, neigh_fl[i] + no_neigh[i] + 1);
-}
 
 __global__ void d_neighbour_list_mpcd(int **box_part, int *fluid_no, int **box_neigh, int **neigh_fl, int *no_neigh, int **dp, 
 		point *pos_colloid, point *pos_fl, int no_of_fluid, int no_of_colloid, int nbox, point len) {
@@ -109,5 +102,4 @@ void neighbour_list_mpcd() {
 	blk = (no_of_colloid + thr - 1)/thr;
 	sieve<<<blk, thr>>>(no_of_colloid, nbox, fluid_no, box_neigh, dp, pos_colloid, len);
 	d_neighbour_list_mpcd<<<blks, thrs>>>(box_part, fluid_no, box_neigh, neigh_fl, no_neigh, dp, pos_colloid, pos_fl, no_of_fluid, no_of_colloid, nbox, len);
-//	neighfl_sync<<<blk, thr>>>(neigh_fl, no_neigh, no_of_colloid);
 }
