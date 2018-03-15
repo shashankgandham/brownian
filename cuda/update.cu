@@ -10,7 +10,6 @@ __global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, 
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= no_of_colloid) {
 		f[i] = point(0, 0, 0);
-//	for(int i = 1; i <= no_of_colloid; i++) {
 		for(int j = 1; j <= n_neighbour[i]; j++) {
 			temp = img(pos_colloid[i] - pos_colloid[neighbour[j][i]], len);
 			r = sqrt((temp*temp).sum());
@@ -24,15 +23,10 @@ __global__ void d_compute_force_md(point *f, int *n_neighbour, int **neighbour, 
 		}
 	}
 }
-
-void compute_force_md() {
-	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
-	cudaMemset(potential_colloid, 0, sizeof(double));
-	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
-}
 __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, double dt, int no_of_colloid) {
 	point m[4], b, sb, cb;
-	for(int i = 1; i <= no_of_colloid; i++) {
+	int i = blockDim.x*blockIdx.x + threadIdx.x + 1;
+	if(i <= no_of_colloid) {
 		b  = ang_vel_colloid[i]*dt;
 		sb = point(sin(b.x), sin(b.y), sin(b.z)), cb = point(cos(b.x), cos(b.y), cos(b.z));
 		m[1] =  point(cb.y*cb.z, -cb.y*sb.z, sb.y);
@@ -41,42 +35,40 @@ __global__ void d_update_activity_direction(point *ang_vel_colloid, point *ra, d
 		ra[i] = point((m[1]*ra[i]).sum(), (m[2]*ra[i]).sum(), (m[3]*ra[i]).sum());
 	}
 }
-
-void update_activity_direction() {
-	d_update_activity_direction<<<1, 1>>>(ang_vel_colloid, ra, dt, no_of_colloid);
-}
-
-__global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, point *old_force, double dt, double ddt, double mass_colloid, point len, int no_of_colloid) {
+__global__ void d_update_pos_md(point *pos_colloid, point *vel_colloid, point *f, point *old_force, double dt, double mass_colloid, point len, int no_of_colloid) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= no_of_colloid) {
 		old_force[i] = f[i];
-		pos_colloid[i] += vel_colloid[i]*dt + f[i]*ddt;
-		pos_colloid[i] = mod(pos_colloid[i], len);
+		pos_colloid[i] = mod(pos_colloid[i] + vel_colloid[i]*dt + f[i]*0.5*dt*dt/mass_colloid, len);
 	}
 }
-void update_pos_md() {
-	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
-	double dt2= dt*dt, ddt = 0.5*dt2/mass_colloid;
-	d_update_pos_md<<<blk, thr>>>(pos_colloid, vel_colloid, f, old_force, dt, ddt, mass_colloid, len, no_of_colloid);
-}
-
 __global__ void d_update_pos_mpcd(point *pos_fl, point *vel_fl, double dt, point len, int no_of_fluid) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
-	if(i <= no_of_fluid) {
-		pos_fl[i] = mod(pos_fl[i] + vel_fl[i]*dt, len);
-	}
+	if(i <= no_of_fluid) pos_fl[i] = mod(pos_fl[i] + vel_fl[i]*dt, len);
+}
+__global__ void d_update_vel_colloid(point *vel_colloid, point *old_force, point *f, double dt, double mass_colloid, int no_of_colloid) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
+	if(i <= no_of_colloid) vel_colloid[i] += (old_force[i] + f[i])*dt/(mass_colloid*2); 
+} 
+
+void compute_force_md() {
+	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
+	cudaMemset(potential_colloid, 0, sizeof(double));
+	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
+}
+void update_activity_direction() {
+	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
+	d_update_activity_direction<<<blk, thr>>>(ang_vel_colloid, ra, dt, no_of_colloid);
+}
+void update_pos_md() {
+	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
+	d_update_pos_md<<<blk, thr>>>(pos_colloid, vel_colloid, f, old_force, dt, mass_colloid, len, no_of_colloid);
 }
 void update_pos_mpcd() {
-	int thr = 256, blk = (no_of_fluid + thr - 1)/thr;
+	blk = dim3((no_of_fluid + thr.x - 1)/thr.x);
 	d_update_pos_mpcd<<<blk, thr>>>(pos_fl, vel_fl, dt, len, no_of_fluid);
 }
-
-__global__ void d_update_vel_colloid(point *vel_colloid, point *old_force, point *f, double dtb2, int no_of_colloid) {
-	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
-	if(i <= no_of_colloid) vel_colloid[i] += (old_force[i] + f[i])*dtb2; 
-}
 void update_velocity_colloid() {
-	double dtb2 = dt/(mass_colloid*2);
-	int thr = 256, blk = (no_of_colloid + thr - 1)/thr;
-	d_update_vel_colloid<<<blk, thr>>>(vel_colloid, old_force, f, dtb2, no_of_colloid);
+	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
+	d_update_vel_colloid<<<blk, thr>>>(vel_colloid, old_force, f, dt, mass_colloid, no_of_colloid);
 }

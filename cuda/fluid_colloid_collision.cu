@@ -60,10 +60,10 @@ __global__ void update_fcc(point **vc, point **om, point *vel_colloid, point *an
 	}
 }
 void fluid_colloid_collision() {
-	int thr = 256, blk = (no_of_fluid + thr - 1)/thr;
-	dim3 thrs = dim3(32, 32), blks = dim3((10000 + thrs.x - 1)/thrs.x, (no_of_colloid + thrs.y - 1)/thrs.y);
+	blk = dim3((no_of_fluid + thr.x - 1)/thr.x);
 	d_dump<<<blk, thr>>> (dump_vel_fl, vel_fl, no_of_fluid);
-    blk = (no_of_colloid + thr -1)/thr;
-    d_fluid_colloid_collision<<<blks, thrs>>>(no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, u, mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, vc, om, state);
+	blk = dim3((10000 + thrs.x - 1)/thrs.x, (no_of_colloid + thrs.y - 1)/thrs.y);
+    d_fluid_colloid_collision<<<blk, thrs>>>(no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, u, mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, vc, om, state);
+	blk = dim3((no_of_colloid + thr.x -1)/thr.x);
 	update_fcc<<<blk, thr>>>(vc, om, vel_colloid, ang_vel_colloid, no_neigh, no_of_colloid, mass_colloid, mass_fl, I_colloid);
 }

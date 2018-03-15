@@ -82,12 +82,12 @@ __global__ void set_rr(point *rr, curandState *state) {
 }
 void rotation_mpcd() {
 	point rr;
-	int thr = 256, blk = (no_of_fluid + thr -1)/thr;
+	blk = dim3((no_of_fluid + thr.x -1)/thr.x);
 	set_rr<<<1, 1>>>(&rr, state);
 	cudaMemset(cell_vel, 0, (len.prod() + 2)*sizeof(point));
 	cudaMemset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
 	d_cellpart<<<blk, thr>>>(cell_part, fluid_no, no_of_fluid, pos_fl, rr, len);
-	blk = (len.prod() + thr - 1)/thr;
+	blk = dim3((len.prod() + thr.x - 1)/thr.x);
 	d_cellvel<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, len);
 	d_rotation_mpcd<<<blk, thr>>>(vel_fl, pos_fl, cell_vel, rot, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, state);
 	d_velfl<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, rot, len);

@@ -16,6 +16,7 @@
 #include <thrust/execution_policy.h>
 
 extern curandState_t *state;
+extern dim3 thr, thrs, blk;
 struct point {
 	double x, y, z;
 	CUDA_CALLABLE_MEMBER point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
