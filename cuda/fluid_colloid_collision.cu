@@ -53,8 +53,8 @@ __global__ void d_dump(point *dump_vel_fl, point *vel_fl, int no_of_fluid) {
 __global__ void update_fcc(point **vc, point **om, point *vel_colloid, point *ang_vel_colloid, int *no_neigh, int no_of_colloid, double mass_colloid, double mass_fl, double I_colloid) {
 	int j = blockIdx.x*blockDim.x + threadIdx.x;
 	if(j <= no_of_colloid) {
-		vc[j][0] = thrust::reduce(thrust::seq, vc[j], vc[j] + no_neigh[j] + 1, point(0, 0, 0), add_point());
-		om[j][0] = thrust::reduce(thrust::seq, om[j], om[j] + no_neigh[j] + 1, point(0, 0, 0), add_point());
+		vc[j][0] = thrust::reduce(thrust::device, vc[j], vc[j] + no_neigh[j] + 1, point(0, 0, 0), add_point());
+		om[j][0] = thrust::reduce(thrust::device, om[j], om[j] + no_neigh[j] + 1, point(0, 0, 0), add_point());
 		vel_colloid[j] += vc[j][0]*mass_fl/mass_colloid;
 		ang_vel_colloid[j] += om[j][0]*mass_fl/I_colloid;
 	}
