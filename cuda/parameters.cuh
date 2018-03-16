@@ -3,11 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cassert>
 #include <algorithm>
-#include <climits>
 #include <curand_kernel.h>
 #include <thrust/reduce.h>
 #include <thrust/transform_reduce.h>
