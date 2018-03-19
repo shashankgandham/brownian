@@ -23,10 +23,13 @@ inline __device__ point stochastic_reflection(point rf, point rs, double mass_fl
 	return ut*v[1] + un;
 }
 
-__global__ void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl, point *vel_colloid, point *ang_vel_colloid, point *dump_vel_fl, point **u, double mass_colloid, double I_colloid, double mass_fl, double dt, point *vel_fl, point len, double sigma, int no_of_colloid, double kbt, int **neigh_fl, point **vc, point **om, curandState_t *state) {
+__global__ void d_fluid_colloid_collision(int *no_neigh, point *pos_colloid, point *pos_fl, 
+		point *vel_colloid, point *ang_vel_colloid, point *dump_vel_fl, double mass_colloid, 
+		double I_colloid, double mass_fl, double dt, point *vel_fl, point len, double sigma, 
+		int no_of_colloid, double kbt, int **neigh_fl, point **vc, point **om, curandState_t *state) {
+
 	point rr, rs, uu;
-        int j = blockIdx.y*blockDim.y + threadIdx.y + 1;
-	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	int j = blockIdx.y*blockDim.y + threadIdx.y + 1, i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(j <= no_of_colloid) {
 		vc[j][0] = om[j][0] = point(0, 0, 0);
 		if(i <= no_neigh[j]) {
@@ -50,7 +53,9 @@ __global__ void d_dump(point *dump_vel_fl, point *vel_fl, int no_of_fluid) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	if(i <= no_of_fluid) dump_vel_fl[i] = vel_fl[i];
 }
-__global__ void update_fcc(point **vc, point **om, point *vel_colloid, point *ang_vel_colloid, int *no_neigh, int no_of_colloid, double mass_colloid, double mass_fl, double I_colloid) {
+__global__ void update_fcc(point **vc, point **om, point *vel_colloid, point *ang_vel_colloid, 
+		int *no_neigh, int no_of_colloid, double mass_colloid, double mass_fl, double I_colloid) {
+
 	int j = blockIdx.x*blockDim.x + threadIdx.x;
 	if(j <= no_of_colloid) {
 		vc[j][0] = thrust::reduce(thrust::device, vc[j], vc[j] + no_neigh[j] + 1, point(0, 0, 0), add_point());
@@ -63,7 +68,10 @@ void fluid_colloid_collision() {
 	blk = dim3((no_of_fluid + thr.x - 1)/thr.x);
 	d_dump<<<blk, thr>>> (dump_vel_fl, vel_fl, no_of_fluid);
 	blk = dim3((10000 + thrs.x - 1)/thrs.x, (no_of_colloid + thrs.y - 1)/thrs.y);
-    d_fluid_colloid_collision<<<blk, thrs>>>(no_neigh, pos_colloid, pos_fl, vel_colloid, ang_vel_colloid, dump_vel_fl, u, mass_colloid, I_colloid, mass_fl, dt, vel_fl, len, sigma, no_of_colloid, kbt, neigh_fl, vc, om, state);
+	d_fluid_colloid_collision<<<blk, thrs>>>(no_neigh, pos_colloid, pos_fl, vel_colloid, 
+			ang_vel_colloid, dump_vel_fl, mass_colloid, I_colloid, mass_fl, dt, vel_fl, 
+			len, sigma, no_of_colloid, kbt, neigh_fl, vc, om, state);
 	blk = dim3((no_of_colloid + thr.x -1)/thr.x);
-	update_fcc<<<blk, thr>>>(vc, om, vel_colloid, ang_vel_colloid, no_neigh, no_of_colloid, mass_colloid, mass_fl, I_colloid);
+	update_fcc<<<blk, thr>>>(vc, om, vel_colloid, ang_vel_colloid, no_neigh, no_of_colloid, 
+			mass_colloid, mass_fl, I_colloid);
 }

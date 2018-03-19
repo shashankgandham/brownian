@@ -1,11 +1,5 @@
 #include "parameters.cuh"
 
-__global__ void cellpart_sync(int **cell_part, int *fluid_no, point len) {
-	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	if(i <= len.prod())
-		thrust::sort(thrust::device, cell_part[i] + 1, cell_part[i] + fluid_no[i] + 1);
-}
-
 __global__ void d_cellpart(int **cell_part, int *fluid_no, int no_of_fluid, point *pos_fl, point rr, point len) {
 	int cell_no, i = blockIdx.x*blockDim.x + threadIdx.x + 1;
 	point temp;
@@ -37,7 +31,7 @@ __global__ void  d_velfl(point *cell_vel, point *vel_fl, int **cell_part, int *f
 
 }
 
-__global__ void d_rotation_mpcd(point *vel_fl, point *pos_fl, point *cell_vel, point **rot, int *fluid_no, int **cell_part, int no_of_fluid, 
+__global__ void d_rotate_mat(point *vel_fl, point *pos_fl, point *cell_vel, point **rot, int *fluid_no, int **cell_part, int no_of_fluid, 
 		point len, double kbt, double mass_fl, curandState_t *state) {
 	double r[4], ir[4], theta, phi, rho, ct, st, ict;
 	point del_v, temp;
@@ -79,9 +73,8 @@ __global__ void d_rotate(int *fluid_no, int**cell_part, point *vel_fl, point *ce
 __global__ void set_rr(point *rr, curandState *state) {
 	*rr = (*rr).rand(&state[1]) - point(0.5, 0.5, 0.5);
 }
+
 void rotation_mpcd() {
-	point *rr;
-    cudaMallocManaged(&rr, sizeof(point));
 	blk = dim3((no_of_fluid + thr.x -1)/thr.x);
 	set_rr<<<1, 1>>>(rr, state);
 	cudaMemset(cell_vel, 0, (len.prod() + 2)*sizeof(point));
@@ -89,7 +82,7 @@ void rotation_mpcd() {
 	d_cellpart<<<blk, thr>>>(cell_part, fluid_no, no_of_fluid, pos_fl, *rr, len);
 	blk = dim3((len.prod() + thr.x - 1)/thr.x);
 	d_cellvel<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, len);
-	d_rotation_mpcd<<<blk, thr>>>(vel_fl, pos_fl, cell_vel, rot, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, state);
+	d_rotate_mat<<<blk, thr>>>(vel_fl, pos_fl, cell_vel, rot, fluid_no, cell_part, no_of_fluid, len, kbt, mass_fl, state);
 	d_velfl<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, rot, len);
 	d_rotate<<<blk, thr>>> (fluid_no, cell_part, vel_fl, cell_vel, len, mass_fl, kbt);
 }
