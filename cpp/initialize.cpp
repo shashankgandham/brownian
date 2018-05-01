@@ -1,7 +1,7 @@
 #include "parameters.hpp"
 
 void initialize() {
-	point **ppointers[]  = {&pos_fl, &vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
+	point **ppointers[]  = {&pos_fl, &vel_fl, &dump_vel_fl, &f, &pos_colloid, &vel_colloid, &ang_vel_colloid, &old_force, &ra};
 	int   **ipointers[]  = {&fluid_no, &n_neighbour, &no_neigh, &cnt, &up_cnt};
 	int isize[]          = {len.prod(), no_of_colloid };
 	int psize[]          = {no_of_fluid, no_of_colloid};
@@ -12,9 +12,9 @@ void initialize() {
 	up_nbr 		= (int **)calloc(7005,sizeof(int *));
     iv = (int *)calloc(ntab + 2, sizeof(int));
 	neigh_fl = (int **)calloc(no_of_colloid + 2, sizeof(int *));
-	for(int i = 0; i < 8; i++) {
+	for(int i = 0; i < 9; i++) {
 		if(i < 5) *ipointers[i] = (int   *)calloc(isize[i>0] + 2, sizeof(int)  );
-				  *ppointers[i] = (point *)calloc(psize[i>1] + 2, sizeof(point));
+				  *ppointers[i] = (point *)calloc(psize[i>2] + 2, sizeof(point));
 
 	}
 	for(int i = 0; i <= 10000; i++) {

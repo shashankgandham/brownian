@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <climits>
+#include <ctime>
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, *iv, ntab, seed, nn;
 extern int *neighbour[256], *n_neighbour, *no_neigh, **neigh_fl, *box_neigh[512], **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, potential_colloid;
@@ -68,7 +69,7 @@ struct point {
 		if(y > len.y) z += inc.z, y = start.y;
 	}
 };
-extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len;
+extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *dump_vel_fl;
 
 inline point round(point a) { return ((point(lround(a.x), lround(a.y), lround(a.z)))); }
 inline point mod(point a, point b)  { return a - b*(round((a - b/2)/b)); }
