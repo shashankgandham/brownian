@@ -44,34 +44,38 @@ void run() {
 	d_velc<<<blk, thr>>>(ra, vel_fl, nbr, cnt, no_of_colloid, mass_colloid, mass_fl, v0);
 }
 
-__global__ void d_updown_velocity(int no_of_colloid, int *cnt, int *up_cnt, int *no_neigh, int **nbr, int **up_nbr, 
+__global__ void helper_upd(int no_of_colloid, int *cnt, int *up_cnt, int *no_neigh, point **vel, point **up_vel, 
 			int **neigh_fl, point *pos_fl, point *pos_colloid, point *vel_colloid, point *vel_fl, point len, double sigma) {
-	point up_vel = point(0, 0, 0), vector, vel;
+	
+	point vector;
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
+	int j = blockIdx.y*blockDim.y + threadIdx.y + 1;	
 	if(i <= no_of_colloid) {
-		cnt[i] = 0, up_cnt[i] = 0, vel = point(0, 0, 0);
-		for (int j = 1; j <= no_neigh[i]; j++) {
+		if(j <= no_neigh[i]) {
 			vector = img(pos_fl[neigh_fl[i][j]] - pos_colloid[i], len);
 
 			if((vector*vector).sum() <= pow((sigma*0.5 + 0.5), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
-				nbr[++cnt[i]][i] = neigh_fl[i][j];
+				vel[i][atomicAdd(&cnt[i], 1) + 1] = vel_fl[neigh_fl[i][j]];
 
 			if((vector*vector).sum() <= pow((sigma*0.5 + 0.1), 2) && (vector*vel_colloid[i]).sum() <= 0.0)
-				up_nbr[++up_cnt[i]][i] = neigh_fl[i][j];
+				up_vel[i][atomicAdd(&up_cnt[i], 1) + 1] = vel_fl[neigh_fl[i][j]];
 		}
-		for (int j = 1; j <= cnt[i]; j++)
-			vel += vel_fl[nbr[j][i]];
-
-		for(int j = 1; j <= up_cnt[i]; j++)
-			up_vel += vel_fl[up_nbr[j][i]];
-
-		up_vel = (up_cnt[i] > 0)? up_vel/up_cnt[i] - vel_colloid[i]: up_vel;
-		vel    = (up_cnt[i] > 0)? vel/cnt[i] - vel_colloid[i]: vel;
 	}
 }
-
+__global__ void calc_upd(int no_of_colloid, int *cnt, int *up_cnt, point **vel, point **up_vel, point *vel_colloid) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;	
+	if(i <= no_of_colloid) {
+		vel[i][0]    = thrust::reduce(thrust::device, vel[i], vel[i] + cnt[i] + 1, point(0, 0, 0), add_point());	
+		vel[i][0]    = (cnt[i])? vel[i][0]/cnt[i] - vel_colloid[i]: vel[i][0];
+		up_vel[i][0] = thrust::reduce(thrust::device, up_vel[i], up_vel[i] + up_cnt[i] + 1, point(0, 0, 0), add_point());	
+		up_vel[i][0] = (up_cnt[i])? up_vel[i][0]/up_cnt[i] - vel_colloid[i]: up_vel[i][0];
+	}
+}
 void updown_velocity() {
 	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
-	d_updown_velocity<<<blk, thr>>>(no_of_colloid, cnt, up_cnt, no_neigh, nbr, up_nbr, neigh_fl, pos_fl, 
+	imemset<<<blk, thr>>>(cnt, no_of_colloid);
+	imemset<<<blk, thr>>>(up_cnt, no_of_colloid);
+	helper_upd<<<blk, thr>>>(no_of_colloid, cnt, up_cnt, no_neigh, vel, up_vel, neigh_fl, pos_fl, 
 			pos_colloid, vel_colloid, vel_fl, len, sigma);
+	calc_upd<<<blk, thr>>>(no_of_colloid, cnt, up_cnt, vel, up_vel, vel_colloid);
 }

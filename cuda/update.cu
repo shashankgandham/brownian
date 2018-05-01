@@ -53,7 +53,6 @@ __global__ void d_update_vel_colloid(point *vel_colloid, point *old_force, point
 
 void compute_force_md() {
 	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
-	cudaMemset(potential_colloid, 0, sizeof(double));
 	d_compute_force_md<<<blk, thr>>>(f, n_neighbour, neighbour, pos_colloid, sig_colloid, sig_colloid12, sig_colloid6, r_cutoff, fc, ufc, eps, potential_colloid, len, no_of_colloid);
 }
 void update_activity_direction() {

@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdio>
 #include <algorithm>
+#include <ctime>
 #include <curand_kernel.h>
 #include <thrust/reduce.h>
 #include <thrust/transform_reduce.h>
@@ -13,6 +14,7 @@
 
 extern curandState_t *state;
 extern dim3 thr, thrs, blk;
+
 struct point {
 	double x, y, z;
 	CUDA_CALLABLE_MEMBER point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z){}
@@ -45,6 +47,12 @@ struct add_point: public thrust::binary_function<point &, point &, point &> {
 		return point(a.x+b.x, a.y+b.y, a.z+b.z);
 	}
 };
+struct equal_point: public thrust::binary_function<bool &, point &, point &> {
+	CUDA_CALLABLE_MEMBER bool operator()(const point &a, const point &b) {
+		return ((a.x - b.x) < 1e-8 && (a.y - b.y) < 1e-8 && (a.z - b.z) < 1e-8);
+	}
+};
+
 struct add_double: public thrust::binary_function<double &, double &, double &> {
 	CUDA_CALLABLE_MEMBER double operator()(const double &a, const double &b) {
 		return a + b;
@@ -61,11 +69,13 @@ inline CUDA_CALLABLE_MEMBER point mod(point a, point b) { return a - b*round((a 
 inline CUDA_CALLABLE_MEMBER point img(point a, point b) { return a - b*round(a/b);}
 inline CUDA_CALLABLE_MEMBER double power(double x, int r) { double ans = 1; for(int i = 1; i <=r; i++) ans *= x; return ans; }
 
-extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *cell_vel, *del_v, **rot, *dump_vel_fl, **vc, **om, *rr;
+extern point *pos_colloid, *pos_fl, *vel_colloid, *vel_fl, *ang_vel_colloid, *f, *old_force, *ra, len, *cell_vel;
+extern point *del_v, **rot, *dump_vel_fl, **vc, **om, *rr, **vel, **up_vel;
 extern int n, niter, file, nbin, no_of_fluid, maxpart, no_of_colloid, nbox, **nbr, **up_nbr, *cnt, *up_cnt, nn, **dp;
 extern int **neighbour, *n_neighbour, *no_neigh, **neigh_fl, **box_neigh, **box_part, *fluid_no, **cell_part;
 extern double kbt, kbt1, ndt, dt, mass_colloid, sig_colloid, eps, v0, sigma, dv, mass_fl, I_colloid, *potential_colloid;
 
 void create_box(), compute_force_md(), fluid_colloid_collision(), initialize(), initialize_fluid(), initialize_colloid();
 void neighbour_list_md(), neighbour_list_mpcd(), rotation_mpcd(), run(), tumble(), updown_velocity();
-void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction(), initialize_rand();	
+void update_velocity_colloid(), update_pos_md(), update_pos_mpcd() ,update_activity_direction(), initialize_rand();
+__global__ void imemset(int *, int);	

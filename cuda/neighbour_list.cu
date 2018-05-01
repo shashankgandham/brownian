@@ -43,7 +43,7 @@ __global__ void d_neighbour_list_md(int **neighbour, int *n_neighbour, point *po
 	double neigh_cutoff = 3.0*sig_colloid;
 	point temp;
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	int j = blockIdx.y*blockDim.y + threadIdx.y + 1;
+	int j = blockIdx.y*blockDim.y + threadIdx.y + 1 + i;
 	if(i < no_of_colloid) {
 		if(j <= no_of_colloid) {
 			temp = img(pos_colloid[i] - pos_colloid[j], len);  
@@ -53,8 +53,9 @@ __global__ void d_neighbour_list_md(int **neighbour, int *n_neighbour, point *po
 	}
 }
 void neighbour_list_md() {
+	blk = dim3((no_of_colloid + thrs.x - 1)/thrs.x);
+	imemset<<<blk, thr>>>(n_neighbour, no_of_colloid);
 	blk = dim3((no_of_colloid + thrs.x - 1)/thrs.x, (no_of_colloid + thrs.y - 1)/thrs.y);
-	cudaMemset(n_neighbour, 0, sizeof(int)*(no_of_colloid + 2));  
 	d_neighbour_list_md<<<blk, thrs>>>(neighbour, n_neighbour, pos_colloid, no_of_colloid, sig_colloid, len);
 }
 
@@ -95,13 +96,14 @@ __global__ void sieve(int no_of_colloid, int nbox, int *fluid_no, int **box_neig
 		}
 	}
 }
+
 void neighbour_list_mpcd() {
+	blk = dim3((len.prod() + thr.x - 1)/thr.x);
+	imemset<<<blk, thr>>>(fluid_no, len.prod());
 	blk = dim3((no_of_fluid + thr.x - 1)/thr.x);
-	cudaMemset(fluid_no, 0, sizeof(int)*(len.prod() + 2));
 	d_boxpart<<<blk, thr>>>(box_part, fluid_no, no_of_fluid, pos_fl, len);
 	blk = dim3((no_of_colloid + thr.x - 1)/thr.x);
 	sieve<<<blk, thr>>>(no_of_colloid, nbox, fluid_no, box_neigh, dp, pos_colloid, len);
 	blk = dim3((no_of_colloid + thrs.x - 1)/thrs.x, (nbox + thrs.y - 1)/thrs.y);
-	d_neighbour_list_mpcd<<<blk, thrs>>>(box_part, fluid_no, box_neigh, neigh_fl, no_neigh, 
-			dp, pos_colloid, pos_fl, no_of_fluid, no_of_colloid, nbox, len);
+	d_neighbour_list_mpcd<<<blk, thrs>>>(box_part, fluid_no, box_neigh, neigh_fl, no_neigh, dp, pos_colloid, pos_fl, no_of_fluid, no_of_colloid, nbox, len);
 }

@@ -11,8 +11,9 @@ __global__ void d_cellpart(int **cell_part, int *fluid_no, int no_of_fluid, poin
 
 __global__ void  d_cellvel(point *cell_vel, point *vel_fl, int **cell_part, int *fluid_no, point len) {
 	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
-	if(i <= len.prod() && fluid_no[i] > 1) {
-		for(int	j = 1; j <= fluid_no[i]; j++)
+	if(i <= len.prod()) {
+		cell_vel[i] = point(0, 0, 0);
+		for(int	j = 1; j <= fluid_no[i] && fluid_no[i] > 1; j++)
 			cell_vel[i] += vel_fl[cell_part[i][j]]/fluid_no[i];
 	}
 }
@@ -73,12 +74,12 @@ __global__ void d_rotate(int *fluid_no, int**cell_part, point *vel_fl, point *ce
 __global__ void set_rr(point *rr, curandState *state) {
 	*rr = (*rr).rand(&state[1]) - point(0.5, 0.5, 0.5);
 }
-
 void rotation_mpcd() {
-	blk = dim3((no_of_fluid + thr.x -1)/thr.x);
+	blk = dim3((len.prod() + thr.x -1)/thr.x);
 	set_rr<<<1, 1>>>(rr, state);
-	cudaMemset(cell_vel, 0, (len.prod() + 2)*sizeof(point));
-	cudaMemset(fluid_no, 0, (len.prod() + 2)*sizeof(int));
+	imemset<<<blk, thr>>>(fluid_no, len.prod());
+	cudaDeviceSynchronize();
+	blk = dim3((no_of_fluid + thr.x -1)/thr.x);
 	d_cellpart<<<blk, thr>>>(cell_part, fluid_no, no_of_fluid, pos_fl, *rr, len);
 	blk = dim3((len.prod() + thr.x - 1)/thr.x);
 	d_cellvel<<<blk, thr>>>(cell_vel, vel_fl, cell_part, fluid_no, len);

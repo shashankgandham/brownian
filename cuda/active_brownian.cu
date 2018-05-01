@@ -1,6 +1,13 @@
 #include "parameters.cuh"
 
+__global__ void imemset(int *x, int n) {
+	int i = blockIdx.x*blockDim.x + threadIdx.x + 1;
+	if(i <= n) 
+		x[i] = 0;
+}
+
 int main() {
+	clock_t begin = clock();
 	point mom;
 	double ke_fluid, energy_colloid;
 	initialize();
@@ -36,7 +43,9 @@ int main() {
 		mom += thrust::reduce(thrust::device, vel_fl + 1, vel_fl + no_of_fluid + 1, point(0, 0, 0), add_point())*mass_fl;
 		ke_fluid = 0.5*mass_fl*thrust::transform_reduce(thrust::device, vel_fl + 1, vel_fl + no_of_fluid + 1, mod_value(), (double)0, add_double());
 		printf("%.32lf\n", (mom*mom).sum());
-		printf("%.32lf\n", energy_colloid);
+		printf("%.32lf\n", energy_colloid);		
 	}
+	clock_t end = clock();
+	printf("%lf\n", (double)(end - begin)/CLOCKS_PER_SEC);
 	return 0;
 }
