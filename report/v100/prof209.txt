@@ -1,0 +1,3 @@
+==3855== NVPROF is profiling process 3855, command: ./a.out 20 9
+==3855== Profiling application: ./a.out 20 9
+======== Error: Unable to import nvprof generated profile data.
