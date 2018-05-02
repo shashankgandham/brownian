@@ -1,5 +1,5 @@
 COMPILER = g++
-EXECUTABLE = a10.out
+EXECUTABLE = a.out
 FLAGS = -O1 -pg
 # Object Files for build
 OBJS = .fluid_colloid_collision.o .initialize.o .neighbour_list.o .update.o .rotation_mpcd.o .run.o
