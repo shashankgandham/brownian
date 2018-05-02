@@ -1,0 +1,68 @@
+1282.350000
+Profiling application: ./a108.out 2
+==9450== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   56.04%  589.313s    210000  2.8063ms  2.7218ms  2.9076ms  reduce(point**, point**, int*, int)
+                   10.91%  114.731s    210001  546.34us  536.00us  563.33us  d_boxpart(int**, int*, int, point*, point)
+                   10.60%  111.514s    210001  531.02us  514.78us  546.27us  sieve(int, int, int*, int**, int**, point*, point)
+                    5.89%  61.9022s     21000  2.9477ms  2.8430ms  3.1644ms  d_velfl(point*, point*, int**, int*, point**, point)
+                    3.14%  33.0593s     21000  1.5743ms  1.5467ms  1.6186ms  d_rotate(int*, int**, point*, point*, point, double, double)
+                    2.85%  30.0238s    210000  142.97us  138.30us  150.08us  d_update_pos_mpcd(point*, point*, double, point, int)
+                    1.74%  18.3037s    210000  87.160us  82.784us  94.367us  d_dump(point*, point*, double*, int)
+                    1.60%  16.7765s     21000  798.88us  776.67us  892.12us  d_cellvel(point*, point*, int**, int*, point)
+                    1.43%  15.0733s    210000  71.777us  65.280us  78.880us  d_fluid_colloid_collision(int*, point*, point*, point*, point*, point*, double, double, double, double, point*, point, double, int, double, int**, point**, point**, curandStateXORWOW*)
+                    1.08%  11.3646s     21000  541.17us  530.56us  553.41us  d_cellpart(int**, int*, int, point*, point, point)
+                    1.07%  11.2710s    210001  53.671us  48.543us  65.471us  d_neighbour_list_mpcd(int**, int*, int**, int**, int*, int**, point*, point*, int, int, int, point)
+                    0.87%  9.19182s     21000  437.71us  424.45us  447.52us  d_rotate_mat(point*, point*, point*, point**, int*, int**, int, point, double, double, curandStateXORWOW*)
+                    0.73%  7.65071s     21000  364.32us  303.20us  438.24us  d_velc(point*, point*, int**, int*, int, double, double, double)
+                    0.52%  5.46173s     21000  260.08us  229.02us  285.54us  d_nbrc(point*, point*, point*, point*, point, int*, int**, int**, int*, int, double, double)
+                    0.28%  2.96995s    210001  14.142us  8.5440us  18.399us  d_compute_force_md(point*, int*, int**, point*, double, double, double, double, double, double, double, double*, point, int)
+                    0.21%  2.17037s    210000  10.335us  7.4560us  20.224us  update_fcc(point**, point**, point*, point*, int*, int, double, double, double)
+                    0.17%  1.82823s    210000  8.7050us  7.8400us  14.752us  d_update_activity_direction(point*, point*, double, int)
+                    0.17%  1.74707s    210000  8.3190us  7.8720us  15.328us  d_update_pos_md(point*, point*, point*, point*, double, double, point, int)
+                    0.13%  1.39684s     21000  66.516us  65.760us  67.872us  void thrust::cuda_cub::cub::DeviceReduceKernel<thrust::cuda_cub::cub::DeviceReducePolicy<double, int, add_double>::Policy600, thrust::cuda_cub::transform_input_iterator_t<double, point*, mod_value>, double*, int, add_double>(int, add_double, thrust::cuda_cub::cub::DeviceReducePolicy<double, int, add_double>::Policy600, thrust::cuda_cub::cub::GridEvenShare<add_double>, double)
+                    0.13%  1.34657s    210000  6.4120us  6.2080us  10.016us  d_update_vel_colloid(point*, point*, point*, double, double, int)
+                    0.13%  1.32935s     21001  63.299us  61.663us  66.688us  void thrust::cuda_cub::cub::DeviceReduceKernel<thrust::cuda_cub::cub::DeviceReducePolicy<point, int, add_point>::Policy600, point*, point*, int, add_point>(int, add_point, thrust::cuda_cub::cub::DeviceReducePolicy<point, int, add_point>::Policy600, thrust::cuda_cub::cub::GridEvenShare<add_point>, point*)
+                    0.10%  1.03568s    463002  2.2360us  1.4720us  9.1200us  imemset(int*, int)
+                    0.10%  1.03114s    210001  4.9100us  4.7670us  8.0640us  d_neighbour_list_md(int**, int*, point*, int, double, point)
+                    0.02%  226.60ms    105001  2.1580us  1.6960us  8.4800us  [CUDA memcpy DtoH]
+                    0.02%  203.56ms     42001  4.8460us  4.5440us  8.4800us  void thrust::cuda_cub::cub::DeviceReduceSingleTileKernel<thrust::cuda_cub::cub::DeviceReducePolicy<point, int, add_point>::Policy600, point*, thrust::detail::normal_iterator<thrust::pointer<point, thrust::cuda_cub::par_t, thrust::use_default, thrust::use_default>>, int, add_point, point>(int, add_point, thrust::cuda_cub::cub::DeviceReducePolicy<point, int, add_point>::Policy600, point*, point)
+                    0.02%  161.38ms     42000  3.8420us  3.0400us  8.2560us  void thrust::cuda_cub::cub::DeviceReduceSingleTileKernel<thrust::cuda_cub::cub::DeviceReducePolicy<double, int, add_double>::Policy600, thrust::cuda_cub::transform_input_iterator_t<double, point*, mod_value>, thrust::detail::normal_iterator<thrust::pointer<double, thrust::cuda_cub::par_t, thrust::use_default, thrust::use_default>>, int, add_double, double>(int, add_double, thrust::cuda_cub::cub::DeviceReducePolicy<double, int, add_double>::Policy600, double, point*)
+                    0.01%  144.11ms         1  144.11ms  144.11ms  144.11ms  curand_setup(curandStateXORWOW*, int)
+                    0.01%  120.05ms     11000  10.913us  10.528us  11.552us  calc_upd(int, int*, int*, point**, point**, point*)
+                    0.01%  93.904ms     21000  4.4710us  3.6160us  7.5520us  set_rr(point*, curandStateXORWOW*)
+                    0.01%  89.503ms     21000  4.2620us  4.1600us  8.2240us  void thrust::cuda_cub::cub::DeviceReduceSingleTileKernel<thrust::cuda_cub::cub::DeviceReducePolicy<double, int, add_double>::Policy600, double*, thrust::detail::normal_iterator<thrust::pointer<double, thrust::cuda_cub::par_t, thrust::use_default, thrust::use_default>>, int, add_double, double>(int, add_double, thrust::cuda_cub::cub::DeviceReducePolicy<double, int, add_double>::Policy600, double*, double)
+                    0.01%  70.454ms     11000  6.4040us  5.9520us  7.8400us  helper_upd(int, int*, int*, int*, point**, point**, int**, point*, point*, point*, point*, point, double)
+                    0.01%  58.296ms     42001  1.3870us  1.1520us  8.2880us  void thrust::cuda_cub::core::_kernel_agent<thrust::cuda_cub::__parallel_for::ParallelForAgent<thrust::cuda_cub::for_each_f<thrust::pointer<point, thrust::cuda_cub::par_t, thrust::use_default, thrust::use_default>, thrust::detail::wrapped_function<thrust::detail::allocator_traits_detail::gozer, void>>, long>, thrust::cuda_cub::for_each_f<thrust::pointer<point, thrust::cuda_cub::par_t, thrust::use_default, thrust::use_default>, thrust::detail::wrapped_function<thrust::detail::allocator_traits_detail::gozer, void>>, long>(thrust::cuda_cub::par_t, thrust::use_default)
+                    0.00%  938.33us         1  938.33us  938.33us  938.33us  d_initialize_fluid(point*, point*, point*, int, int, double, double, double, point, curandStateXORWOW*)
+                    0.00%  794.91us         1  794.91us  794.91us  794.91us  d_create_box(int**, point)
+                    0.00%  95.743us         1  95.743us  95.743us  95.743us  conserv_mom(point*, point, int)
+                    0.00%  81.792us         1  81.792us  81.792us  81.792us  initialize_colloid(point*, point*, point*, int, double, double, double, double, double, point, curandStateXORWOW*)
+                    0.00%  8.4800us         1  8.4800us  8.4800us  8.4800us  d_tumble(point*, point*, point, int, curandStateXORWOW*)
+      API calls:   91.47%  1.0e+03s    147002  6.9725ms  6.6890us  145.03ms  cudaDeviceSynchronize
+                    3.94%  44.1589s   3572016  12.362us  5.6480us  8.0431ms  cudaLaunch
+                    2.02%  22.6096s    210002  107.66us  6.9800us  28.877ms  cudaMalloc
+                    1.57%  17.5701s    210002  83.666us  8.6540us  948.72us  cudaFree
+                    0.48%  5.36988s  24781093     216ns     170ns  906.80us  cudaSetupArgument
+                    0.18%  2.06819s    105001  19.696us  15.996us  27.279ms  cudaMemcpyAsync
+                    0.14%  1.53524s     95792  16.026us  6.4160us  330.77ms  cudaMallocManaged
+                    0.08%  885.93ms    252003  3.5150us  2.2700us  5.2947ms  cudaFuncGetAttributes
+                    0.07%  783.81ms   3572016     219ns     142ns  616.75us  cudaConfigureCall
+                    0.02%  262.55ms    105001  2.5000us  2.0750us  387.55us  cudaStreamSynchronize
+                    0.01%  94.323ms     84002  1.1220us     865ns  17.634us  cudaOccupancyMaxActiveBlocksPerMultiprocessorWithFlags
+                    0.01%  71.373ms    126003     566ns     441ns  527.64us  cudaGetDevice
+                    0.01%  71.286ms    126003     565ns     397ns  129.37us  cudaDeviceGetAttribute
+                    0.01%  59.341ms    231004     256ns     106ns  377.84us  cudaPeekAtLastError
+                    0.00%  21.860ms    105001     208ns     158ns  12.635us  cudaGetLastError
+                    0.00%  625.23us        94  6.6510us     310ns  242.31us  cuDeviceGetAttribute
+                    0.00%  389.91us         1  389.91us  389.91us  389.91us  cuDeviceTotalMem
+                    0.00%  70.905us         1  70.905us  70.905us  70.905us  cuDeviceGetName
+                    0.00%  3.2120us         3  1.0700us     287ns  2.0800us  cuDeviceGetCount
+                    0.00%  1.6050us         2     802ns     395ns  1.2100us  cuDeviceGet
+
+==9450== Unified Memory profiling result:
+Device "Tesla K40c (0)"
+   Count  Avg Size  Min Size  Max Size  Total Size  Total Time  Name
+       4  195.00KB  8.0000KB  636.00KB  780.0000KB  93.53600us  Host To Device
+  126024  21.339KB  4.0000KB  508.00KB  2.564697GB  422.7972ms  Device To Host
+Total CPU Page faults: 42010
