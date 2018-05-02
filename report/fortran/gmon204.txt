@@ -1,0 +1,28 @@
+  7010.8107190000001     
+
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ks/call  Ks/call  name    
+ 38.37   1953.06  1953.06    21000     0.00     0.00  rotation_mpcd_
+ 22.93   3120.22  1167.16   210000     0.00     0.00  fluid_colloid_collision_
+ 21.29   4203.80  1083.58   210001     0.00     0.00  neighbour_list_mpcd_
+ 13.56   4893.86   690.06   210000     0.00     0.00  update_pos_mpcd_
+  1.98   4994.70   100.84        1     0.10     5.09  MAIN__
+  1.00   5045.36    50.66    21000     0.00     0.00  run_
+  0.70   5080.81    35.45    11000     0.00     0.00  updown_velocity_
+  0.20   5091.10    10.28 1155111096     0.00     0.00  ran1_
+  0.01   5091.40     0.31  3144251     0.00     0.00  stochastic_reflection_
+  0.01   5091.66     0.26   210000     0.00     0.00  update_velocity_colloid_
+  0.00   5091.85     0.19   210001     0.00     0.00  compute_force_md_
+  0.00   5092.03     0.19   210001     0.00     0.00  neighbour_list_md_
+  0.00   5092.18     0.15  3144251     0.00     0.00  gauss_
+  0.00   5092.28     0.10        1     0.00     0.00  initialize_fluid_
+  0.00   5092.36     0.08        1     0.00     0.00  create_box_
+  0.00   5092.42     0.06   210000     0.00     0.00  update_activity_direction_
+  0.00   5092.45     0.03        1     0.00     0.00  tumble_
+  0.00   5092.45     0.00   210000     0.00     0.00  update_pos_md_
+  0.00   5092.45     0.00        1     0.00     0.00  initialize_colloid_
+
+ 

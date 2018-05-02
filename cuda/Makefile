@@ -1,5 +1,5 @@
 COMPILER = nvcc
-EXECUTABLE = a59.out
+EXECUTABLE = a.out
 FLAGS = -O3 
 # Object Files for build
 OBJS = .fluid_colloid_collision.o .initialize.o .neighbour_list.o .update.o .rotation_mpcd.o .run.o

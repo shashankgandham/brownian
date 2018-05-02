@@ -1,0 +1,27 @@
+6844.983075
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 31.64   1680.69  1680.69   210001     8.00     8.00  neighbour_list_mpcd()
+ 24.18   2965.37  1284.68   210000     6.12     6.12  update_pos_mpcd()
+ 22.93   4183.47  1218.10    21000    58.00    58.00  rotation_mpcd()
+ 18.40   5160.96   977.49   210000     4.65     4.65  fluid_colloid_collision()
+  1.79   5255.82    94.86    21000     4.52     4.52  run()
+  0.98   5307.82    52.00    11000     4.73     4.73  updown_velocity()
+  0.09   5312.82     4.99                             main
+  0.01   5313.12     0.31   210001     0.00     0.00  compute_force_md()
+  0.00   5313.38     0.26        1   260.06   260.06  initialize_fluid()
+  0.00   5313.57     0.19   210001     0.00     0.00  neighbour_list_md()
+  0.00   5313.75     0.18        1   180.04   180.04  create_box()
+  0.00   5313.81     0.06   210000     0.00     0.00  update_activity_direction()
+  0.00   5313.84     0.03   210000     0.00     0.00  update_pos_md()
+  0.00   5313.87     0.03   210000     0.00     0.00  update_velocity_colloid()
+  0.00   5313.88     0.02                             power(double, int)
+  0.00   5313.89     0.01        1     5.00     5.00  tumble()
+  0.00   5313.89     0.00        1     0.00     0.00  _GLOBAL__sub_I_mag_f
+  0.00   5313.89     0.00        1     0.00     0.00  _GLOBAL__sub_I_pos_colloid
+  0.00   5313.89     0.00        1     0.00     0.00  initialize()
+  0.00   5313.89     0.00        1     0.00     0.00  initialize_colloid()
+
