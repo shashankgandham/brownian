@@ -1,9 +1,9 @@
 program colloid
     use all_parameters
 	implicit none
-	double precision ::mom1_x,mom1_y,mom1_z,mom2_x,mom2_y,mom2_z,energy_colloid
+	double precision ::mom1_x,mom1_y,mom1_z,mom2_x,mom2_y,mom2_z,energy_colloid, start_time, stop_time
 	integer::j,i,l
-
+	call cpu_time(start_time)
 	call initialize_colloid
     call initialize_fluid
     call create_box
@@ -11,9 +11,7 @@ program colloid
 	call neighbour_list_md
 	call compute_force_md
 	call tumble
-    write(*,*) "After Tumble"
     do nn = 1, niter
-		write(*,*) nn
 		call rotation_mpcd
 		call run
          do l=1,n
@@ -67,4 +65,6 @@ program colloid
 		mom_y=mom1_y+mom2_y
 		mom_z=mom1_z+mom2_z
 	enddo
+	call cpu_time(stop_time)
+	write(*, *) stop_time - start_time
 end program colloid
