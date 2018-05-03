@@ -11,9 +11,7 @@ program colloid
 	call neighbour_list_md
 	call compute_force_md
 	call tumble
-    write(*,*) "After Tumble"
     do nn = 1, niter
-		write(*,*) nn
 		call rotation_mpcd
 		call run
          do l=1,n
