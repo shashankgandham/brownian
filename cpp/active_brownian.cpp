@@ -19,9 +19,9 @@ int main(int argv, char *argc[]) {
 	neighbour_list_md();
 	compute_force_md();
 	tumble();
-	printf(" After Tumble\n");
+//	printf(" After Tumble\n");
 	for(nn = 1; nn <= niter; nn++) {
-		printf("%12d\n", nn);
+//		printf("%12d\n", nn);
 		rotation_mpcd();
 		run();
 		for(int l = 1; l <= n; l++) {
@@ -53,11 +53,6 @@ int main(int argv, char *argc[]) {
 		ang_ke_colloid = 0.5*I_colloid*ang_ke_colloid;
 		energy_colloid = potential_colloid + ke_colloid + ang_ke_colloid;
 		ke_fluid = 0.5*ke_fluid*mass_fl;
-<<<<<<< HEAD
-		printf("%.32lf\n", energy_colloid + ke_fluid);
-=======
-	//	printf("%.32lf\n", energy_colloid + ke_fluid);
->>>>>>> 11667a0cdeb0c037f9cdd4cb05ecb67d7f95da62
 	}
 	clock_t end = clock();
 	printf("%lf\n", (double)(end - begin)/CLOCKS_PER_SEC);
