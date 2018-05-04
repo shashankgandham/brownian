@@ -14,17 +14,17 @@ module all_parameters
     double precision          :: ang_ke_colloid1,ang_ke_colloid
     integer                   :: zzz=-4280145,zzzz=77777,nn,qq
     
-    integer,parameter         :: nbin=300
+    integer,parameter         :: nbin=300,maxpart=100
     double precision          :: dv=0.010d0         
     integer                   :: mb_vel(nbin)
 
     double precision,parameter:: mass_fl=1.0d0
-    integer,parameter         :: no_of_fluid=lx*ly*lz*10,maxpart=100
+integer,parameter::no_of_fluid=lx*ly*lz*5
     double precision          :: pos_fl(3*no_of_fluid),vel_fl(3*no_of_fluid),ke_fluid
     double precision,parameter:: vscale_fluid=dsqrt(12.0d0*kbt/mass_fl)
     double precision          ::scale_fac_mpcd
         
-    integer,parameter           ::no_of_colloid=10
+integer,parameter::no_of_colloid=10
     double precision,parameter  ::mass_colloid=654.10d0,vscale_colloid=dsqrt(12.0d0*kbT1/mass_colloid)
     double precision,parameter  ::sig_colloid=5.0d0,r_cutoff=2.0**(1.0d0/6.0d0)*sig_colloid
     double precision,parameter  ::eps=1.0d0,space_limit=1.3d0*sig_colloid
